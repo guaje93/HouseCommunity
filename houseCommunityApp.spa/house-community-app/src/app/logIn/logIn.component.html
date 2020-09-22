@@ -1,0 +1,19 @@
+<div class="center">
+  <div class="login-header">
+    <p>LOGOWANIE</p>
+    <i class="fa fa-users"></i>
+  </div>
+  <form class="login-form"  (ngSubmit)="logIn()">
+    <input class="form-control mr-sm-2" name="username" type="text" placeholder="&#xf007; Nazwa użytkownika" required [(ngModel)]="model.username"/>
+    <input class="form-control mr-sm-2" name="password" type="password" placeholder="&#xf023; Hasło" required [(ngModel)]="model.password"/>
+    <button class="login-button"
+      type="submit">
+      Login
+    </button>
+  </form>
+  <div class="forget-password">
+    <a>
+      <p>Forgot password! Click here</p>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+nav {
+    background-color: black;
+}
+
+.nav-item, .dropdown-item {
+    cursor: pointer;
+}

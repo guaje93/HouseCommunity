@@ -15,7 +15,9 @@ import { NewsComponent } from './News/News.component';
 import { RentComponent } from './rent/rent.component';
 import { EditUserComponent } from './editUser/editUser.component';
 import { MatDialogModule } from '@angular/material/dialog';
-
+import { MatFormFieldModule} from '@angular/material/form-field';
+import { MatIconModule} from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [							
@@ -35,7 +37,11 @@ import { MatDialogModule } from '@angular/material/dialog';
     HttpClientModule,
     BsDropdownModule.forRoot(),
     BrowserAnimationsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent]

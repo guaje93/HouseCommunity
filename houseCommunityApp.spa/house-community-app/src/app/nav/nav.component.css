@@ -5,3 +5,7 @@ nav {
 .nav-item, .dropdown-item {
     cursor: pointer;
 }
+.fa{
+    margin: 0px 10px;
+    width: 16px;
+}

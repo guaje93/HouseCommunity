@@ -30,7 +30,7 @@ export class NavComponent implements OnInit {
   }
 
   openDialog() {
-    const dialogRef = this.dialog.open(EditUserComponent, {height: '85%'});
+    const dialogRef = this.dialog.open(EditUserComponent, {height: '85%', width: '70%'});
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);

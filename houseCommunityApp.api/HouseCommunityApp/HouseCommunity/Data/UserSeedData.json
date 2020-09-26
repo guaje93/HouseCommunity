@@ -1,42 +1,30 @@
 [
     {
         "Username": "Lola",
-        "Password": "password",
+        "Password": "kurka25",
+        "FirstName": "Lola",
+        "LastName": "Anderson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "PhoneNumber": 434554784,
+        "Email": "cos@cos.com"
+
     },
     {
         "Username": "Dorothy",
         "Password": "password",
+        "FirstName": "Lola",
+        "LastName": "Anderson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "PhoneNumber": 434554784,
+        "Email": "cos@cos.com"
     },
     {
         "Username": "Reba",
         "Password": "password",
-    },
-    {
-        "Username": "Annmarie",
-        "Password": "password",
-    },
-    {
-        "Username": "Ashley",
-        "Password": "password",
-    },
-    {
-        "Username": "Roy",
-        "Password": "password",
-    },
-    {
-        "Username": "Duke",
-        "Password": "password",
-    },
-    {
-        "Username": "Lloyd",
-        "Password": "password",
-    },
-    {
-        "Username": "Larsen",
-        "Password": "password",
-    },
-    {
-        "Username": "Simon",
-        "Password": "password",
+        "FirstName": "Reba",
+        "LastName": "Johnson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "PhoneNumber": 3525235325,
+        "Email": "cos@cos.com"
     }
 ]

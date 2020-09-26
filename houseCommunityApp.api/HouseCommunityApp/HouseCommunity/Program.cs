@@ -26,6 +26,11 @@ namespace HouseCommunity
                 {
                     var context = services.GetRequiredService<DataContext>();
                     context.Database.Migrate();
+                    //foreach (var item in context.Users)
+                    //{
+                    //    context.Users.Remove(item);
+                    //}
+                    //context.SaveChanges();
                     Seed.SeedUsers(context);
                 }
                 catch (Exception ex)

@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { LogInComponent } from './logIn/logIn.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppRoutes } from './routes';
@@ -18,9 +18,12 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule} from '@angular/material/form-field';
 import { MatIconModule} from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { ForgetPasswordComponent } from './forgetPassword/forgetPassword.component';
+import { ResetPasswordComponent } from './resetPassword/resetPassword.component';
+import { ChangePasswordComponent } from './changePassword/changePassword.component';
 
 @NgModule({
-  declarations: [							
+  declarations: [										
     AppComponent,
       NavComponent,
       LogInComponent,
@@ -28,7 +31,10 @@ import { MatInputModule } from '@angular/material/input';
       MediaComponent,
       NewsComponent,
       RentComponent,
-      EditUserComponent
+      EditUserComponent,
+      ForgetPasswordComponent,
+      ResetPasswordComponent,
+      ChangePasswordComponent
    ],
   imports: [
     RouterModule.forRoot(AppRoutes),
@@ -41,6 +47,7 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    ReactiveFormsModule
 
   ],
   providers: [],

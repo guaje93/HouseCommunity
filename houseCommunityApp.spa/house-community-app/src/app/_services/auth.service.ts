@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { User } from '../Model/user';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -25,9 +26,20 @@ export class AuthService {
       })
     );
   }
+  requestReset(body): Observable<any> {
+    return this.http.post(`${this.baseUrl}req-reset-password`, body);
+  }
 
   loggedIn() {
     const token = localStorage.getItem("token");
     return !this.jwtHelper.isTokenExpired(token);
+  }
+
+  newPassword(body): Observable<any> {
+    return this.http.post(`${this.baseUrl}new-password`, body);
+  }
+
+  ValidPasswordToken(body): Observable<any> {
+    return this.http.post(`${this.baseUrl}valid-password-token`, body);
   }
 }

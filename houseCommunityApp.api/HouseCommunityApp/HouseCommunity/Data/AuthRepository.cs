@@ -34,6 +34,24 @@ namespace HouseCommunity.Data
 
             return user;
         }
+        public async Task<User> GetUserForReset(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(p => p.Email == email);
+            return user;
+        }
+
+        public async Task<User> ResetPassword(string username, string password)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(p => p.UserName == username);
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return user;
+
+        }
 
         public async Task<bool> UserExists(string username) => await _context.Users.AnyAsync(p => p.UserName == username);
 
@@ -72,6 +90,14 @@ namespace HouseCommunity.Data
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             };
         }
+
+        public async Task<string> GetUserNameById(int id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(p => p.Id == id);
+            return user.UserName;
+        }
+
+
 
 
         #endregion //Methods

@@ -31,14 +31,18 @@ namespace HouseCommunity
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var notificationMetadata = Configuration.GetSection("NotificationMetadata").
+                                       Get<NotificationMetadata>();
+            services.AddSingleton(notificationMetadata);
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers().AddNewtonsoftJson();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0).AddNewtonsoftJson(opt => {
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0).AddNewtonsoftJson(opt =>
+            {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
             services.AddControllers();
             services.AddCors();
-            services.AddTransient<Seed>(); 
+            services.AddTransient<Seed>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters

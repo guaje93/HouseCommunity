@@ -85,6 +85,17 @@ namespace HouseCommunity.Controllers
             return Ok();
         }
 
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePasswordRequest(PasswordChangeRequest passwordChangeRequest)
+        {
+
+            var userFromRepo = await _repo.ChangePassword(passwordChangeRequest);
+            if (userFromRepo == null)
+                return BadRequest("Podaj poprawne hasło!");
+
+            return Ok();
+        }
+
         [HttpPost("valid-password-token")]
         public async Task<IActionResult> ValidPasswordToken(TokenForUserVerify token)
         {

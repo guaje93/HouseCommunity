@@ -4,6 +4,7 @@ import { AlertifyService } from '../_services/alertify.service';
 import { AuthService } from '../_services/auth.service';
 import {MatDialog} from '@angular/material/dialog';
 import { EditUserComponent } from '../editUser/editUser.component';
+import { ChangePasswordComponent } from '../changePassword/changePassword.component';
 
 @Component({
   selector: 'app-nav',
@@ -29,8 +30,16 @@ export class NavComponent implements OnInit {
     this.router.navigate(["/login"]);
   }
 
-  openDialog() {
+  openEditDataDialog() {
     const dialogRef = this.dialog.open(EditUserComponent, {height: '85%', width: '70%'});
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+  openChangePasswordDialog() {
+    const dialogRef = this.dialog.open(ChangePasswordComponent, {height: '85%', width: '70%'});
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);

@@ -1,4 +1,5 @@
 ﻿using HouseCommunity.Model;
+using HouseCommunity.Request;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -95,6 +96,22 @@ namespace HouseCommunity.Data
         {
             var user = await _context.Users.FirstOrDefaultAsync(p => p.Id == id);
             return user.UserName;
+        }
+
+        public async Task<User> ChangePassword(PasswordChangeRequest passwordChangeRequest)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(p => p.Id == passwordChangeRequest.Id);
+
+            if (!VerifyPasswordHash(passwordChangeRequest.CurrentPassword, user.PasswordHash, user.PasswordSalt))
+                return null;
+
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(passwordChangeRequest.ConfirmPassword, out passwordHash, out passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            
+            await _context.SaveChangesAsync();
+            return user;
         }
 
 

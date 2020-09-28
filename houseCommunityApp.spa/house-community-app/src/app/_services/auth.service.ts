@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { map } from "rxjs/operators";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { catchError, map } from "rxjs/operators";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { User } from '../Model/user';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +38,14 @@ export class AuthService {
   newPassword(body): Observable<any> {
     return this.http.post(`${this.baseUrl}new-password`, body);
   }
+
+  changePassword(body): Observable<any> {
+    return this.http.post(`${this.baseUrl}change-password`, body).pipe(catchError(this.handleError));
+  }
+  
+  handleError(error: HttpErrorResponse) {
+    return throwError(error);
+}
 
   ValidPasswordToken(body): Observable<any> {
     return this.http.post(`${this.baseUrl}valid-password-token`, body);

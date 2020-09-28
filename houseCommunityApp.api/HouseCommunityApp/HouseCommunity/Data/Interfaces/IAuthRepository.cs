@@ -1,4 +1,5 @@
 ﻿using HouseCommunity.Model;
+using HouseCommunity.Request;
 using System.Threading.Tasks;
 
 namespace HouseCommunity.Data
@@ -11,5 +12,6 @@ namespace HouseCommunity.Data
         Task<User> GetUserForReset(string v);
         Task<User> ResetPassword(string username, string password);
         Task<string> GetUserNameById(int id);
+        Task<User> ChangePassword(PasswordChangeRequest passwordChangeRequest);
     }
 }

@@ -39,7 +39,7 @@ export class NavComponent implements OnInit {
   }
 
   openChangePasswordDialog() {
-    const dialogRef = this.dialog.open(ChangePasswordComponent, {height: '85%', width: '70%'});
+    const dialogRef = this.dialog.open(ChangePasswordComponent, {height: '65%', width: '35%'});
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);

@@ -20,9 +20,15 @@ namespace HouseCommunity.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        #region Fields
+
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
         private readonly NotificationMetadata _notificationMetadata;
+
+        #endregion
+
+        #region Constructors
 
         public AuthController(IAuthRepository repo, IConfiguration config, NotificationMetadata notificationMetadata)
         {
@@ -30,6 +36,10 @@ namespace HouseCommunity.Controllers
             this._config = config;
             this._notificationMetadata = notificationMetadata;
         }
+
+        #endregion //Constructors
+
+        #region Methods
 
 
         [HttpPost("login")]
@@ -53,24 +63,6 @@ namespace HouseCommunity.Controllers
 
         }
 
-        private SecurityTokenDescriptor GetTokenDescriptor(Model.User userFromRepo)
-        {
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.UserName)            };
-
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:Token").Value));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = creds
-            };
-            return tokenDescriptor;
-        }
-
         [HttpPost("req-reset-password")]
         public async Task<IActionResult> ResetPasswordRequest(UserForPasswordResetRequest usernameuserForLoginDTO)
         {
@@ -80,8 +72,7 @@ namespace HouseCommunity.Controllers
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-
-            Get(usernameuserForLoginDTO.Email, tokenHandler.WriteToken(token));
+            SendMail(usernameuserForLoginDTO.Email, tokenHandler.WriteToken(token));
             return Ok();
         }
 
@@ -121,7 +112,25 @@ namespace HouseCommunity.Controllers
 
         }
 
-        public string Get(string receiver, string token)
+        private SecurityTokenDescriptor GetTokenDescriptor(Model.User userFromRepo)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
+                new Claim(ClaimTypes.Name, userFromRepo.UserName)            };
+
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:Token").Value));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = creds
+            };
+            return tokenDescriptor;
+        }
+
+        public string SendMail(string receiver, string token)
         {
             EmailMessage message = new EmailMessage();
             message.Sender = new MailboxAddress("Self", _notificationMetadata.Sender);
@@ -154,5 +163,7 @@ namespace HouseCommunity.Controllers
             { Text = message.Content };
             return mimeMessage;
         }
+
+        #endregion //Methods
     }
 }

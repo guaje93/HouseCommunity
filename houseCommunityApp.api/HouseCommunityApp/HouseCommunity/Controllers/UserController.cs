@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HouseCommunity.Data;
-using HouseCommunity.DTOs;
+﻿using HouseCommunity.Data;
+using HouseCommunity.Request;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace HouseCommunity.Controllers
 {
@@ -25,6 +22,19 @@ namespace HouseCommunity.Controllers
         {
 
             var userFromRepo = await _repo.GetUser(id);
+
+            if (userFromRepo == null)
+                return Unauthorized();
+
+            return Ok(
+               userFromRepo
+               );
+        }
+
+        [HttpPut("update-contact-data")]
+        public async Task<IActionResult> UpdateUserContactData(UserContactData userContactData)
+        {
+            var userFromRepo = await _repo.UpdateUserContactData(userContactData);
 
             if (userFromRepo == null)
                 return Unauthorized();

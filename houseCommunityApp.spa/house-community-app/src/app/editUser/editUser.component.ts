@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertifyService } from '../_services/alertify.service';
 import { AuthService } from '../_services/auth.service';
 import { UserService } from '../_services/user.service';
 
@@ -16,7 +17,10 @@ export class EditUserComponent implements OnInit {
   lastName: string;
   email: string;
   birthDate: Date;
-  constructor(public authService: AuthService, public userService: UserService) {
+  constructor(
+    public authService: AuthService,
+    public alertifyService: AlertifyService,
+    public userService: UserService) {
 
   }
 
@@ -39,5 +43,20 @@ export class EditUserComponent implements OnInit {
   }
   public editPhone() {
     this.phoneDisabled = !this.phoneDisabled;
+  }
+
+  public saveData() {
+    let model: any = {};
+    model.id = this.authService.decodedToken.nameid;
+    model.email = this.email;
+    model.phoneNumber = this.phoneNumber;
+    this.userService.updateUserContactData(model).subscribe(
+      data => {
+        this.alertifyService.success("Zapisano zmienione dane")
+      }),
+      error => {
+        this.alertifyService.error("Wystąpił bląd. Dane nie zostały zapisane.")
+      };
+
   }
 }

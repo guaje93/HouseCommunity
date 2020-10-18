@@ -3,9 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  accountName : "housecommunitystorage",
+  containerName:"mediacontainer",
+  key:"8HjupltSBjcgKfTBc8xCgQjg1Yj3V72hmwKtPfpqPtB+6Tagi6g6mzR40b0aiYOxtSAtoch4zckGB7Pt8yPNyg=="
 };
-
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

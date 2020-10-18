@@ -21,9 +21,12 @@ import { MatInputModule } from '@angular/material/input';
 import { ForgetPasswordComponent } from './forgetPassword/forgetPassword.component';
 import { ResetPasswordComponent } from './resetPassword/resetPassword.component';
 import { ChangePasswordComponent } from './changePassword/changePassword.component';
+import { ProgressComponent } from './progress/progress.component';
+import {DragAndDropDirective} from './directives/dragAndDrop.directive';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
-  declarations: [										
+  declarations: [
     AppComponent,
       NavComponent,
       LogInComponent,
@@ -34,7 +37,9 @@ import { ChangePasswordComponent } from './changePassword/changePassword.compone
       EditUserComponent,
       ForgetPasswordComponent,
       ResetPasswordComponent,
-      ChangePasswordComponent
+      ChangePasswordComponent,
+      ProgressComponent,
+      DragAndDropDirective
    ],
   imports: [
     RouterModule.forRoot(AppRoutes),
@@ -50,7 +55,7 @@ import { ChangePasswordComponent } from './changePassword/changePassword.compone
     ReactiveFormsModule
 
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

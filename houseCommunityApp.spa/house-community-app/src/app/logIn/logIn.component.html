@@ -3,14 +3,26 @@
     <p>LOGOWANIE</p>
     <i class="fa fa-users"></i>
   </div>
-  <form class="login-form"  (ngSubmit)="logIn()">
-    <input class="form-control mr-sm-2" name="username" type="text" placeholder="&#xf007; Nazwa użytkownika" required [(ngModel)]="model.username"/>
-    <input class="form-control mr-sm-2" name="password" type="password" placeholder="&#xf023; Hasło" required [(ngModel)]="model.password"/>
+  <!-- <form class="login-form"  (ngSubmit)="logIn()"> -->
+    <!-- <input class="form-control mr-sm-2" name="username" type="text" placeholder="&#xf007; Nazwa użytkownika" required [(ngModel)]="model.username"/> -->
+    <mat-form-field appearance="fill" style="width: 100%">
+      <mat-label>Użytkownik</mat-label>
+      <input matInput type="text" class="example-right-align" [(ngModel)]="model.username">
+    </mat-form-field>
+    <mat-form-field appearance="fill"  style="width: 100%;">
+      <mat-label>Hasło</mat-label>
+      <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="model.password">
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>    
+    <!-- <input class="form-control mr-sm-2" name="password" type="password" placeholder="&#xf023; Hasło" required [(ngModel)]="model.password"/> -->
     <button class="login-button"
-      type="submit">
+      type="submit"
+      (click)="logIn()">
       Login
     </button>
-  </form>
+  <!-- </form> -->
   <div class="forget-password">
     <a class="nav-link" [routerLink]="['/forgotPassword']">
       <p>Forgot password! Click here</p>

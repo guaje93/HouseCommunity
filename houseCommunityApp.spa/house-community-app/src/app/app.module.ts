@@ -27,9 +27,10 @@ import { DatePipe } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { ImagePreviewComponent } from './ImagePreview/ImagePreview.component';
 
 @NgModule({
-  declarations: [
+  declarations: [	
     AppComponent,
     NavComponent,
     LogInComponent,
@@ -43,7 +44,8 @@ import { MatButtonModule } from '@angular/material/button';
     ChangePasswordComponent,
     ProgressComponent,
     DragAndDropDirective,
-  ],
+      ImagePreviewComponent
+   ],
   imports: [
     RouterModule.forRoot(AppRoutes),
     BrowserModule,

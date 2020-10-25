@@ -17,7 +17,7 @@ export class LogInComponent implements OnInit {
     private router: Router
 
   ) { }
-
+hide: boolean= true;
   ngOnInit() {
   }
 

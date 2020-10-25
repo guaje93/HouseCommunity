@@ -10,6 +10,8 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FileHelper } from '../Model/fileHelper';
 import { SingleMediaItem } from '../Model/SingleMediaItem';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { ImagePreviewComponent } from '../ImagePreview/ImagePreview.component';
 
 @Component({
   selector: 'app-Media',
@@ -21,16 +23,17 @@ import { MatTableDataSource } from '@angular/material/table';
 export class MediaComponent implements OnInit {
 
   constructor(private authService: AuthService,
-    private alertifyService: AlertifyService,
-    private datePipe: DatePipe,
-    private mediaService: MediaService,
-    private sanitizer: DomSanitizer
+              private alertifyService: AlertifyService,
+              private datePipe: DatePipe,
+              private mediaService: MediaService,
+              private sanitizer: DomSanitizer,
+              public dialog: MatDialog
   ) {
     this.imageToShow = new MatTableDataSource<SingleMediaItem>();
     this.mediaDataToAdd = new FileHelper();
   }
 
-  displayedColumns: string[] = ['Description', 'CreationDate', 'AcceptanceDate', 'CurrentValue','ImageUrl'];
+  displayedColumns: string[] = ['MediaType','Description', 'CreationDate', 'AcceptanceDate', 'CurrentValue','ImageUrl'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
 
   mediaDataToAdd: FileHelper;
@@ -52,6 +55,17 @@ export class MediaComponent implements OnInit {
     this.prepareFilesList($event);
   }
 
+  openDialog(imageUrl: string): void {
+    const dialogRef = this.dialog.open(ImagePreviewComponent, {
+      width: '80%',
+      data: imageUrl
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
   addManualData() {
     if (this.mediaDataToAdd.currentValue && this.mediaDataToAdd.type) {
       const newData = new FileHelper();
@@ -66,6 +80,11 @@ export class MediaComponent implements OnInit {
   }
 
   updateFiles(): void {
+
+    if (this.files.some(p => !p.file && !p.currentValue))  {
+      this.alertifyService.error('Nie wszystkie wartości zostały zdefiniowane!');
+    return;
+    }
 
     if (this.files.every(p => p.type != null)) {
 
@@ -111,9 +130,10 @@ export class MediaComponent implements OnInit {
             else{
               const item = new SingleMediaItem();
               item.Description = element.description,
-                item.FileName = element.fileName;
+              item.FileName = element.fileName;
               item.CreationDate = element.creationDate;
               item.CurrentValue = element.currentValue;
+              item.MediaType = this.getMediaTypeFromNumber(element.mediaEnum);
               this.mediaHistory.push(item);
               this.imageToShow.data = this.mediaHistory;
         
@@ -121,7 +141,12 @@ export class MediaComponent implements OnInit {
         });
       });
   }
-
+getMediaTypeFromNumber(value: number){
+  if(value === 0)
+return "Woda zimna";
+else
+return "Woda ciepła";
+}
   createImageFromBlob(image: Blob, mediaItem: any): void {
     const reader = new FileReader();
     const blob = new Blob([image], { type: 'application/octet-stream' });

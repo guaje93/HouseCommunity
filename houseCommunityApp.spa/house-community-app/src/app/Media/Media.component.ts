@@ -8,12 +8,16 @@ import { DatePipe } from '@angular/common';
 import { MediaService } from '../_services/media.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FileHelper } from '../Model/fileHelper';
+import { SingleMediaItem } from '../Model/SingleMediaItem';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-Media',
   templateUrl: './Media.component.html',
   styleUrls: ['./Media.component.scss']
 })
+
+
 export class MediaComponent implements OnInit {
 
   constructor(private authService: AuthService,
@@ -21,9 +25,18 @@ export class MediaComponent implements OnInit {
     private datePipe: DatePipe,
     private mediaService: MediaService,
     private sanitizer: DomSanitizer
-  ) { }
+  ) {
+    this.imageToShow = new MatTableDataSource<SingleMediaItem>();
+    this.mediaDataToAdd = new FileHelper();
+  }
 
-  imageToShow: SafeUrl[];
+  displayedColumns: string[] = ['Description', 'CreationDate', 'AcceptanceDate', 'CurrentValue','ImageUrl'];
+  columnsToDisplay: string[] = this.displayedColumns.slice();
+
+  mediaDataToAdd: FileHelper;
+  imageToShow: MatTableDataSource<SingleMediaItem>;
+  mediaHistory: SingleMediaItem[] = [];
+
   isImageLoading: boolean;
   currentFile: File;
   files: FileHelper[] = [];
@@ -39,6 +52,19 @@ export class MediaComponent implements OnInit {
     this.prepareFilesList($event);
   }
 
+  addManualData() {
+    if (this.mediaDataToAdd.currentValue && this.mediaDataToAdd.type) {
+      const newData = new FileHelper();
+      newData.currentValue = this.mediaDataToAdd.currentValue;
+      newData.type = this.mediaDataToAdd.type;
+      newData.description = this.mediaDataToAdd.description;
+      this.files.push(newData);
+      this.mediaDataToAdd = new FileHelper();
+    }
+    else
+      this.alertifyService.error("Uzupełnij brakujące dane!")
+  }
+
   updateFiles(): void {
 
     if (this.files.every(p => p.type != null)) {
@@ -48,9 +74,8 @@ export class MediaComponent implements OnInit {
         this.onFileChange(item);
       }
     }
-    else
-    {
-this.alertifyService.error('Nie wszystkie typy zdjęć zostały zdefiniowane!');
+    else {
+      this.alertifyService.error('Nie wszystkie typy zdjęć zostały zdefiniowane!');
     }
   }
 
@@ -59,41 +84,57 @@ this.alertifyService.error('Nie wszystkie typy zdjęć zostały zdefiniowane!');
   }
 
   deleteFile(index: number): void {
-    if (this.files[index].file.progress < 100) {
-      console.log(this.files[index].file.progress);
-      console.log('Upload in progress.');
-      return;
-    }
     this.files.splice(index, 1);
   }
 
   displayImage(): void {
-    this.imageToShow = [];
+    this.mediaHistory = [];
     this.mediaService.getMediaForUser(this.authService.decodedToken.nameid).subscribe(
       data => {
         console.log(data);
         const model: any = data;
-        model.imageUrl.forEach(element => {
+        model.singleMediaItems.forEach(element => {
           console.log(element);
-          this.mediaService.displayBlobImage(element).subscribe(
-            blob => {
-              this.createImageFromBlob(blob);
-              this.isImageLoading = false;
-            }, error => {
-              this.isImageLoading = false;
-              console.log(error);
-            }
-          );
+          if(element.imageUrl){
 
+            this.mediaService.displayBlobImage(element.imageUrl).subscribe(
+              blob => {
+                this.createImageFromBlob(blob, element);
+                this.isImageLoading = false;
+              }, error => {
+                this.isImageLoading = false;
+                console.log(error);
+              }
+              );
+              
+            }
+            else{
+              const item = new SingleMediaItem();
+              item.Description = element.description,
+                item.FileName = element.fileName;
+              item.CreationDate = element.creationDate;
+              item.CurrentValue = element.currentValue;
+              this.mediaHistory.push(item);
+              this.imageToShow.data = this.mediaHistory;
+        
+            }
         });
       });
   }
 
-  createImageFromBlob(image: Blob): void {
+  createImageFromBlob(image: Blob, mediaItem: any): void {
     const reader = new FileReader();
     const blob = new Blob([image], { type: 'application/octet-stream' });
     reader.addEventListener('load', () => {
-      this.imageToShow.push(this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(blob)));
+
+      const item = new SingleMediaItem();
+      item.ImageUrl = this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(blob));
+      item.Description = mediaItem.description,
+        item.FileName = mediaItem.fileName;
+      item.CreationDate = mediaItem.creationDate;
+      this.mediaHistory.push(item);
+      this.imageToShow.data = this.mediaHistory;
+      console.log(this.imageToShow);
     }, false);
     if (image) {
       reader.readAsDataURL(image);
@@ -103,83 +144,102 @@ this.alertifyService.error('Nie wszystkie typy zdjęć zostały zdefiniowane!');
 
   async onFileChange(file): Promise<void> {
     console.log(file);
+
     const currentFileDate = new Date();
     const fileDate = this.datePipe.transform(currentFileDate, 'yyyyMMddHHmmss');
 
-    const newName = this.authService.decodedToken.nameid + '_' + fileDate + '_' + file.file.name;
-    this.currentFile = new File([file.file], newName);
-    console.log(this.currentFile.name);
-    console.log(this.currentFile.type);
-    // generate account sas token
-    const accountName = environment.accountName;
-    const key = environment.key;
-    const start = new Date(new Date().getTime() - (15 * 60 * 1000));
-    const end = new Date(new Date().getTime() + (30 * 60 * 1000));
-    const signedpermissions = 'rwdlac';
-    const signedservice = 'b';
-    const signedresourcetype = 'sco';
-    const signedexpiry = end.toISOString().substring(0, end.toISOString().lastIndexOf('.')) + 'Z';
-    const signedProtocol = 'https';
-    const signedversion = '2018-03-28';
+    if (file.file) {
 
-    const StringToSign =
-      accountName + '\n' +
-      signedpermissions + '\n' +
-      signedservice + '\n' +
-      signedresourcetype + '\n' +
-      '\n' +
-      signedexpiry + '\n' +
-      '\n' +
-      signedProtocol + '\n' +
-      signedversion + '\n';
+      const newName = this.authService.decodedToken.nameid + '_' + fileDate + '_' + file.file.name;
+      this.currentFile = new File([file.file], newName);
+      console.log(this.currentFile.name);
+      console.log(this.currentFile.type);
+      // generate account sas token
+      const accountName = environment.accountName;
+      const key = environment.key;
+      const start = new Date(new Date().getTime() - (15 * 60 * 1000));
+      const end = new Date(new Date().getTime() + (30 * 60 * 1000));
+      const signedpermissions = 'rwdlac';
+      const signedservice = 'b';
+      const signedresourcetype = 'sco';
+      const signedexpiry = end.toISOString().substring(0, end.toISOString().lastIndexOf('.')) + 'Z';
+      const signedProtocol = 'https';
+      const signedversion = '2018-03-28';
 
-    const str = CryptoJS.HmacSHA256(StringToSign, CryptoJS.enc.Base64.parse(key));
-    const sig = CryptoJS.enc.Base64.stringify(str);
+      const StringToSign =
+        accountName + '\n' +
+        signedpermissions + '\n' +
+        signedservice + '\n' +
+        signedresourcetype + '\n' +
+        '\n' +
+        signedexpiry + '\n' +
+        '\n' +
+        signedProtocol + '\n' +
+        signedversion + '\n';
+
+      const str = CryptoJS.HmacSHA256(StringToSign, CryptoJS.enc.Base64.parse(key));
+      const sig = CryptoJS.enc.Base64.stringify(str);
 
 
-    const sasToken = `sv=${(signedversion)}&ss=${(signedservice)}&srt=${(signedresourcetype)}&sp=${(signedpermissions)}&se=${encodeURIComponent(signedexpiry)}&spr=${(signedProtocol)}&sig=${encodeURIComponent(sig)}`;
-    const containerName = environment.containerName;
+      const sasToken = `sv=${(signedversion)}&ss=${(signedservice)}&srt=${(signedresourcetype)}&sp=${(signedpermissions)}&se=${encodeURIComponent(signedexpiry)}&spr=${(signedProtocol)}&sig=${encodeURIComponent(sig)}`;
+      const containerName = environment.containerName;
 
-    const pipeline = newPipeline(new AnonymousCredential(), {
-      retryOptions: { maxTries: 4 }, // Retry options
-      userAgentOptions: { userAgentPrefix: 'AdvancedSample V1.0.0' }, // Customized telemetry string
-      keepAliveOptions: {
-        // Keep alive is enabled by default, disable keep alive by setting false
-        enable: false
+      const pipeline = newPipeline(new AnonymousCredential(), {
+        retryOptions: { maxTries: 4 }, // Retry options
+        userAgentOptions: { userAgentPrefix: 'AdvancedSample V1.0.0' }, // Customized telemetry string
+        keepAliveOptions: {
+          // Keep alive is enabled by default, disable keep alive by setting false
+          enable: false
+        }
+      });
+
+      const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net?${sasToken}`,
+        pipeline);
+      const containerClient = blobServiceClient.getContainerClient(containerName);
+      if (!containerClient.exists()) {
+        console.log('the container does not exit');
+        await containerClient.create();
+
       }
-    });
-
-    const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net?${sasToken}`,
-      pipeline);
-    const containerClient = blobServiceClient.getContainerClient(containerName);
-    if (!containerClient.exists()) {
-      console.log('the container does not exit');
-      await containerClient.create();
-
+      const client = containerClient.getBlockBlobClient(this.currentFile.name);
+      const response = await client.uploadBrowserData(this.currentFile, {
+        blockSize: 4 * 1024 * 1024, // 4MB block size
+        concurrency: 20, // 20 concurrency
+        onProgress: (ev) => console.log(ev),
+        blobHTTPHeaders: { blobContentType: this.currentFile.type }
+      });
+      console.log(containerClient.url);
+      console.log(response._response.status);
+      if (response._response.status === 201) {
+        const req: any = {};
+        req.UserId = this.authService.decodedToken.nameid;
+        req.ImageUrl = `https://${accountName}.blob.core.windows.net/${containerName}/${this.currentFile.name}`;
+        req.UserDescription = file.description;
+        req.MediaType = file.type;
+        console.log(req);
+        this.mediaService.addMediaForUser(req).subscribe(data => {
+          console.log(data);
+          this.displayImage();
+          this.files = [];
+          this.alertifyService.success('Zdjęcie zostało przesłane!');
+        }
+        );
+      }
     }
-    const client = containerClient.getBlockBlobClient(this.currentFile.name);
-    const response = await client.uploadBrowserData(this.currentFile, {
-      blockSize: 4 * 1024 * 1024, // 4MB block size
-      concurrency: 20, // 20 concurrency
-      onProgress: (ev) => console.log(ev),
-      blobHTTPHeaders: { blobContentType: this.currentFile.type }
-    });
-    console.log(containerClient.url);
-    console.log(response._response.status);
-    if (response._response.status === 201) {
-      const req: any = {};
-      req.UserId = this.authService.decodedToken.nameid;
-      req.ImageUrl = `https://${accountName}.blob.core.windows.net/${containerName}/${this.currentFile.name}`;
-      req.UserDescription = file.description;
-      req.MediaType = file.type;
-      console.log(req);
-      this.mediaService.addMediaForUser(req).subscribe(data => {
-        console.log(data);
-        this.displayImage();
-        this.files = [];
-      }
-      );
-      this.alertifyService.success('Zdjęcie zostało przesłane!');
+      else{
+        const req: any = {};
+        req.UserId = this.authService.decodedToken.nameid;
+        req.UserDescription = file.description;
+        req.MediaType = file.type;
+        req.CurrentValue = file.currentValue;
+        console.log(req);
+        this.mediaService.addMediaForUser(req).subscribe(data => {
+          console.log(data);
+          this.displayImage();
+          this.files = [];
+          this.alertifyService.success('Formularz został wysłany!');
+        }
+        );
     }
   }
 
@@ -191,7 +251,6 @@ this.alertifyService.error('Nie wszystkie typy zdjęć zostały zdefiniowane!');
         const fileHelper = new FileHelper();
         fileHelper.file = item;
         this.files.push(fileHelper);
-        this.uploadFilesSimulator(0);
       }
       else {
         this.alertifyService.warning('Nieprawidłowy format pliku. \nZapisz zdjęcie w formacie jpg.');
@@ -210,23 +269,5 @@ this.alertifyService.error('Nie wszystkie typy zdjęć zostały zdefiniowane!');
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
-
-
-  uploadFilesSimulator(index: number): void {
-    setTimeout(() => {
-      if (index === this.files.length) {
-        return;
-      } else {
-        const progressInterval = setInterval(() => {
-          if (this.files[index].file.progress === 100) {
-            clearInterval(progressInterval);
-            this.uploadFilesSimulator(index + 1);
-          } else {
-            this.files[index].file.progress += 10;
-          }
-        }, 200);
-      }
-    }, 1000);
   }
 }

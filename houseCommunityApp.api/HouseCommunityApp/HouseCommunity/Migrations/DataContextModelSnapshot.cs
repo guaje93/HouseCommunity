@@ -32,6 +32,9 @@ namespace HouseCommunity.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<double>("CurrentValue")
+                        .HasColumnType("float");
+
                     b.Property<string>("FileName")
                         .HasColumnType("nvarchar(max)");
 

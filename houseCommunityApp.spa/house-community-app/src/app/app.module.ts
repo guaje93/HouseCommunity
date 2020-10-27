@@ -28,9 +28,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { ImagePreviewComponent } from './ImagePreview/ImagePreview.component';
+import { MatSortModule } from '@angular/material/sort';
+import { MediaHistoryComponent } from './mediaHistory/MediaHistory.component';
+
 
 @NgModule({
-  declarations: [	
+  declarations: [				
     AppComponent,
     NavComponent,
     LogInComponent,
@@ -44,7 +47,10 @@ import { ImagePreviewComponent } from './ImagePreview/ImagePreview.component';
     ChangePasswordComponent,
     ProgressComponent,
     DragAndDropDirective,
-      ImagePreviewComponent
+      ImagePreviewComponent,
+      MediaHistoryComponent,
+      MediaHistoryComponent,
+      MediaHistoryComponent
    ],
   imports: [
     RouterModule.forRoot(AppRoutes),
@@ -58,6 +64,7 @@ import { ImagePreviewComponent } from './ImagePreview/ImagePreview.component';
     MatIconModule,
     MatInputModule,
     MatTableModule,
+    MatSortModule,
     MatSelectModule,
     MatButtonModule,
     ReactiveFormsModule,

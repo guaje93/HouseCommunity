@@ -1,0 +1,30 @@
+<h2>Historia</h2>
+        
+        <table mat-table matSort [dataSource]="imageToShow" class="mat-elevation-z8" style="width: 100%;">
+            <ng-container matColumnDef="MediaType">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Typ </th>
+                <td mat-cell *matCellDef="let element"> {{element.MediaType}} </td>
+            </ng-container> 
+            <ng-container matColumnDef="Description">
+                <th mat-header-cell *matHeaderCellDef> Opis </th>
+                <td mat-cell *matCellDef="let element"> {{element.Description}} </td>
+            </ng-container>
+            <ng-container matColumnDef="CreationDate">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Data dodania </th>
+                <td mat-cell *matCellDef="let element"> {{element.CreationDate | date:'yyyy-MM-dd HH:mm'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="AcceptanceDate">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Data zaksięgowania </th>
+                <td mat-cell *matCellDef="let element"> {{element.AcceptanceDate | date:'yyyy-MM-dd HH:mm'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="CurrentValue">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Aktualny stan </th>
+                <td mat-cell *matCellDef="let element"> {{element.CurrentValue}} </td>
+            </ng-container>
+            <ng-container matColumnDef="ImageUrl">
+                <th mat-header-cell *matHeaderCellDef> Podgląd</th>
+                <td mat-cell *matCellDef="let element"> <img *ngIf="element.ImageUrl" [src]="element.ImageUrl" style="width: 30%; cursor: pointer;" (click)="openDialog(element.ImageUrl)"> </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>

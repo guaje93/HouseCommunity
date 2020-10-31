@@ -9,6 +9,7 @@ namespace HouseCommunity.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Media> MediaHistory { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
     }
 }

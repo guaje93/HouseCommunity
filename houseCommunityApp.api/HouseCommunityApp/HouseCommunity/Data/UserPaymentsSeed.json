@@ -1,0 +1,14 @@
+[
+    {
+        "Name": "Czynsz",
+        "Value": 355.80,
+        "Details": null,
+        "PaymentDeadline": "2020-12-01T23:28:56.782Z"
+    },
+    {
+        "Name": "Czynsz",
+        "Value": 432.00,
+        "Details": null,
+        "PaymentDeadline": "2020-12-31T23:28:56.782Z"
+    }
+]

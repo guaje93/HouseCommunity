@@ -17,5 +17,6 @@ namespace HouseCommunity.Model
         public string PhoneNumber{ get; set; }
         public string Email { get; set; }
         public List<Media> MediaHistory { get; set; }
+        public List<Payment> Payments { get; set; }
     }
 }

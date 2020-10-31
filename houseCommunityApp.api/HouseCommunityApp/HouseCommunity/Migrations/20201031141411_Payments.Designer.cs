@@ -4,14 +4,16 @@ using HouseCommunity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HouseCommunity.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201031141411_Payments")]
+    partial class Payments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,15 +75,10 @@ namespace HouseCommunity.Migrations
                     b.Property<DateTime>("PaymentDeadline")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<double>("Value")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Payments");
                 });
@@ -147,18 +144,9 @@ namespace HouseCommunity.Migrations
 
             modelBuilder.Entity("HouseCommunity.Model.Media", b =>
                 {
-                    b.HasOne("HouseCommunity.Model.User", "User")
+                    b.HasOne("HouseCommunity.Model.User", null)
                         .WithMany("MediaHistory")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("HouseCommunity.Model.Payment", b =>
-                {
-                    b.HasOne("HouseCommunity.Model.User", "User")
-                        .WithMany("Payments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("HouseCommunity.Model.PaymentDetail", b =>

@@ -130,7 +130,7 @@ namespace HouseCommunity.Controllers
             return tokenDescriptor;
         }
 
-        public string SendMail(string receiver, string token)
+        private string SendMail(string receiver, string token)
         {
             EmailMessage message = new EmailMessage();
             message.Sender = new MailboxAddress("Self", _notificationMetadata.Sender);

@@ -15,5 +15,7 @@ namespace HouseCommunity.Model
         public MediaEnum MediaType { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime AcceptanceDate { get; set; }
+
+        public User User { get; set; }
     }
 }

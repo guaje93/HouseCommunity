@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RentComponent implements OnInit {
 
+  displayedColumns: string[] = ['Name', 'Value', 'Date','Details', 'Payment'];
+  
   constructor() { }
 
   ngOnInit() {

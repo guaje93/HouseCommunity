@@ -32,6 +32,7 @@ namespace HouseCommunity
                     //}
                     //context.SaveChanges();
                     Seed.SeedUsers(context);
+                    Seed.SeedPayments(context);
                 }
                 catch (Exception ex)
                 {
@@ -40,7 +41,6 @@ namespace HouseCommunity
 
                 }
             }
-
             host.Run();
         }
 

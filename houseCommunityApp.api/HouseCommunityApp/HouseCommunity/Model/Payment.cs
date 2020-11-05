@@ -15,8 +15,8 @@ namespace HouseCommunity.Model
         public DateTime PaymentBookDate { get; set; }
         public User User { get; set; }
         public int UserId{ get; set; }
-
-
+        public string Status { get; set; }
+        public string OrderId { get; set; }
     }
 
     public class PaymentDetail

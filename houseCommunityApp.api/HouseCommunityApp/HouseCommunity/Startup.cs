@@ -30,7 +30,11 @@ namespace HouseCommunity
         {
             var notificationMetadata = Configuration.GetSection("NotificationMetadata").
                                        Get<NotificationMetadata>();
+            var dotPayMetadata = Configuration.GetSection("DotPayMetadata").
+                                 Get<DotPayMetadata>();
+
             services.AddSingleton(notificationMetadata);
+            services.AddSingleton(dotPayMetadata);
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers().AddNewtonsoftJson();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0).AddNewtonsoftJson(opt =>
@@ -44,6 +48,7 @@ namespace HouseCommunity
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMediaRepository, MediaRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<IDotPayRepository, DotPayRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,

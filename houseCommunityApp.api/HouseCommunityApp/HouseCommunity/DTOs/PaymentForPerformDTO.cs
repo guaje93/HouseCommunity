@@ -11,8 +11,10 @@ namespace HouseCommunity.DTOs
         public int Id { get; set; }
         public string Name { get; set; }
         public double Value { get; set; }
-        public ICollection<PaymentDetail> Details { get; set; }
+        public PaymentDetail Details { get; set; }
         public DateTime PaymentDeadline { get; set; }
-        public string Status { get; set; }
+        public DateTime ? PaymentBookDate { get; set; }
+        public string ? PaymentStatus { get; set; }
+        public string ? BookStatus { get; set; }
     }
 }

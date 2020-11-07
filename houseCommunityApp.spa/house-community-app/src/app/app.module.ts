@@ -30,10 +30,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { ImagePreviewComponent } from './ImagePreview/ImagePreview.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MediaHistoryComponent } from './mediaHistory/MediaHistory.component';
+import { PaymentDetailsComponent } from './paymentDetails/paymentDetails.component';
+import { ChatComponent } from './chat/chat.component';
 
 
 @NgModule({
-  declarations: [				
+  declarations: [						
     AppComponent,
     NavComponent,
     LogInComponent,
@@ -50,7 +52,9 @@ import { MediaHistoryComponent } from './mediaHistory/MediaHistory.component';
       ImagePreviewComponent,
       MediaHistoryComponent,
       MediaHistoryComponent,
-      MediaHistoryComponent
+      MediaHistoryComponent,
+      PaymentDetailsComponent,
+      ChatComponent
    ],
   imports: [
     RouterModule.forRoot(AppRoutes),

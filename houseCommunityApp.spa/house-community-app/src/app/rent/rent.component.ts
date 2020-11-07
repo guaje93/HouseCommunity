@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { PaymentDetailsComponent } from '../paymentDetails/paymentDetails.component';
 import { AlertifyService } from '../_services/alertify.service';
 import { AuthService } from '../_services/auth.service';
 import { PaymentService } from '../_services/payment.service';
@@ -11,27 +13,50 @@ import { PaymentService } from '../_services/payment.service';
 export class RentComponent implements OnInit {
 
   displayedColumns: string[] = ['Name', 'Value', 'Date', 'Details', 'Payment'];
-  payments: any;
+  displayedColumnsForHistory: string[] = ['Name', 'Value', 'PaymentDate', 'BookDate', 'Details', 'PaymentStatus', 'BookStatus'];
+  notCompletedPayments: any;
+  completedPayments: any;
+  paymentsHistory: any;
 
-  constructor(public paymentService: PaymentService, alertifyService: AlertifyService, public authService: AuthService) { }
+  constructor(public paymentService: PaymentService, alertifyService: AlertifyService, public authService: AuthService, public dialog: MatDialog) { }
 
   ngOnInit() {
     this.paymentService.getPaymentsForUser(this.authService.decodedToken.nameid).subscribe(
-      data => {this.payments = data;
+      data => {
         console.log(data);
+        let payments = data as any[];
+        this.completedPayments = payments.filter(p => p.paymentStatus =="COMPLETED");
+        this.notCompletedPayments = payments.filter(p => p.paymentStatus !="COMPLETED");
       }
-      );
-    }
+    );
+  }
 
-    pay(id: number){
-this.paymentService.getPaymentUrl(id).subscribe(data => {
-  console.log(data);
-  let result: any = data;
-  window.open(result.path, "blank");
-})
-    }
-    
-  
+  pay(payment: any) {
+    let model: any = {};
+    model.id = payment.id;
+    model.price = payment.value;
+    this.paymentService.createNewOrder(model).subscribe(data => {
+      console.log(data);
+      let result: any = data;
+      window.open(result.path, "blank");
+    })
+  }
 
+  hidePaymentOption(payment: any): boolean {
+    if (payment.status == "PENDING" || payment.status == "WAITING_FOR_CONFIRMATION" || payment.status == "COMPLETED")
+      return false;
+    else
+      return true;
+  }
 
+showDetails(payment: any){
+  const dialogRef = this.dialog.open(PaymentDetailsComponent, {
+    width: '40%',
+    data: payment.details
+  });
+
+  dialogRef.afterClosed().subscribe(() => {
+    console.log('The dialog was closed');
+  });
+}
 }

@@ -9,7 +9,7 @@ namespace HouseCommunity.Data
     {
         Task<List<PaymentForPerformDTO>> GetPayments(int id);
         Task<Payment> GetPaymentById(int id);
-        Task<Payment> UpdatePayUOrderId(int userId, string orderId); 
+        Task<Payment> UpdatePayUOrderId(int id, string orderId); 
         Task<Payment> UpdateOrderStatus(string orderid, string status);
     }
 }

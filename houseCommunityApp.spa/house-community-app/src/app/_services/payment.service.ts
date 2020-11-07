@@ -13,7 +13,7 @@ getPaymentsForUser(id: number) {
   return this.http.get(this.baseUrl + id);
 }
 
-getPaymentUrl(id: number) {
-  return this.http.get(this.baseUrl + 'pay/' + id);
+createNewOrder(element: any) {
+  return this.http.post(this.baseUrl + 'create-new-order',element);
 }
 }

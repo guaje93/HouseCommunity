@@ -12,10 +12,13 @@
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/news']">Aktualności</a>
       </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/chat']">Czat</a>
+      </li>
     </ul>
     <div *ngIf="authService.loggedIn()" class="dropdown" dropdown>
       <a class="btn dropdown-toggle text-light" dropdownToggle>
-        Welcome {{ authService.decodedToken?.unique_name | titlecase }}!
+        Witaj {{ authService.decodedToken?.unique_name | titlecase }}!
       </a>
 
       <div class="dropdown-menu mt-3" *dropdownMenu>

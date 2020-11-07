@@ -31,7 +31,7 @@ namespace HouseCommunity.Data
 
         public async Task<List<PaymentForPerformDTO>> GetPayments(int id)
         {
-            var user = await _context.Users.Include(p => p.Payments).FirstOrDefaultAsync(p => p.Id == id);
+            var user = await _context.Users.Include(p => p.Payments).ThenInclude(p => p.Details).FirstOrDefaultAsync(p => p.Id == id);
             return user.Payments.Select(p => new PaymentForPerformDTO()
             {
                 Id = p.Id,
@@ -39,21 +39,21 @@ namespace HouseCommunity.Data
                 Details = p.Details,
                 PaymentDeadline = p.PaymentDeadline,
                 Value = p.Value,
-                Status = p.Status
+                PaymentStatus = p.BookStatus
             }).ToList();
             }
 
         public async Task<Payment> UpdateOrderStatus(string orderid, string status)
         {
             var payment = await _context.Payments.FirstOrDefaultAsync(p => p.OrderId == orderid);
-            payment.Status = status;
+            payment.BookStatus = status;
             await _context.SaveChangesAsync();
             return payment;
         }
 
-        public async Task<Payment> UpdatePayUOrderId(int userId, string orderId)
+        public async Task<Payment> UpdatePayUOrderId(int id, string orderId)
         {
-            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.UserId == userId);
+            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.Id == id);
             payment.OrderId = orderId;
             await _context.SaveChangesAsync();
             return payment;

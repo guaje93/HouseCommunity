@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20201107204818_Add book status.cs" />
+    <Compile Remove="Migrations\20201107204818_Add book status.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.6.0" />
     <PackageReference Include="Azure.Storage.Common" Version="12.5.2" />
     <PackageReference Include="MailKit" Version="2.9.0" />

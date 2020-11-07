@@ -4,14 +4,16 @@ using HouseCommunity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HouseCommunity.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201107210313_Specify peyment details structure")]
+    partial class Specifypeymentdetailsstructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,9 +69,6 @@ namespace HouseCommunity.Migrations
                     b.Property<string>("BookStatus")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("DetailsId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -93,8 +92,6 @@ namespace HouseCommunity.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DetailsId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Payments");
@@ -113,10 +110,15 @@ namespace HouseCommunity.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PaymentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Period")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("PaymentDetail");
                 });
@@ -166,15 +168,18 @@ namespace HouseCommunity.Migrations
 
             modelBuilder.Entity("HouseCommunity.Model.Payment", b =>
                 {
-                    b.HasOne("HouseCommunity.Model.PaymentDetail", "Details")
-                        .WithMany()
-                        .HasForeignKey("DetailsId");
-
                     b.HasOne("HouseCommunity.Model.User", "User")
                         .WithMany("Payments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HouseCommunity.Model.PaymentDetail", b =>
+                {
+                    b.HasOne("HouseCommunity.Model.Payment", null)
+                        .WithMany("Details")
+                        .HasForeignKey("PaymentId");
                 });
 #pragma warning restore 612, 618
         }

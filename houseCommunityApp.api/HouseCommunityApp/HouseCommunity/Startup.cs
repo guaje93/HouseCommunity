@@ -30,8 +30,8 @@ namespace HouseCommunity
         {
             var notificationMetadata = Configuration.GetSection("NotificationMetadata").
                                        Get<NotificationMetadata>();
-            var dotPayMetadata = Configuration.GetSection("DotPayMetadata").
-                                 Get<DotPayMetadata>();
+            var dotPayMetadata = Configuration.GetSection("PayUMetadata").
+                                 Get<PayUMetadata>();
 
             services.AddSingleton(notificationMetadata);
             services.AddSingleton(dotPayMetadata);
@@ -48,7 +48,7 @@ namespace HouseCommunity
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMediaRepository, MediaRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
-            services.AddScoped<IDotPayRepository, DotPayRepository>();
+            services.AddScoped<IPayURepository, PayURepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,

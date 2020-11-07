@@ -1,4 +1,5 @@
 import { Routes } from "@angular/router";
+import { ChatComponent } from './chat/chat.component';
 import { ForgetPasswordComponent } from './forgetPassword/forgetPassword.component';
 import { HomeComponent } from './home/home.component';
 import { LogInComponent } from './logIn/logIn.component';
@@ -24,6 +25,7 @@ export const AppRoutes: Routes = [
             { path: "media", component: MediaComponent },
             { path: "news", component: NewsComponent },
             { path: "rent", component: RentComponent },
+            { path: "chat", component: ChatComponent },
         ]
     },
     { path: '**', redirectTo: '/login', pathMatch: 'full' },

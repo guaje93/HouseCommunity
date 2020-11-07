@@ -17,12 +17,12 @@ namespace HouseCommunity.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentRepository _repo;
-        private readonly IDotPayRepository _dotPayRepository;
+        private readonly IPayURepository _payURepository;
 
-        public PaymentController(IPaymentRepository paymentRepository, IDotPayRepository dotPayRepository)
+        public PaymentController(IPaymentRepository paymentRepository, IPayURepository payURepository)
         {
             _repo = paymentRepository;
-            this._dotPayRepository = dotPayRepository;
+            this._payURepository = payURepository;
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetNotPerformedPaymentsByUserId(int id)
@@ -45,9 +45,10 @@ namespace HouseCommunity.Controllers
             string responseData = "";
             using (var httpClient = new HttpClient { BaseAddress = baseAddress })
             {
+                //using (var content = new StringContent($"grant_type=client_credentials&client_id=398178&client_secret=a6022f5602805e6919af0e71f8885e3b", System.Text.Encoding.Default, "application/x-www-form-urlencoded"))
+                
 
-
-                using (var content = new StringContent("grant_type=client_credentials&client_id=398178&client_secret=a6022f5602805e6919af0e71f8885e3b", System.Text.Encoding.Default, "application/x-www-form-urlencoded"))
+                using (var content = new StringContent($"grant_type=client_credentials&client_id={_payURepository.GetClientId()}&client_secret={_payURepository.GetClientSecret()}", System.Text.Encoding.Default, "application/x-www-form-urlencoded"))
                 {
                     using (var response = await httpClient.PostAsync("pl/standard/user/oauth/authorize", content))
                     {
@@ -70,7 +71,7 @@ namespace HouseCommunity.Controllers
                 string responseData = "";
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("authorization", $"Bearer {values["access_token"]}");
                 
-                using (var content = new StringContent("{  \"notifyUrl\": \"https://80a47bb0b43a.ngrok.io/api/payment/update-order-status\",  \"customerIp\": \"127.0.0.1\",  \"merchantPosId\": \"398178\",  \"description\": \"RTV market\",  \"currencyCode\": \"PLN\",  \"totalAmount\": \"" + request.Price +"\",  \"products\": [    {      \"name\": \"Wireless mouse\",      \"unitPrice\": \"15000\",      \"quantity\": \"1\"    },    {      \"name\": \"HDMI cable\",      \"unitPrice\": \"6000\",      \"quantity\": \"1\"    }  ]}", System.Text.Encoding.Default, "application/json"))
+                using (var content = new StringContent("{  \"notifyUrl\": \"https://64c9a06c0868.ngrok.io/api/payment/update-order-status\",  \"customerIp\": \"127.0.0.1\",  \"merchantPosId\": \"398178\",  \"description\": \"RTV market\",  \"currencyCode\": \"PLN\",  \"totalAmount\": \"" + request.Price * 100 +"\",  \"products\": [    {      \"name\": \"Wireless mouse\",      \"unitPrice\": \"15000\",      \"quantity\": \"1\"    },    {      \"name\": \"HDMI cable\",      \"unitPrice\": \"6000\",      \"quantity\": \"1\"    }  ]}", System.Text.Encoding.Default, "application/json"))
                 {
                     using (var response = await httpClient.PostAsync("api/v2_1/orders/", content))
                     {
@@ -81,7 +82,7 @@ namespace HouseCommunity.Controllers
                         var payment = await _repo.UpdatePayUOrderId(request.Id, orderId);
                     }
                 }
-                return Ok(responseData);
+                return Ok(new { path = responseData });
             }
         }
 

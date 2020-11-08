@@ -1,13 +1,17 @@
-import { Routes } from "@angular/router";
+import { Routes } from '@angular/router';
 import { ChatComponent } from './chat/chat.component';
 import { ForgetPasswordComponent } from './forgetPassword/forgetPassword.component';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './residents/home/home.component';
 import { LogInComponent } from './logIn/logIn.component';
-import { MediaComponent } from './Media/Media.component';
-import { NewsComponent } from './News/News.component';
-import { RentComponent } from './rent/rent.component';
+import { MediaComponent } from './residents/Media/Media.component';
+import { NewsComponent } from './residents/News/News.component';
+import { RentComponent } from './residents/rent/rent.component';
 import { ResetPasswordComponent } from './resetPassword/resetPassword.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { HomeAdministrationComponent } from './administration/homeAdministration/homeAdministration.component';
+import { PaymentsAdministrationComponent } from './administration/paymentsAdministration/paymentsAdministration.component';
+import { AnnouncementsAdministrationComponent } from './administration/announcementsAdministration/announcementsAdministration.component';
+import { MediaAdministrationComponent } from './administration/mediaAdministration/mediaAdministration.component';
 
 export const AppRoutes: Routes = [
 
@@ -17,15 +21,19 @@ export const AppRoutes: Routes = [
     { path: 'response-reset-password/:token', component: ResetPasswordComponent },
     { path: '', component: LogInComponent },
     {
-        path: "",
-        runGuardsAndResolvers: "always",
+        path: '',
+        runGuardsAndResolvers: 'always',
         canActivate: [AuthGuard],
         children: [
-            { path: "home", component: HomeComponent },
-            { path: "media", component: MediaComponent },
-            { path: "news", component: NewsComponent },
-            { path: "rent", component: RentComponent },
-            { path: "chat", component: ChatComponent },
+            { path: 'home', component: HomeComponent },
+            { path: 'homeAdministration', component: HomeAdministrationComponent },
+            { path: 'paymentsAdministration', component: PaymentsAdministrationComponent },
+            { path: 'announcementsAdministration', component: AnnouncementsAdministrationComponent },
+            { path: 'mediaAdministration', component: MediaAdministrationComponent },
+            { path: 'media', component: MediaComponent },
+            { path: 'news', component: NewsComponent },
+            { path: 'rent', component: RentComponent },
+            { path: 'chat', component: ChatComponent },
         ]
     },
     { path: '**', redirectTo: '/login', pathMatch: 'full' },

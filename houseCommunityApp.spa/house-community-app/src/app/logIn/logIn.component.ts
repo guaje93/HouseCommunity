@@ -24,8 +24,15 @@ hide: boolean= true;
   logIn() {
     this.authService.login(this.model).subscribe(
       next => {
+        console.log(next);
         this.alertifyService.success("Zalogowano " +  this.model.username);
-        this.router.navigate(['home']);
+        if(next.userRole === 1){
+          this.router.navigate(['home']);
+        }
+        else if(next.userRole === 2)
+        {
+          this.router.navigate(['homeAdministration']);
+        }
       },
       error => {
         this.alertifyService.error(error);

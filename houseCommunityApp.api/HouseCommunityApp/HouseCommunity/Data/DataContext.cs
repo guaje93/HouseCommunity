@@ -10,6 +10,9 @@ namespace HouseCommunity.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Media> MediaHistory { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<HousingDevelopment> HousingDevelopments { get; set; }
+        public DbSet<UserAnnouncement> UserAnnouncements { get; set; }
 
     }
 }

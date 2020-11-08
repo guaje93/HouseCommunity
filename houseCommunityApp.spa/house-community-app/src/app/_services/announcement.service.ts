@@ -1,0 +1,19 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AnnouncementService {
+  baseUrl = "http://localhost:5000/api/announcement/";
+
+  constructor(private http: HttpClient) {}
+
+  getAnnouncementsForUser(userId: number) {
+    return this.http.get(this.baseUrl + 'get-announcements-for-user/' + userId);
+  }
+
+  displayBlobImage(url: string){
+    return this.http.get(url, { responseType: 'blob' });
+  }
+}

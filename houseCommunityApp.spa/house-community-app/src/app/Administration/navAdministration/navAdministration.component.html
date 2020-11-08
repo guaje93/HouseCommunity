@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-md navbar-dark">
+  <a class="navbar-brand" [routerLink]="['/homeAdministration']">Home community App</a>
+
+  <div class="container">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/paymentsAdministration']">Czynsze </a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/mediaAdministration']">Media</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/announcementsAdministration']">Aktualności</a>
+      </li>
+    
+    </ul>
+    <div *ngIf="authService.loggedIn()" class="dropdown" dropdown>
+      <a class="btn dropdown-toggle text-light" dropdownToggle>
+        Witaj {{ authService.decodedToken?.unique_name | titlecase }}!
+      </a>
+
+      <div class="dropdown-menu mt-3" *dropdownMenu>
+        <button class="dropdown-item" href="#" (click)="openEditDataDialog()"><i class="fa fa-user"></i>Edytuj dane</button>
+        <button class="dropdown-item" href="#" (click)="openChangePasswordDialog()"><i class="fa fa-edit"></i>Zmień hasło</button>
+        <a class="dropdown-item" (click)="loggedOut()"><i class="fa fa-sign-out"></i>Wyloguj</a>
+      </div>
+    </div>
+  </div>
+</nav>

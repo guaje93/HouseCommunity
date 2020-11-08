@@ -58,7 +58,7 @@ namespace HouseCommunity.Controllers
                 new
                 {
                     token = tokenHandler.WriteToken(token),
-                    user = userFromRepo
+                    user = new UserForLogInDueToPermissions() { Id = userFromRepo.Id, UserRole = userFromRepo.UserRole}
                 });
 
         }

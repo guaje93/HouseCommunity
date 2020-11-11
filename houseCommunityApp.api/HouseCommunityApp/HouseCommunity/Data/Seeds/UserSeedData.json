@@ -1,0 +1,93 @@
+[
+    {
+        "Username": "Lola",
+        "Password": "kotek",
+        "FirstName": "Lola",
+        "LastName": "Anderson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "PhoneNumber": 434554784,
+        "UserRole": 2,
+        "Email": "cos@cos1.com"
+
+    },
+    {
+        "Username": "Dorothy",
+        "Password": "kotek",
+        "FirstName": "Lola",
+        "LastName": "Anderson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "PhoneNumber": 434554784,
+        "UserRole": 1,
+        "Email": "cos@cos2.com"
+    },
+    {
+        "Username": "Reba",
+        "Password": "kotek",
+        "FirstName": "Reba",
+        "LastName": "Johnson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "UserRole": 1,
+        "PhoneNumber": 3525235325,
+        "Email": "cos@cos3.com"
+    },
+    {
+        "Username": "Kai",
+        "Password": "kotek",
+        "FirstName": "Kai",
+        "LastName": "Johnson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "UserRole": 1,
+        "PhoneNumber": 3525235325,
+        "Email": "cos@cos3.com"
+    },
+    {
+        "Username": "Fredrik",
+        "Password": "kotek",
+        "FirstName": "Fredrik",
+        "LastName": "Johnson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "UserRole": 1,
+        "PhoneNumber": 3525235325,
+        "Email": "cos@cos3.com"
+    },
+    {
+        "Username": "Antti",
+        "Password": "kotek",
+        "FirstName": "Antti",
+        "LastName": "Johnson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "UserRole": 1,
+        "PhoneNumber": 3525235325,
+        "Email": "cos@cos3.com"
+    },
+    {
+        "Username": "Tom",
+        "Password": "kotek",
+        "FirstName": "Tom",
+        "LastName": "Johnson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "UserRole": 1,
+        "PhoneNumber": 3525235325,
+        "Email": "cos@cos3.com"
+    },
+    {
+        "Username": "John",
+        "Password": "kotek",
+        "FirstName": "John",
+        "LastName": "Johnson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "UserRole": 1,
+        "PhoneNumber": 3525235325,
+        "Email": "cos@cos3.com"
+    },
+    {
+        "Username": "Adam",
+        "Password": "kotek",
+        "FirstName": "Adam",
+        "LastName": "Johnson",
+        "Birthdate": "2014-01-01T23:28:56.782Z",
+        "UserRole": 1,
+        "PhoneNumber": 3525235325,
+        "Email": "cos@cos3.com"
+    }
+]

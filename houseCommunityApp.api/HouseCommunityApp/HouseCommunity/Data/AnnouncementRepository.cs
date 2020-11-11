@@ -1,4 +1,5 @@
 ﻿using HouseCommunity.Data.Interfaces;
+using HouseCommunity.DTOs;
 using HouseCommunity.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,6 +30,24 @@ namespace HouseCommunity.Data
         {
             var announcements = _context.UserAnnouncements.Include(p => p.Announcement).Include(p => p.User).Where(p => p.UserId == userId).Select(p => p.Announcement).ToList();
             return announcements;
+        }
+
+        public async Task<Announcement> InsertAnnouncement(AnnouncementForDatabaseInsertDTO announcement)
+        {
+            var uploader = _context.Users.FirstOrDefault(p => p.Id == announcement.UploaderId);
+            var receiver = _context.Users.FirstOrDefault(p => p.Id == announcement.ReceiverId);
+            var newAnnouncement = new Announcement()
+            {
+                Author = uploader.FirstName + " " + uploader.LastName,
+                Name = announcement.Name,
+                CreationDate = DateTime.Now,
+                Description = announcement.Description,
+                FileUrl = announcement.FileUrl
+            };
+            _context.Announcements.Add(newAnnouncement);
+
+            await _context.SaveChangesAsync();
+            return newAnnouncement;
         }
     }
 }

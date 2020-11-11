@@ -31,8 +31,11 @@ namespace HouseCommunity.Data
 
         public async Task<List<PaymentForPerformDTO>> GetPayments(int id)
         {
-            var user = await _context.Users.Include(p => p.Payments).ThenInclude(p => p.Details).FirstOrDefaultAsync(p => p.Id == id);
-            return user.Payments.Select(p => new PaymentForPerformDTO()
+            var user = await _context.Users.Include(p => p.Flat)
+                                           .ThenInclude(p => p.Payments)
+                                           .ThenInclude(p => p.Details)
+                                           .FirstOrDefaultAsync(p => p.Id == id);
+            return user.Flat.Payments.Select(p => new PaymentForPerformDTO()
             {
                 Id = p.Id,
                 Name = p.Name,

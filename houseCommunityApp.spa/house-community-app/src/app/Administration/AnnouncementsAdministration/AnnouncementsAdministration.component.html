@@ -1,7 +1,107 @@
 <app-navAdministration></app-navAdministration>
-<div style="position:relative;height:100%; width: 100%; opacity: 0.9; background-color: white;  position:fixed;
-">  
-<p>
-  AnnouncementsAdministration works!
-</p>
+<div style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: auto; padding: 3em;">
+    ">  
+<div class="container-fluid">
+  <div class="row">
+      <div class="col-md-5">
+
+          <div class="container" appDragAndDrop (fileDropped)="onFileDropped($event)">
+              <input type="file" #fileDropRef id="fileDropRef" multiple
+                  (change)="fileBrowseHandler($event.target.files)" />
+              <img src="../../assets/ic-upload-files.svg" alt="">
+              <h3>Przeciągnij i upuść pliki tutaj</h3>
+              <h3>lub</h3>
+              <label for="fileDropRef">Wyszukaj pliki</label>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="files-list">
+  <h2> Lista danych do dodania:</h2>
+  <div class="single-file" *ngFor="let file of files; let i = index">
+      <div class="info">
+          <div class="container-fluid">
+              <div class="row">
+                  <div class="info">
+                      <div style="display:inline-block; width: 30%;" >
+                         <div style="display: inline-block;">
+
+                             <img src="../../assets/ic-file.svg" width="45px" alt="file">
+                          </div>
+                          <div>
+
+                              <h4 class="name">
+                                  {{ file?.name }}
+                              </h4>
+                              <p class="size">
+                                  {{ blobService.formatBytes(file?.size) }}
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div *ngIf="!files">
+                  <p> Brak danych do wyświetlenia!</p>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <mat-form-field appearance="fill">
+                <mat-label>Osiedla</mat-label>
+                <mat-select [formControl]="houseDevelopmentsFrom" multiple (selectionChange)="filterBuildings($event)">
+                    <mat-option *ngFor="let user of filteredHouseDevelopments" [value]="user.housingDevelopmentId">{{user.housingDevelopmentName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-md-3">
+            <mat-form-field appearance="fill">
+                <mat-label>Budynki</mat-label>
+                <mat-select [formControl]="buildingsFrom" multiple (selectionChange)="filterFlats($event)">
+                    <mat-option *ngFor="let user of filteredBuildings" [value]="user.buildingId">{{user.address}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-md-3">
+            <mat-form-field appearance="fill">
+                <mat-label>Mieszkania</mat-label>
+                <mat-select [formControl]="flatsFrom" multiple (selectionChange)="filterUsers($event)">
+                    <mat-option *ngFor="let user of filteredFlats" [value]="user.flatId">{{user.localNumber}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-md-3">
+            <mat-form-field appearance="fill">
+                <mat-label>Osoby</mat-label>
+                <mat-select [formControl]="usersFrom" multiple (selectionChange)="showUsersList()">
+                    <mat-option *ngFor="let user of filteredUsers" [value]="user.userId">{{user.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+</div>
+<div>
+    <h3>Osoby do wysłania - {{usersToSendData?.length}}</h3>
+    <table mat-table matSort [dataSource]="usersToSendData" class="mat-elevation-z8" style="width: 100%;">
+        <ng-container matColumnDef="Name">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef> Imię i nazwisko </th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container> 
+        <ng-container matColumnDef="Email">
+            <th mat-header-cell *matHeaderCellDef> Email </th>
+            <td mat-cell *matCellDef="let element"> {{element.userEmail}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Address">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef> Adres </th>
+            <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+        </ng-container>
+        
+       
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
 </div>

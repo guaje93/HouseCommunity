@@ -17,9 +17,7 @@ namespace HouseCommunity.Model
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public int UserRole { get; set; }
-        public ICollection<Media> MediaHistory { get; set; }
-        public ICollection<Payment> Payments { get; set; }
-        public HousingDevelopment HousingDevelopment { get; set; }
         public ICollection<UserAnnouncement> UserAnnouncements { get; set; }
+        public Flat Flat { get; set; }
     }
 }

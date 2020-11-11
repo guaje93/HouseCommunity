@@ -14,17 +14,43 @@ namespace HouseCommunity.Helpers
             if (!dataContext.Users.Any())
             {
 
-                var userData = System.IO.File.ReadAllText("Data/UserSeedData.json");
+                var userData = System.IO.File.ReadAllText("Data/Seeds/UserSeedData.json");
+                var houseDevelopmentData = System.IO.File.ReadAllText("Data/Seeds/HousingDevelopmentSeedData.json");
+                var buildingData = System.IO.File.ReadAllText("Data/Seeds/BuildingSeedData.json");
+                var flatsData = System.IO.File.ReadAllText("Data/Seeds/FlatSeedData.json");
+                var addressData = System.IO.File.ReadAllText("Data/Seeds/AddressSeedData.json");
                 var users = JsonConvert.DeserializeObject<List<User>>(userData);
-                foreach (var user in users)
+                var houseDevelopment = JsonConvert.DeserializeObject<List<HousingDevelopment>>(houseDevelopmentData);
+                var building1 = new Building();
+                var building2 = new Building();
+                var flats = JsonConvert.DeserializeObject<List<Flat>>(flatsData);
+                var address = JsonConvert.DeserializeObject<List<Address>>(addressData);  
+
+                for (int i = 0; i < users.Count; i++)
                 {
                     byte[] passwordHash, passwordSalt;
                     CreatePasswordHash("password", out passwordHash, out passwordSalt);
 
-                    user.PasswordHash = passwordHash;
-                    user.PasswordSalt = passwordSalt;
-                    user.UserName = user.UserName.ToLower();
-                    dataContext.Users.Add(user);
+                    users[i].PasswordHash = passwordHash;
+                    users[i].PasswordSalt = passwordSalt;
+                    users[i].UserName = users[i].UserName.ToLower();
+                    users[i].UserRole = users[i].UserRole;
+                    if(i > 0 && i < 4)
+                    {
+                    users[i].Flat = flats[i-1];
+                    users[i].Flat.Building = building1;
+                    users[i].Flat.Building.Address = address[0];
+                    users[i].Flat.Building.HousingDevelopment = houseDevelopment.First();
+                    }
+                    else if(i >=4 && i < 9)
+                    {
+                        users[i].Flat = flats[i-1];
+                        users[i].Flat.Building = building2;
+                        users[i].Flat.Building.Address = address[1];
+                        users[i].Flat.Building.HousingDevelopment = houseDevelopment.First();
+                    }
+
+                    dataContext.Users.Add(users[i]);
 
                 }
                 dataContext.SaveChanges();
@@ -41,10 +67,10 @@ namespace HouseCommunity.Helpers
                 var payments = JsonConvert.DeserializeObject<List<Payment>>(paymentData);
                 foreach (var payment in payments)
                 {
-                    if (dataContext.Users.FirstOrDefault(p => p.UserName.ToLower() == "reba").Payments == null)
-                        dataContext.Users.FirstOrDefault(p => p.UserName.ToLower() == "reba").Payments = new List<Payment>();
+                    if (dataContext.Users.FirstOrDefault(p => p.UserName.ToLower() == "reba").Flat.Payments == null)
+                        dataContext.Users.FirstOrDefault(p => p.UserName.ToLower() == "reba").Flat.Payments = new List<Payment>();
                     else
-                        dataContext.Users.FirstOrDefault(p => p.UserName.ToLower() == "reba").Payments.Add(payment);
+                        dataContext.Users.FirstOrDefault(p => p.UserName.ToLower() == "reba").Flat.Payments.Add(payment);
                 }
                 dataContext.SaveChanges();
             }

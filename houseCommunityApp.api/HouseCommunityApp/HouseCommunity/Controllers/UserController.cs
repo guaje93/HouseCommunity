@@ -31,6 +31,20 @@ namespace HouseCommunity.Controllers
                );
         }
 
+        [HttpGet("get-all-residents")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+
+            var usersFromRepo = await _repo.GetResidents();
+
+            if (usersFromRepo == null)
+                return BadRequest();
+
+            return Ok(
+               usersFromRepo);
+        }
+
+
         [HttpPut("update-contact-data")]
         public async Task<IActionResult> UpdateUserContactData(UserContactData userContactData)
         {

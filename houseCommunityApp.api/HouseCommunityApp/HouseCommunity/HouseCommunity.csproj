@@ -7,6 +7,10 @@
   <ItemGroup>
     <Compile Remove="Migrations\20201107204818_Add book status.cs" />
     <Compile Remove="Migrations\20201107204818_Add book status.Designer.cs" />
+    <Compile Remove="Migrations\20201111103328_Update database schema. Add building, flat tables.cs" />
+    <Compile Remove="Migrations\20201111103328_Update database schema. Add building, flat tables.Designer.cs" />
+    <Compile Remove="Migrations\20201111103929_Update database schema. Add building, flat tables.cs" />
+    <Compile Remove="Migrations\20201111103929_Update database schema. Add building, flat tables.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

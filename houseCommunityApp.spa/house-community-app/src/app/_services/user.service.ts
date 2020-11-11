@@ -16,6 +16,10 @@ export class UserService {
     );
   }
 
+  getAllusers(){
+    return this.http.get(this.baseUrl + 'get-all-residents').pipe(retry(3));
+  }
+
   updateUserContactData(model: any){
     return this.http.put(this.baseUrl + "update-contact-data", model).pipe(
       retry(3)

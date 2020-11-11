@@ -30,8 +30,8 @@ namespace HouseCommunity.Data
         public async Task<User> AddMediaForUser(AddMediaToDbRequest userRequest)
         {
             var user = await _context.Users.FirstOrDefaultAsync(p => p.Id == userRequest.UserId);
-            if (user.MediaHistory is null)
-                user.MediaHistory = new List<Model.Media>();
+            if (user.Flat.MediaHistory is null)
+                user.Flat.MediaHistory = new List<Model.Media>();
             MediaEnum mediaType = MediaEnum.Undefined;
             switch (userRequest.MediaType.ToLower())
             {
@@ -45,7 +45,7 @@ namespace HouseCommunity.Data
                     }
             }
 
-            user.MediaHistory.Add(new Model.Media()
+            user.Flat.MediaHistory.Add(new Model.Media()
             {
                 ImageUrl = userRequest.ImageUrl,
                 CreationDate = DateTime.Now,
@@ -60,10 +60,10 @@ namespace HouseCommunity.Data
 
         public async Task<MediaFroDisplayHistoryDTO> GetAllMediaForUser(int id)
         {
-            var user = await _context.Users.Include(p => p.MediaHistory).FirstOrDefaultAsync(p => p.Id == id);
+            var user = await _context.Users.Include(p => p.Flat.MediaHistory).FirstOrDefaultAsync(p => p.Id == id);
             return new MediaFroDisplayHistoryDTO()
             {
-                SingleMediaItems = user.MediaHistory.Select(p => new SingleMediaItem()
+                SingleMediaItems = user.Flat.MediaHistory.Select(p => new SingleMediaItem()
                 {
                     ImageUrl = p.ImageUrl,
                     FileName = p.FileName,

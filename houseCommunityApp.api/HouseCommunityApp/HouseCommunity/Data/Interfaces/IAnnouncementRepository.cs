@@ -1,4 +1,5 @@
-﻿using HouseCommunity.Model;
+﻿using HouseCommunity.DTOs;
+using HouseCommunity.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,6 @@ namespace HouseCommunity.Data.Interfaces
     public interface IAnnouncementRepository
     {
         ICollection<Announcement> GetAnnouncementsForUser(int userId);
+        Task<Announcement> InsertAnnouncement(AnnouncementForDatabaseInsertDTO announcement);
     }
 }

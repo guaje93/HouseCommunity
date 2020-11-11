@@ -7,6 +7,9 @@ namespace HouseCommunity.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
+        public DbSet<Flat> Flats { get; set; }
+        public DbSet<Building> Buildings { get; set; }
+        public DbSet<Address> Addresses { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Media> MediaHistory { get; set; }
         public DbSet<Payment> Payments { get; set; }

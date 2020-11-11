@@ -1,4 +1,5 @@
 ﻿using HouseCommunity.Data.Interfaces;
+using HouseCommunity.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -30,6 +31,23 @@ namespace HouseCommunity.Controllers
             if (announcements == null)
                 return BadRequest();
           
+            return Ok(
+                new
+                {
+                    announcements
+                });
+
+        }
+
+        [HttpPost("insert-announcements")]
+        public IActionResult InsertAnnouncements(AnnouncementForDatabaseInsertDTO announcement)
+        {
+
+            var announcements = _repo.InsertAnnouncement(announcement);
+
+            if (announcements == null)
+                return BadRequest();
+
             return Ok(
                 new
                 {

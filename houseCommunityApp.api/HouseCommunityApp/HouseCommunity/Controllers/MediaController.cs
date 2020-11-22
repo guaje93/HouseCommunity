@@ -1,6 +1,8 @@
 ﻿using HouseCommunity.Data.Interfaces;
+using HouseCommunity.Model;
 using HouseCommunity.Request;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HouseCommunity.Controllers
@@ -36,6 +38,28 @@ namespace HouseCommunity.Controllers
                 return BadRequest();
 
             return Ok(user);
+        }
+
+        [HttpPost("create-empty-media-entry")]
+        public async Task<IActionResult> AddEmptyMediaEntryForUser(AddEmptyMediaRequest addMediaToDbRequest)
+        {
+            var user = await _repo.CreateEmptyMediaForUser(addMediaToDbRequest);
+
+            if (user == null)
+                return BadRequest();
+
+            return Ok(user);
+        }
+
+        [HttpGet("media-for-flat/{id}")]
+        public async Task<IActionResult> GetMediaForFlat(int id)
+        {
+            var media = await _repo.GetMedia(id);
+
+            if (media == null)
+                return BadRequest();
+
+            return Ok(media);
         }
 
     }

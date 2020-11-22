@@ -5,7 +5,7 @@
  
 <div>
 
-   <table [dataSource]="announcements" mat-table matSort [dataSource]="" class="mat-elevation-z8" style="width: 100%;">
+   <table [dataSource]="dataSource" mat-table matSort class="mat-elevation-z8" style="width: 100%;">
       <ng-container matColumnDef="Name">
           <th mat-header-cell mat-sort-header *matHeaderCellDef> Nazwa </th>
           <td mat-cell *matCellDef="let element"> {{element.name}} </td>
@@ -14,7 +14,7 @@
           <th mat-header-cell *matHeaderCellDef> Opis </th>
           <td mat-cell *matCellDef="let element"> {{element.description}}</td>
       </ng-container>
-      <ng-container matColumnDef="CreationDate">
+      <ng-container matColumnDef="creationDate">
           <th mat-header-cell mat-sort-header *matHeaderCellDef> Data dodania </th>
           <td mat-cell *matCellDef="let element"> {{element.creationDate | date:'yyyy-MM-dd'}} </td>
       </ng-container>
@@ -24,7 +24,7 @@
       </ng-container>
       <ng-container matColumnDef="Preview">
           <th mat-header-cell *matHeaderCellDef> Podgląd</th>
-          <td mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" (click)="openPdf()">Podgląd</button></td>
+          <td mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" (click)="openPdf(element.fileUrl)">Podgląd</button></td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

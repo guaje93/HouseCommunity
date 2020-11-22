@@ -1,5 +1,112 @@
 <app-navAdministration></app-navAdministration>
-<div style="position:relative;height:100%; width: 100%; opacity: 0.9; background-color: white;  position:fixed;
-">
-  Media works!
+<div style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: auto; padding: 3em;" role="alert">
+<div class="container-fluid">
+  <div class="row">
+      <div class="col-md-3">
+          <mat-form-field appearance="fill">
+              <mat-label>Osiedla</mat-label>
+              <mat-select [formControl]="houseDevelopmentsFrom" multiple
+                  (selectionChange)="filterBuildings($event)">
+                  <mat-option *ngFor="let user of filteredHouseDevelopments" [value]="user.housingDevelopmentId">
+                      {{user.housingDevelopmentName}}</mat-option>
+              </mat-select>
+          </mat-form-field>
+      </div>
+      <div class="col-md-3">
+          <mat-form-field appearance="fill">
+              <mat-label>Budynki</mat-label>
+              <mat-select [formControl]="buildingsFrom" multiple (selectionChange)="showFlatsList()">
+                  <mat-option *ngFor="let user of filteredBuildings" [value]="user.buildingId">{{user.address}}
+                  </mat-option>
+              </mat-select>
+          </mat-form-field>
+      </div>
+  </div>
+</div>
+<div>
+  <h4 style="margin: 1em;">Liczba nie wygenerowanych formularzy: {{totalNotGeneratedMedia?.length}}</h4>
+  <h4 style="margin: 1em;">Liczba czekających na użytkownika: {{totalWaitingForUserMedia?.length}}</h4>
+  <h4 style="margin: 1em;">Liczba czekających na zaksięgowanie: {{totalWaitingForBookMedia?.length}}</h4>
+  <h4 style="margin: 1em;">Liczba zaksięgowanych: {{totalBookedMedia?.length}}</h4>
+  <h2 style="margin: 1em;">Liczba wyświetlonych osób: {{usersToSendData?.length}}</h2>
+  <table mat-table matSort [dataSource]="usersToSendData" class="mat-elevation-z8" style="width: 100%;">
+      <ng-container matColumnDef="Building">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef>Mieszkanie </th>
+          <td mat-cell *matCellDef="let element" [ngClass]="{
+            'is-red': element.mediaList.length === 0,
+            'is-green': element.mediaList.length !== 0
+          }"> {{element.building}} m. {{element.local}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Generate">
+        <th mat-header-cell *matHeaderCellDef>  </th>
+        <td mat-cell *matCellDef="let element" [ngClass]="{
+          'is-red': element.mediaList.length === 0,
+          'is-green': element.mediaList.length !== 0
+        }"> 
+          <button class="btn-primary" *ngIf="element.mediaList.length == 0" (click)="generateEmptyMedia(element)"> Generuj! </button> 
+        <div *ngIf="element.mediaList.length != 0">
+          <table mat-table matSort [dataSource]="element.mediaList" class="mat-elevation-z8" style="width: 100%;" >
+            <ng-container matColumnDef="Type">
+                <th mat-header-cell *matHeaderCellDef >Typ </th>
+                <td mat-cell *matCellDef="let media" [ngClass]="{
+                  'is-red': media.status === 0,
+                  'is-yellow': media.status === 1,
+                  'is-green': media.status === 2
+                }"> {{media.mediaType}} </td>
+            </ng-container>
+            <ng-container matColumnDef="StartDate">
+                <th mat-header-cell *matHeaderCellDef> Początek </th>
+                <td mat-cell *matCellDef="let media" [ngClass]="{
+                  'is-red': media.status === 0,
+                  'is-yellow': media.status === 1,
+                  'is-green': media.status === 2
+                }"> {{media.startPeriodDate | date:'yyyy-MM-dd'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="EndDate">
+              <th mat-header-cell *matHeaderCellDef> Koniec </th>
+              <td mat-cell *matCellDef="let media" [ngClass]="{
+                'is-red': media.status === 0,
+                'is-yellow': media.status === 1,
+                'is-green': media.status === 2
+              }"> {{media.endPeriodDate | date:'yyyy-MM-dd'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="Value">
+            <th mat-header-cell *matHeaderCellDef > Odczyt </th>
+            <td mat-cell *matCellDef="let media" [ngClass]="{
+              'is-red': media.status === 0,
+              'is-yellow': media.status === 1,
+              'is-green': media.status === 2
+            }"> 
+              <mat-form-field  appearance="fill">
+                <mat-label>Aktualny odczyt</mat-label>
+                <input matInput [(ngModel)]="media.currentValue" />
+            </mat-form-field>
+            <img *ngIf="media.imageUrl" [src]="element.imageUrl" style="width: 30%; cursor: pointer;" (click)="openDialog(element.ImageUrl)">
+            </td>
+        </ng-container>
+      
+      <ng-container matColumnDef="Accept">
+        <th mat-header-cell *matHeaderCellDef > Zaksięguj </th>
+        <td mat-cell *matCellDef="let media" [ngClass]="{
+          'is-red': media.status === 0,
+          'is-yellow': media.status === 1,
+          'is-green': media.status === 2
+        }"> 
+          <button class="btn-primary" (click)="bookMedia(media)"> Zaksięguj </button>  
+        </td>
+    </ng-container>
+      
+            <tr mat-header-row *matHeaderRowDef="displayedMediaColumns" ></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedMediaColumns;"></tr>
+        </table>
+        </div>
+        
+        
+        </td>
+    </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
 </div>

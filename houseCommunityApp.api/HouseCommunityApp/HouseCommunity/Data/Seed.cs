@@ -11,6 +11,7 @@ namespace HouseCommunity.Helpers
         public static void SeedUsers(DataContext dataContext)
         {
 
+            
             if (!dataContext.Users.Any())
             {
 

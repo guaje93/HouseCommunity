@@ -22,5 +22,14 @@ displayBlobImage(url: string){
   return this.http.get(url, { responseType: 'blob' });
 }
 
+createEmptyMedia(model: any){
+  return this.http.post(this.baseUrl + 'create-empty-media-entry', model);
+
+}
+
+getMediaForFlat(id: number){
+  return this.http.get(this.baseUrl + 'media-for-flat/' + id);
+
+}
 
 }

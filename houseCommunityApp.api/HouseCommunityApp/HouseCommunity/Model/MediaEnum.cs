@@ -2,6 +2,9 @@
 {
     public enum MediaEnum
     {
-        ColdWater, HotWater, Undefined
+        Undefined,
+        ColdWater, 
+        HotWater, 
+        Heat
     }
 }

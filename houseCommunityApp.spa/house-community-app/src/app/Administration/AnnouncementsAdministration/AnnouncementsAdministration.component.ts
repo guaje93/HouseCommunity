@@ -4,6 +4,11 @@ import { BlobService } from 'src/app/_services/blob.service';
 import { UserService } from 'src/app/_services/user.service';
 import { FormControl } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
+import { AuthService } from 'src/app/_services/auth.service';
+import { DatePipe } from '@angular/common';
+import { AnnouncementService } from 'src/app/_services/announcement.service';
+import { FileTypeEnum } from 'src/app/Model/fileTypeEnum';
+import { Announcement } from 'src/app/Model/announcement';
 
 @Component({
   selector: 'app-AnnouncementsAdministration',
@@ -12,7 +17,7 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class AnnouncementsAdministrationComponent implements OnInit {
 
-  files: File[] = [];
+  files: Announcement[] = [];
   currentFile: File;
   users: any[];
   filteredHouseDevelopments: any[];
@@ -25,13 +30,19 @@ export class AnnouncementsAdministrationComponent implements OnInit {
   flatsFrom = new FormControl();
   usersFrom = new FormControl();
 
-usersToSendData: any[];
+  usersToSendData: any[];
 
-  constructor(public blobService: BlobService, private alertifyService: AlertifyService, private userService: UserService, private cd: ChangeDetectorRef) {
+  constructor(public blobService: BlobService,
+    private alertifyService: AlertifyService,
+    private userService: UserService,
+    private authService: AuthService,
+    private datePipe: DatePipe,
+    private announcementService: AnnouncementService
+  ) {
   }
 
   displayedColumns: string[] = ['Name', 'Email', 'Address'];
-  
+
   filterBuildings($event) {
     this.filteredFlats = [];
     this.filteredUsers = [];
@@ -66,7 +77,7 @@ usersToSendData: any[];
       }).filter((value, index, self) => index === self.findIndex((t) => (
         t.flatId === value.flatId && t.localNumber === value.localNumber
       )));
-      this.showUsersList();
+    this.showUsersList();
   }
 
   filterUsers($event) {
@@ -83,10 +94,10 @@ usersToSendData: any[];
       }).filter((value, index, self) => index === self.findIndex((t) => (
         t.userId === value.userId && t.name === value.name
       )));
-      this.showUsersList();
+    this.showUsersList();
   }
 
-  showUsersList(){
+  showUsersList() {
     console.log(this.usersFrom);
     this.usersToSendData = this.users
       .filter(user => this.usersFrom.value.includes(user.userId))
@@ -96,7 +107,7 @@ usersToSendData: any[];
           userId: user.userId,
           name: user.name,
           userEmail: user.userEmail,
-          address: user.address + ', m:' + user.localNumber 
+          address: user.address + ', m:' + user.localNumber
         };
         return flat;
       }).filter((value, index, self) => index === self.findIndex((t) => (
@@ -110,20 +121,22 @@ usersToSendData: any[];
     this.getAllusers();
   }
   onFileDropped($event): void {
+    console.log($event);
     this.prepareFilesList($event);
   }
 
   fileBrowseHandler(files): void {
+    console.log(files);
     this.prepareFilesList(files);
   }
 
-  prepareFilesList(files: Array<any>): void {
+  prepareFilesList(files: Array<File>): void {
     for (const item of files) {
-      item.progress = 0;
       console.log((item as File).type);
-      if ((item as File).type === 'application/pdf') {
-
-        this.files.push(item);
+      if (item.type === 'application/pdf') {
+let announcement = new Announcement();
+announcement.file = item;
+        this.files.push(announcement);
       }
       else {
         this.alertifyService.warning('Nieprawidłowy format pliku. \nZapisz zdjęcie w formacie jpg.');
@@ -153,6 +166,45 @@ usersToSendData: any[];
 
       console.log(this.users);
       console.log(this.filteredHouseDevelopments);
+    });
+  }
+  deleteFile(index: number): void {
+    this.files.splice(index, 1);
+  }
+  insertAnnouncements() {
+    console.log(this.usersToSendData);
+    console.log(this.files);
+
+    this.files.forEach(async element => {
+      const currentFileDate = new Date();
+      const fileDate = this.datePipe.transform(currentFileDate, 'yyyyMMddHHmmss');
+      if (element) {
+
+        const newName = this.authService.decodedToken.nameid + '_' + fileDate + '_' + element.file.name;
+        this.currentFile = new File([element.file], newName);
+
+        const response = await this.blobService.uploadFile(this.currentFile, FileTypeEnum.ANNOUNCEMENT);
+
+        if (response._response.status === 201) {
+          console.log(response);
+          const fileName = this.currentFile.name;
+          const id = this.authService.decodedToken.nameid;
+          const req: any = this.blobService.createRequestForAddingAnnouncement(fileName, id, this.usersToSendData.map(p => p.userId),element.description);
+          console.log(req);
+          this.announcementService.insertAnnouncement(req).subscribe(data => {
+            console.log(data);
+            this.usersToSendData = [];
+            this.filteredHouseDevelopments = [];
+            this.filteredUsers = [];
+            this.filteredBuildings = [];
+            this.filteredFlats = [];
+            this.files = [];
+
+            this.alertifyService.success('Pliki zostały wstawione!');
+          }
+          );
+        }
+      }
     });
   }
 }

@@ -32,22 +32,34 @@ namespace HouseCommunity.Data
             return announcements;
         }
 
-        public async Task<Announcement> InsertAnnouncement(AnnouncementForDatabaseInsertDTO announcement)
+        public async Task<IEnumerable<Announcement>> InsertAnnouncement(AnnouncementForDatabaseInsertDTO announcement)
         {
-            var uploader = _context.Users.FirstOrDefault(p => p.Id == announcement.UploaderId);
-            var receiver = _context.Users.FirstOrDefault(p => p.Id == announcement.ReceiverId);
-            var newAnnouncement = new Announcement()
+            var announcements = new List<Announcement>();
+            foreach (var receiverId in announcement.ReceiversId)
             {
-                Author = uploader.FirstName + " " + uploader.LastName,
-                Name = announcement.Name,
-                CreationDate = DateTime.Now,
-                Description = announcement.Description,
-                FileUrl = announcement.FileUrl
-            };
-            _context.Announcements.Add(newAnnouncement);
+                var uploader = _context.Users.FirstOrDefault(p => p.Id == announcement.UploaderId);
+                var receiver = _context.Users.FirstOrDefault(p => p.Id == receiverId);
+                var newAnnouncement = new Announcement()
+                {
+                    Author = uploader.FirstName + " " + uploader.LastName,
+                    Name = announcement.Name,
+                    CreationDate = DateTime.Now,
+                    Description = announcement.Description,
+                    FileUrl = announcement.FileUrl
+                };
 
-            await _context.SaveChangesAsync();
-            return newAnnouncement;
+                announcements.Add(newAnnouncement);
+
+                _context.UserAnnouncements.Add(new UserAnnouncement()
+                {
+                    User = receiver,
+                    Announcement = newAnnouncement
+                }
+                );
+
+                await _context.SaveChangesAsync();
+            }
+            return announcements;
         }
     }
 }

@@ -4,14 +4,16 @@ using HouseCommunity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HouseCommunity.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201121222706_Media Table - add period and deadline")]
+    partial class MediaTableaddperiodanddeadline
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,7 +148,7 @@ namespace HouseCommunity.Migrations
                     b.Property<double>("CurrentValue")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("EndPeriodDate")
+                    b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FileName")
@@ -161,10 +163,7 @@ namespace HouseCommunity.Migrations
                     b.Property<int>("MediaType")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartPeriodDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
+                    b.Property<int>("Period")
                         .HasColumnType("int");
 
                     b.Property<string>("UserDescription")

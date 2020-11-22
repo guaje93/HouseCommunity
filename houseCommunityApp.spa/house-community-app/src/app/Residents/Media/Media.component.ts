@@ -8,6 +8,8 @@ import { FileHelper } from '../../Model/fileHelper';
 import { SingleMediaItem } from '../../Model/SingleMediaItem';
 import { BlobService } from '../../_services/blob.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { FileTypeEnum } from 'src/app/Model/fileTypeEnum';
+import { Role } from '../../Model/Role';
 
 @Component({
   selector: 'app-Media',
@@ -17,7 +19,7 @@ import { MatTableDataSource } from '@angular/material/table';
 
 
 export class MediaComponent implements OnInit {
-
+  Role = Role;
   mediaDataToAdd: FileHelper;
   isImageLoading: boolean;
   files: FileHelper[] = [];
@@ -162,7 +164,7 @@ export class MediaComponent implements OnInit {
       const newName = this.authService.decodedToken.nameid + '_' + fileDate + '_' + file.file.name;
       this.currentFile = new File([file.file], newName);
 
-      const response = await this.blobService.uploadFile(this.currentFile);
+      const response = await this.blobService.uploadFile(this.currentFile,FileTypeEnum.MEDIA);
 
       if (response._response.status === 201) {
         const fileName = this.currentFile.name;

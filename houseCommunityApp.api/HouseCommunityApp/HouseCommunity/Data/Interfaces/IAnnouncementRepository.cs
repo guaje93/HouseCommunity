@@ -10,6 +10,6 @@ namespace HouseCommunity.Data.Interfaces
     public interface IAnnouncementRepository
     {
         ICollection<Announcement> GetAnnouncementsForUser(int userId);
-        Task<Announcement> InsertAnnouncement(AnnouncementForDatabaseInsertDTO announcement);
+        Task<IEnumerable<Announcement>> InsertAnnouncement(AnnouncementForDatabaseInsertDTO announcement);
     }
 }

@@ -1,8 +1,12 @@
-﻿using System;
+﻿using HouseCommunity.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace HouseCommunity.Model
+namespace HouseCommunity.DTOs
 {
-    public class Media
+    public class MediaForAndministrationDTO
     {
         public int Id { get; set; }
         public string ImageUrl { get; set; }
@@ -13,15 +17,6 @@ namespace HouseCommunity.Model
         public DateTime StartPeriodDate { get; set; }
         public DateTime EndPeriodDate { get; set; }
         public DateTime CreationDate { get; set; }
-        public DateTime AcceptanceDate { get; set; }
         public MediaStatus Status { get; set; }
-        public Flat Flat{ get; set; }
-    }
-
-    public enum MediaStatus
-    {
-        WaitingForUser,
-        UpdatedByUser,
-        AcceptedByAdministration
     }
 }

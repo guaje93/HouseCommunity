@@ -16,4 +16,8 @@ export class AnnouncementService {
   displayBlobImage(url: string){
     return this.http.get(url, { responseType: 'blob' });
   }
+
+  insertAnnouncement(model: any){
+    return this.http.post(this.baseUrl + 'insert-announcements', model);
+  }
 }

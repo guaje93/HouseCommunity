@@ -37,7 +37,8 @@ import { NavAdministrationComponent } from './administration/navAdministration/n
 import { PaymentsAdministrationComponent } from './administration/paymentsAdministration/paymentsAdministration.component';
 import { MediaAdministrationComponent } from './administration/mediaAdministration/mediaAdministration.component';
 import { AnnouncementsAdministrationComponent } from './administration/announcementsAdministration/announcementsAdministration.component';
-
+import { UserRoleDirective } from './directives/userRole.directive';
+import { UserDirective } from './directives/user.directive';
 
 @NgModule({
   declarations: [							
@@ -63,7 +64,9 @@ import { AnnouncementsAdministrationComponent } from './administration/announcem
       PaymentsAdministrationComponent,
       NavAdministrationComponent,
       MediaAdministrationComponent,
-      AnnouncementsAdministrationComponent
+      AnnouncementsAdministrationComponent,
+      UserDirective,
+    UserRoleDirective
    ],
   imports: [
     RouterModule.forRoot(AppRoutes),

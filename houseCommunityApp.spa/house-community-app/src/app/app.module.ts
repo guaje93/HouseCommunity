@@ -11,6 +11,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './residents/home/home.component';
 import { MediaComponent } from './residents/Media/Media.component';
+import { AddMediaFormComponent } from './residents/AddMediaForm/AddMediaForm.component';
 import { NewsComponent } from './residents/News/News.component';
 import { RentComponent } from './residents/rent/rent.component';
 import { EditUserComponent } from './editUser/editUser.component';
@@ -55,8 +56,7 @@ import { UserDirective } from './directives/user.directive';
     ChangePasswordComponent,
     DragAndDropDirective,
       ImagePreviewComponent,
-      MediaHistoryComponent,
-      MediaHistoryComponent,
+      AddMediaFormComponent,
       MediaHistoryComponent,
       PaymentDetailsComponent,
       ChatComponent,

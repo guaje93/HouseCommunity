@@ -1,4 +1,5 @@
-﻿using HouseCommunity.DTOs;
+﻿using HouseCommunity.Controllers;
+using HouseCommunity.DTOs;
 using HouseCommunity.Model;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,9 @@ namespace HouseCommunity.Data.Interfaces
     {
         Task<Model.User> AddMediaForUser(Request.AddMediaToDbRequest userRequest);
         Task<Model.Flat> CreateEmptyMediaForUser(Request.AddEmptyMediaRequest userRequest);
-        Task<MediaFroDisplayHistoryDTO> GetAllMediaForUser(int id);
+        Task<MediaForUsrDisplayDTO> GetAllMediaForUser(int id);
         Task<IEnumerable<MediaForAndministrationDTO>> GetMedia(int id);
+        Task<Media> UpdateMedia(MediaUpdatedByUserDTO addMediaToDbRequest);
     }
 
 

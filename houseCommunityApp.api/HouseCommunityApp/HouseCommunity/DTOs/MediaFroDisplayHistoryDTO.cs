@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace HouseCommunity.DTOs
 {
-    public class MediaFroDisplayHistoryDTO
+    public class MediaForUsrDisplayDTO
     {
         public List<SingleMediaItem> SingleMediaItems { get; set; }
     }
 
     public class SingleMediaItem
     {
+        public int Id { get; set; }
         public string FileName { get; set; }
         public string Description{ get; set; }
         public DateTime CreationDate { get; set; }

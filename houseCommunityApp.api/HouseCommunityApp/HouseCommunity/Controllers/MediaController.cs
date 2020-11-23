@@ -40,6 +40,17 @@ namespace HouseCommunity.Controllers
             return Ok(user);
         }
 
+        [HttpPut("update-media")]
+        public async Task<IActionResult> UpdateMedia(MediaUpdatedByUserDTO addMediaToDbRequest)
+        {
+            var user = await _repo.UpdateMedia(addMediaToDbRequest);
+
+            if (user == null)
+                return BadRequest();
+
+            return Ok(user);
+        }
+
         [HttpPost("create-empty-media-entry")]
         public async Task<IActionResult> AddEmptyMediaEntryForUser(AddEmptyMediaRequest addMediaToDbRequest)
         {
@@ -61,6 +72,8 @@ namespace HouseCommunity.Controllers
 
             return Ok(media);
         }
+
+        
 
     }
 }

@@ -9,3 +9,11 @@ export class SingleMediaItem {
     public CurrentValue: number;
     public MediaType: string;
 }
+
+export class MediaToUpdate {
+    public Id: number;
+    public StartPeriodDate: Date;
+    public EndPeriodDate: Date;
+    public LastValue: number;
+    public MediaType: string;
+}

@@ -1,4 +1,5 @@
-﻿using HouseCommunity.Data.Interfaces;
+﻿using HouseCommunity.Controllers;
+using HouseCommunity.Data.Interfaces;
 using HouseCommunity.DTOs;
 using HouseCommunity.Model;
 using HouseCommunity.Request;
@@ -121,13 +122,14 @@ namespace HouseCommunity.Data
             }
         }
 
-        public async Task<MediaFroDisplayHistoryDTO> GetAllMediaForUser(int id)
+        public async Task<MediaForUsrDisplayDTO> GetAllMediaForUser(int id)
         {
             var user = await _context.Users.Include(p => p.Flat.MediaHistory).FirstOrDefaultAsync(p => p.Id == id);
-            return new MediaFroDisplayHistoryDTO()
+            return new MediaForUsrDisplayDTO()
             {
                 SingleMediaItems = user.Flat.MediaHistory.Select(p => new SingleMediaItem()
                 {
+                    Id = p.Id,
                     ImageUrl = p.ImageUrl,
                     FileName = p.FileName,
                     CreationDate = p.CreationDate,
@@ -164,6 +166,25 @@ namespace HouseCommunity.Data
                 });
 
             else return null;
+        }
+
+        public async Task<Media> UpdateMedia(MediaUpdatedByUserDTO addMediaToDbRequest)
+        {
+            var media = await _context.MediaHistory.FirstOrDefaultAsync(p => p.Id == addMediaToDbRequest.Id);
+            if (media != null)
+            {
+                media.ImageUrl = addMediaToDbRequest.ImageUrl;
+                media.CreationDate = DateTime.Now;
+                media.CurrentValue = addMediaToDbRequest.CurrentValue;
+                media.FileName = addMediaToDbRequest.FileName;
+                media.UserDescription = addMediaToDbRequest.UserDescription;
+                media.Status = MediaStatus.UpdatedByUser;
+
+                _context.Update(media);
+                await _context.SaveChangesAsync();
+                return media;
+            }
+            return null;
         }
     }
 }

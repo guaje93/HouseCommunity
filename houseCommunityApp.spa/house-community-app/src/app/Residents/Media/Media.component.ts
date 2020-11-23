@@ -5,11 +5,13 @@ import { DatePipe } from '@angular/common';
 import { MediaService } from '../../_services/media.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FileHelper } from '../../Model/fileHelper';
-import { SingleMediaItem } from '../../Model/SingleMediaItem';
+import { MediaToUpdate, SingleMediaItem } from '../../Model/SingleMediaItem';
 import { BlobService } from '../../_services/blob.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FileTypeEnum } from 'src/app/Model/fileTypeEnum';
 import { Role } from '../../Model/Role';
+import { AddMediaFormComponent } from '../AddMediaForm/AddMediaForm.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-Media',
@@ -27,25 +29,52 @@ export class MediaComponent implements OnInit {
   columnToSort: string;
   textToFilter: string;
   imageToShow: MatTableDataSource<SingleMediaItem>;
+  mediaToUpdate: MatTableDataSource<MediaToUpdate>;
+
   mediaHistory: SingleMediaItem[] = [];
   constructor(private authService: AuthService,
     private alertifyService: AlertifyService,
     private datePipe: DatePipe,
     private mediaService: MediaService,
     private sanitizer: DomSanitizer,
-    private blobService: BlobService) {
+    private blobService: BlobService,
+    public dialog: MatDialog) {
     this.mediaDataToAdd = new FileHelper();
     this.imageToShow = new MatTableDataSource<SingleMediaItem>();
+    this.mediaToUpdate = new MatTableDataSource<MediaToUpdate>();
   }
 
   @ViewChild('fileDropRef', { static: false }) fileDropEl: ElementRef;
   ngOnInit(): void {
     this.displayImage();
+    this.mediaService.getMediaForUser(this.authService.decodedToken.nameid).subscribe(
+      data => {
+        console.log(data);
+        let arr = [];
+        (data as any).singleMediaItems.forEach(element => {
+          let media = new MediaToUpdate();
+  media.Id=element.id;
+  if (element.mediaEnum === 1)
+  media.MediaType = "Woda zimna";
+  else if (element.mediaEnum === 2)
+          media.MediaType = "Woda ciepła";
+          else if (element.mediaEnum === 3)
+          media.MediaType = "Ogrzewanie";
+          
+          media.StartPeriodDate = element.startPeriodDate;
+          media.EndPeriodDate = element.endPeriodDate;
+          media.LastValue = element.lastValue;
+          arr.push(media);
+          console.log(this.mediaToUpdate);
+        });
+        this.mediaToUpdate.data = arr;
+      });
   }
 
   onFileDropped($event): void {
     this.prepareFilesList($event);
   }
+  displayedColumns: string[] = ['MediaType', 'StartDate', 'EndDate', 'LastValue', 'Update'];
 
   fileBrowseHandler(files): void {
     this.prepareFilesList(files);
@@ -164,7 +193,7 @@ export class MediaComponent implements OnInit {
       const newName = this.authService.decodedToken.nameid + '_' + fileDate + '_' + file.file.name;
       this.currentFile = new File([file.file], newName);
 
-      const response = await this.blobService.uploadFile(this.currentFile,FileTypeEnum.MEDIA);
+      const response = await this.blobService.uploadFile(this.currentFile, FileTypeEnum.MEDIA);
 
       if (response._response.status === 201) {
         const fileName = this.currentFile.name;
@@ -215,6 +244,17 @@ export class MediaComponent implements OnInit {
     }
     this.fileDropEl.nativeElement.value = '';
 
+  }
+
+  openDialog(media: MediaToUpdate): void {
+    const dialogRef = this.dialog.open(AddMediaFormComponent, {
+      width: '80%',
+      data: media
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      console.log('The dialog was closed');
+    });
   }
 
 }

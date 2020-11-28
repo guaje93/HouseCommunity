@@ -51,8 +51,7 @@ export class BlobService {
     if (fileType === FileTypeEnum.MEDIA) {
       this.containerName = environment.mediaContainerName;
     }
-    else
-    {
+    else {
       this.containerName = environment.announcementContainerName;
     }
 
@@ -83,12 +82,14 @@ export class BlobService {
     return response;
   }
 
-  createRequestForAddingFile(file: any, fileName: string, id: any) {
+  createRequestForAddingFile(description: string, currentValue: number, fileName: string, id: any) {
     const req: any = {};
-    req.UserId = id;
-    req.ImageUrl = `https://${this.accountName}.blob.core.windows.net/${this.containerName}/${fileName}`;
-    req.UserDescription = file.description;
-    req.MediaType = file.type;
+    req.Id = id;
+    if (fileName) {
+      req.ImageUrl = `https://${this.accountName}.blob.core.windows.net/${this.containerName}/${fileName}`;
+    }
+    req.UserDescription = description;
+    req.CurrentValue = currentValue;
     console.log(req);
     return req;
   }

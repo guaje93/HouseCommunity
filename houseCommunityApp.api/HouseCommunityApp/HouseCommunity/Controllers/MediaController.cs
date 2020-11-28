@@ -1,4 +1,5 @@
-﻿using HouseCommunity.Data.Interfaces;
+﻿using HouseCommunity.Data;
+using HouseCommunity.Data.Interfaces;
 using HouseCommunity.Model;
 using HouseCommunity.Request;
 using Microsoft.AspNetCore.Mvc;
@@ -43,12 +44,23 @@ namespace HouseCommunity.Controllers
         [HttpPut("update-media")]
         public async Task<IActionResult> UpdateMedia(MediaUpdatedByUserDTO addMediaToDbRequest)
         {
-            var user = await _repo.UpdateMedia(addMediaToDbRequest);
+            var media = await _repo.UpdateMedia(addMediaToDbRequest);
 
-            if (user == null)
+            if (media == null)
                 return BadRequest();
 
-            return Ok(user);
+            return Ok(media);
+        }
+
+        [HttpPut("book-media")]
+        public async Task<IActionResult> BookMedia(MediaUpdatedByAdministrationDTO addMediaToDbRequest)
+        {
+            var media = await _repo.UpdateMedia(addMediaToDbRequest);
+
+            if (media == null)
+                return Unauthorized();
+
+            return Ok(media);
         }
 
         [HttpPost("create-empty-media-entry")]

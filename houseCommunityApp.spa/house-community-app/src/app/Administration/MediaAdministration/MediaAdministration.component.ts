@@ -47,8 +47,10 @@ export class MediaAdministrationComponent implements OnInit {
     model.flatId = flat.flatId;
 
     this.mediaService.createEmptyMedia(model).subscribe(
-      data => this.alertifyService.success('Dodano'),
-
+      data => {
+        this.getAllusers();
+        this.alertifyService.success('Dodano')
+      },
       error => this.alertifyService.error('Błąd'));
   }
 
@@ -103,9 +105,9 @@ export class MediaAdministrationComponent implements OnInit {
             });
           }
 
+          this.showFlatsList();
         })
       });
-
       console.log(this.users);
       console.log(this.filteredHouseDevelopments);
     });
@@ -150,9 +152,6 @@ export class MediaAdministrationComponent implements OnInit {
       .map(flat => {
         let list: any = {};
 
-
-
-
         let flat1 =
         {
           flatId: flat.flatId,
@@ -160,14 +159,30 @@ export class MediaAdministrationComponent implements OnInit {
           local: flat.localNumber,
           mediaList: flat.mediaList
         };
+        console.log(flat);
         return flat1;
       }).filter((value, index, self) => index === self.findIndex((t) => (
         t.flatId === value.flatId && t.building === value.building && t.local === value.local
       )));
   }
   bookMedia(media: any) {
+    let model: any = {
 
-  }
+      userId: this.authService.decodedToken.nameid,
+      mediaId: media.id,
+      currentValue: media.currentValue 
+    }
+    this.mediaService.bookMedia(model).subscribe(
+      data => {
+    this.getAllusers();
+    this.alertifyService.success('Zaksięgowano!');
 
-
+      },
+      error => {
+        this.alertifyService.error('Błąd! Nie zaksięgowano!');
+      }
+    );
+    }
 }
+
+

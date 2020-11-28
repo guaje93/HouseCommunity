@@ -32,6 +32,7 @@ export class MediaComponent implements OnInit {
   mediaToUpdate: MatTableDataSource<MediaToUpdate>;
 
   mediaHistory: SingleMediaItem[] = [];
+
   constructor(private authService: AuthService,
     private alertifyService: AlertifyService,
     private datePipe: DatePipe,
@@ -43,78 +44,35 @@ export class MediaComponent implements OnInit {
     this.imageToShow = new MatTableDataSource<SingleMediaItem>();
     this.mediaToUpdate = new MatTableDataSource<MediaToUpdate>();
   }
+  displayedColumns: string[] = ['MediaType', 'StartDate', 'EndDate', 'LastValue', 'Update'];
 
   @ViewChild('fileDropRef', { static: false }) fileDropEl: ElementRef;
   ngOnInit(): void {
     this.displayImage();
+    this.Initialize();
+  }
+
+  private Initialize() {
     this.mediaService.getMediaForUser(this.authService.decodedToken.nameid).subscribe(
       data => {
         console.log(data);
         let arr = [];
         (data as any).singleMediaItems.forEach(element => {
-          let media = new MediaToUpdate();
-  media.Id=element.id;
-  if (element.mediaEnum === 1)
-  media.MediaType = "Woda zimna";
-  else if (element.mediaEnum === 2)
-          media.MediaType = "Woda ciepła";
-          else if (element.mediaEnum === 3)
-          media.MediaType = "Ogrzewanie";
-          
-          media.StartPeriodDate = element.startPeriodDate;
-          media.EndPeriodDate = element.endPeriodDate;
-          media.LastValue = element.lastValue;
-          arr.push(media);
-          console.log(this.mediaToUpdate);
+          if (element.status === 0) {
+
+            let media = new MediaToUpdate();
+            media.Id = element.id;
+            media.MediaType = this.getMediaTypeFromNumber(element.mediaEnum);
+
+            media.StartPeriodDate = element.startPeriodDate;
+            media.EndPeriodDate = element.endPeriodDate;
+            media.LastValue = element.lastValue;
+            arr.push(media);
+            console.log(this.mediaToUpdate);
+          }
         });
         this.mediaToUpdate.data = arr;
       });
-  }
-
-  onFileDropped($event): void {
-    this.prepareFilesList($event);
-  }
-  displayedColumns: string[] = ['MediaType', 'StartDate', 'EndDate', 'LastValue', 'Update'];
-
-  fileBrowseHandler(files): void {
-    this.prepareFilesList(files);
-  }
-
-  addManualData(): void {
-    if (this.mediaDataToAdd.currentValue && this.mediaDataToAdd.type) {
-      const newData = new FileHelper();
-      newData.currentValue = this.mediaDataToAdd.currentValue;
-      newData.type = this.mediaDataToAdd.type;
-      newData.description = this.mediaDataToAdd.description;
-      this.files.push(newData);
-      this.mediaDataToAdd = new FileHelper();
-    }
-    else {
-      this.alertifyService.error('Uzupełnij brakujące dane!');
-    }
-  }
-
-  updateFiles(): void {
-
-    if (this.files.some(p => !p.file && !p.currentValue)) {
-      this.alertifyService.error('Nie wszystkie wartości zostały zdefiniowane!');
-      return;
-    }
-
-    if (this.files.every(p => p.type != null)) {
-      for (const item of this.files) {
-        console.log(item);
-        this.onFileChange(item);
-      }
-    }
-    else {
-      this.alertifyService.error('Nie wszystkie typy zdjęć zostały zdefiniowane!');
-    }
-  }
-
-
-  deleteFile(index: number): void {
-    this.files.splice(index, 1);
   }
 
   displayImage(): void {
@@ -124,40 +82,46 @@ export class MediaComponent implements OnInit {
         console.log(data);
         const model: any = data;
         model.singleMediaItems.forEach(element => {
-          console.log(element);
-          if (element.imageUrl) {
+          if(element.status === 2){
 
-            this.mediaService.displayBlobImage(element.imageUrl).subscribe(
-              blob => {
-                this.createImageFromBlob(blob, element);
+            console.log(element);
+            if (element.imageUrl) {
+
+              this.mediaService.displayBlobImage(element.imageUrl).subscribe(
+                blob => {
+                  this.createImageFromBlob(blob, element);
                 this.isImageLoading = false;
               }, error => {
                 this.isImageLoading = false;
                 console.log(error);
               }
-            );
-
-          }
-          else {
-            const item = new SingleMediaItem();
-            item.Description = element.description,
+              );
+              
+            }
+            else {
+              const item = new SingleMediaItem();
+              item.Description = element.description,
               item.FileName = element.fileName;
-            item.CreationDate = element.creationDate;
-            item.CurrentValue = element.currentValue;
-            item.MediaType = this.getMediaTypeFromNumber(element.mediaEnum);
-            this.mediaHistory.push(item);
-            this.imageToShow.data = this.mediaHistory;
-
+              item.CreationDate = element.creationDate;
+              item.CurrentValue = element.currentValue;
+              item.MediaType = this.getMediaTypeFromNumber(element.mediaEnum);
+              this.mediaHistory.push(item);
+              this.imageToShow.data = this.mediaHistory;
+              
+            }
           }
         });
       });
   }
   getMediaTypeFromNumber(value: number): string {
-    if (value === 0) {
+    if (value === 1) {
       return 'Woda zimna';
     }
-    else {
+    else if (value === 2){
       return 'Woda ciepła';
+    }
+    else if (value === 3){
+      return 'Ogrzewanie';
     }
   }
   createImageFromBlob(image: Blob, mediaItem: any): void {
@@ -182,70 +146,6 @@ export class MediaComponent implements OnInit {
   }
 
 
-  async onFileChange(file): Promise<void> {
-    console.log(file);
-
-    const currentFileDate = new Date();
-    const fileDate = this.datePipe.transform(currentFileDate, 'yyyyMMddHHmmss');
-
-    if (file.file) {
-
-      const newName = this.authService.decodedToken.nameid + '_' + fileDate + '_' + file.file.name;
-      this.currentFile = new File([file.file], newName);
-
-      const response = await this.blobService.uploadFile(this.currentFile, FileTypeEnum.MEDIA);
-
-      if (response._response.status === 201) {
-        const fileName = this.currentFile.name;
-        const id = this.authService.decodedToken.nameid;
-        const req: any = this.blobService.createRequestForAddingFile(file, fileName, id);
-
-        this.mediaService.addMediaForUser(req).subscribe(data => {
-          console.log(data);
-          this.displayImage();
-          this.files = [];
-          this.alertifyService.success('Zdjęcie zostało przesłane!');
-        }
-        );
-      }
-    }
-    else {
-      const req: any = this.createRequestFromFileItem(file);
-      this.mediaService.addMediaForUser(req).subscribe(() => {
-        this.displayImage();
-        this.files = [];
-        this.alertifyService.success('Formularz został wysłany!');
-      }
-      );
-    }
-  }
-
-  private createRequestFromFileItem(file: any): any {
-    const req: any = {};
-    req.UserId = this.authService.decodedToken.nameid;
-    req.UserDescription = file.description;
-    req.MediaType = file.type;
-    req.CurrentValue = file.currentValue;
-    return req;
-  }
-
-  prepareFilesList(files: Array<any>): void {
-    for (const item of files) {
-      item.progress = 0;
-      console.log((item as File).type);
-      if ((item as File).type === 'image/jpeg') {
-        const fileHelper = new FileHelper();
-        fileHelper.file = item;
-        this.files.push(fileHelper);
-      }
-      else {
-        this.alertifyService.warning('Nieprawidłowy format pliku. \nZapisz zdjęcie w formacie jpg.');
-      }
-    }
-    this.fileDropEl.nativeElement.value = '';
-
-  }
-
   openDialog(media: MediaToUpdate): void {
     const dialogRef = this.dialog.open(AddMediaFormComponent, {
       width: '80%',
@@ -254,6 +154,8 @@ export class MediaComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
+      this.displayImage();
+      this.Initialize();
     });
   }
 

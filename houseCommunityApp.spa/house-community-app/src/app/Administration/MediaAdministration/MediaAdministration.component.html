@@ -81,7 +81,7 @@
                 <mat-label>Aktualny odczyt</mat-label>
                 <input matInput [(ngModel)]="media.currentValue" />
             </mat-form-field>
-            <img *ngIf="media.imageUrl" [src]="element.imageUrl" style="width: 30%; cursor: pointer;" (click)="openDialog(element.ImageUrl)">
+            <img *ngIf="media.imageUrl" [src]="media.imageUrl" style="width: 25%; cursor: pointer; margin-left: 2em;" (click)="openDialog(media.imageUrl)">
             </td>
         </ng-container>
       
@@ -92,7 +92,7 @@
           'is-yellow': media.status === 1,
           'is-green': media.status === 2
         }"> 
-          <button class="btn-primary" (click)="bookMedia(media)"> Zaksięguj </button>  
+          <button *ngIf="media.status!==2" class="btn-primary" (click)="bookMedia(media)"> Zaksięguj </button>  
         </td>
     </ng-container>
       

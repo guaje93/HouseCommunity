@@ -14,6 +14,7 @@ namespace HouseCommunity.Data.Interfaces
         Task<Model.Flat> CreateEmptyMediaForUser(Request.AddEmptyMediaRequest userRequest);
         Task<MediaForUsrDisplayDTO> GetAllMediaForUser(int id);
         Task<IEnumerable<MediaForAndministrationDTO>> GetMedia(int id);
+        Task<Media> UpdateMedia(MediaUpdatedByAdministrationDTO addMediaToDbRequest);
         Task<Media> UpdateMedia(MediaUpdatedByUserDTO addMediaToDbRequest);
     }
 

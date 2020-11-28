@@ -64,7 +64,7 @@ namespace HouseCommunity.Data
             var flat = await _context.Flats.Include(p => p.MediaHistory).FirstOrDefaultAsync(p => p.Id == userRequest.FlatId);
             var startDate = GenerateStartDateFromCurrentDate();
             var endDate = GenerateEndDateFromCurrentDate();
-            if (!_context.MediaHistory.Select(p => p.EndPeriodDate).Any(p => p >= startDate && p <= endDate))
+            if (!flat.MediaHistory.Select(p => p.EndPeriodDate).Any(p => p >= startDate && p <= endDate))
             {
                 AddMediaTemplate(flat, startDate, endDate, MediaEnum.ColdWater);
                 AddMediaTemplate(flat, startDate, endDate, MediaEnum.HotWater);
@@ -176,7 +176,6 @@ namespace HouseCommunity.Data
                 media.ImageUrl = addMediaToDbRequest.ImageUrl;
                 media.CreationDate = DateTime.Now;
                 media.CurrentValue = addMediaToDbRequest.CurrentValue;
-                media.FileName = addMediaToDbRequest.FileName;
                 media.UserDescription = addMediaToDbRequest.UserDescription;
                 media.Status = MediaStatus.UpdatedByUser;
 
@@ -184,6 +183,27 @@ namespace HouseCommunity.Data
                 await _context.SaveChangesAsync();
                 return media;
             }
+            return null;
+        }
+
+        public async Task<Media> UpdateMedia(MediaUpdatedByAdministrationDTO addMediaToDbRequest)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(p => p.Id == addMediaToDbRequest.UserId);
+            //2 = Administration
+            if (user.UserRole == 2)
+            {
+                var media = await _context.MediaHistory.FirstOrDefaultAsync(p => p.Id == addMediaToDbRequest.MediaId);
+                if (media != null)
+                {
+
+                    media.Status = MediaStatus.AcceptedByAdministration;
+                    media.CurrentValue = addMediaToDbRequest.CurrentValue;
+                    _context.Update(media);
+                    await _context.SaveChangesAsync();
+                    return media;
+                }
+            }
+
             return null;
         }
     }

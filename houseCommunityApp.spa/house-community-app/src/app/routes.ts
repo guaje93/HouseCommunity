@@ -12,6 +12,7 @@ import { HomeAdministrationComponent } from './administration/homeAdministration
 import { PaymentsAdministrationComponent } from './administration/paymentsAdministration/paymentsAdministration.component';
 import { AnnouncementsAdministrationComponent } from './administration/announcementsAdministration/announcementsAdministration.component';
 import { MediaAdministrationComponent } from './administration/mediaAdministration/mediaAdministration.component';
+import { DamageComponent } from './residents/Damage/Damage.component';
 
 export const AppRoutes: Routes = [
 
@@ -34,6 +35,7 @@ export const AppRoutes: Routes = [
             { path: 'news', component: NewsComponent },
             { path: 'rent', component: RentComponent },
             { path: 'chat', component: ChatComponent },
+            { path: 'damage', component: DamageComponent },
         ]
     },
     { path: '**', redirectTo: '/login', pathMatch: 'full' },

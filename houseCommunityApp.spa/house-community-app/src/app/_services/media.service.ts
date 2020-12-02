@@ -26,6 +26,10 @@ export class MediaService {
     return this.http.put(this.baseUrl + 'book-media', model);
   }
 
+  unlockMedia(model: any){
+    return this.http.put(this.baseUrl + 'unlock', model);
+  }
+
 displayBlobImage(url: string){
   return this.http.get(url, { responseType: 'blob' });
 }

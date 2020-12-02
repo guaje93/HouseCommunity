@@ -64,11 +64,12 @@ namespace HouseCommunity.Data
             var flat = await _context.Flats.Include(p => p.MediaHistory).FirstOrDefaultAsync(p => p.Id == userRequest.FlatId);
             var startDate = GenerateStartDateFromCurrentDate();
             var endDate = GenerateEndDateFromCurrentDate();
+            var lastValue = flat.MediaHistory.OrderByDescending(p => p.EndPeriodDate)?.First().CurrentValue ?? 0;
             if (!flat.MediaHistory.Select(p => p.EndPeriodDate).Any(p => p >= startDate && p <= endDate))
             {
-                AddMediaTemplate(flat, startDate, endDate, MediaEnum.ColdWater);
-                AddMediaTemplate(flat, startDate, endDate, MediaEnum.HotWater);
-                AddMediaTemplate(flat, startDate, endDate, MediaEnum.Heat);
+                AddMediaTemplate(flat, startDate, endDate, lastValue, MediaEnum.ColdWater);
+                AddMediaTemplate(flat, startDate, endDate, lastValue, MediaEnum.HotWater);
+                AddMediaTemplate(flat, startDate, endDate, lastValue, MediaEnum.Heat);
                 _context.SaveChanges();
                 return flat;
             }
@@ -76,7 +77,7 @@ namespace HouseCommunity.Data
                 return null;
         }
 
-        private Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<Media> AddMediaTemplate(Flat flat, DateTime startDate, DateTime endDate, MediaEnum mediaEnum)
+        private Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<Media> AddMediaTemplate(Flat flat, DateTime startDate, DateTime endDate, double lastValue, MediaEnum mediaEnum)
         {
             return _context.MediaHistory.Add(new Media()
             {
@@ -84,6 +85,7 @@ namespace HouseCommunity.Data
                 MediaType = mediaEnum,
                 StartPeriodDate = startDate,
                 EndPeriodDate = endDate,
+                LastValue = lastValue,
                 Status = MediaStatus.WaitingForUser
             }
 
@@ -135,6 +137,7 @@ namespace HouseCommunity.Data
                     CreationDate = p.CreationDate,
                     Description = p.UserDescription,
                     CurrentValue = p.CurrentValue,
+                    LastValue = p.LastValue,
                     AcceptanceDate = p.AcceptanceDate,
                     MediaEnum = p.MediaType,
                     Status = p.Status,
@@ -151,7 +154,7 @@ namespace HouseCommunity.Data
                                      .FirstOrDefaultAsync(p => p.Id == id);
 
             if (flat != null)
-                return flat.MediaHistory.Select(p => new MediaForAndministrationDTO()
+                return flat.MediaHistory.Where(p=> p.EndPeriodDate > DateTime.Now).Select(p => new MediaForAndministrationDTO()
                 {
                     CreationDate = p.CreationDate,
                     CurrentValue = p.CurrentValue,
@@ -198,6 +201,28 @@ namespace HouseCommunity.Data
 
                     media.Status = MediaStatus.AcceptedByAdministration;
                     media.CurrentValue = addMediaToDbRequest.CurrentValue;
+                    media.AcceptanceDate = DateTime.Now;
+                    _context.Update(media);
+                    await _context.SaveChangesAsync();
+                    return media;
+                }
+            }
+
+            return null;
+        }
+
+        public async Task<Media> UnlockMedia(MediaUpdatedByAdministrationDTO addMediaToDbRequest)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(p => p.Id == addMediaToDbRequest.UserId);
+            //2 = Administration
+            if (user.UserRole == 2)
+            {
+                var media = await _context.MediaHistory.FirstOrDefaultAsync(p => p.Id == addMediaToDbRequest.MediaId);
+                if (media != null)
+                {
+
+                    media.Status = MediaStatus.UpdatedByUser;
+                    media.AcceptanceDate = null;
                     _context.Update(media);
                     await _context.SaveChangesAsync();
                     return media;

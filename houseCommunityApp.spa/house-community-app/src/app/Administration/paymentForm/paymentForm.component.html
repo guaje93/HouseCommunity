@@ -1,0 +1,33 @@
+<div style="display: block;">
+      <form style="display: block;">
+        <mat-form-field appearance="fill">
+          <mat-label>Woda zimna:</mat-label>
+          <input matInput type="text" name="coldWater" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Woda ciepła</mat-label>
+          <input matInput type="number" name="hotWater" disabled />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Ogrzewanie</mat-label>
+          <input matInput name="heating" type="number" [min]='data.LastValue' />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Wywóz śmieci</mat-label>
+          <input matInput name="garbage" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Fundusz remontowy</mat-label>
+          <input matInput name="renovation" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Administracja</mat-label>
+          <input matInput name="administration" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Koszty eksploatacyjne</mat-label>
+          <input matInput name="operatingCosts" />
+        </mat-form-field>
+      </form>
+
+    </div>

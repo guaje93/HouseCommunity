@@ -13,7 +13,6 @@ namespace HouseCommunity.Model
         public int HousingDevelopmentId { get; set; }
         public Address Address { get; set; }
         public int AddressId { get; set; }
-
-
+        public Cost Cost{ get; set; }
     }
 }

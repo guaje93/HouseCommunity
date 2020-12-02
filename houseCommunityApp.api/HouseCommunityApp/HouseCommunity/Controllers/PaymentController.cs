@@ -46,7 +46,7 @@ namespace HouseCommunity.Controllers
             using (var httpClient = new HttpClient { BaseAddress = baseAddress })
             {
                 //using (var content = new StringContent($"grant_type=client_credentials&client_id=398178&client_secret=a6022f5602805e6919af0e71f8885e3b", System.Text.Encoding.Default, "application/x-www-form-urlencoded"))
-                
+
 
                 using (var content = new StringContent($"grant_type=client_credentials&client_id={_payURepository.GetClientId()}&client_secret={_payURepository.GetClientSecret()}", System.Text.Encoding.Default, "application/x-www-form-urlencoded"))
                 {
@@ -70,8 +70,8 @@ namespace HouseCommunity.Controllers
                 var values = JsonConvert.DeserializeObject<Dictionary<string, string>>(tokenResponse);
                 string responseData = "";
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("authorization", $"Bearer {values["access_token"]}");
-                
-                using (var content = new StringContent("{  \"notifyUrl\": \"https://64c9a06c0868.ngrok.io/api/payment/update-order-status\",  \"customerIp\": \"127.0.0.1\",  \"merchantPosId\": \"398178\",  \"description\": \"RTV market\",  \"currencyCode\": \"PLN\",  \"totalAmount\": \"" + request.Price * 100 +"\",  \"products\": [    {      \"name\": \"Wireless mouse\",      \"unitPrice\": \"15000\",      \"quantity\": \"1\"    },    {      \"name\": \"HDMI cable\",      \"unitPrice\": \"6000\",      \"quantity\": \"1\"    }  ]}", System.Text.Encoding.Default, "application/json"))
+
+                using (var content = new StringContent("{  \"notifyUrl\": \"https://64c9a06c0868.ngrok.io/api/payment/update-order-status\",  \"customerIp\": \"127.0.0.1\",  \"merchantPosId\": \"398178\",  \"description\": \"RTV market\",  \"currencyCode\": \"PLN\",  \"totalAmount\": \"" + request.Price * 100 + "\",  \"products\": [    {      \"name\": \"Wireless mouse\",      \"unitPrice\": \"15000\",      \"quantity\": \"1\"    },    {      \"name\": \"HDMI cable\",      \"unitPrice\": \"6000\",      \"quantity\": \"1\"    }  ]}", System.Text.Encoding.Default, "application/json"))
                 {
                     using (var response = await httpClient.PostAsync("api/v2_1/orders/", content))
                     {
@@ -90,7 +90,24 @@ namespace HouseCommunity.Controllers
         [HttpPost("update-order-status")]
         public async Task<IActionResult> UpdateOrderStatus(PayUResponseDTO request)
         {
-            var payment = await _repo.UpdateOrderStatus(request.Order.OrderId,request.Order.Status);
+            var payment = await _repo.UpdateOrderStatus(request.Order.OrderId, request.Order.Status);
+            return Ok();
+        }
+
+        public async Task<IActionResult> GetCalculatedCostsForPayment(int flatId, int month)
+        {
+            var unitCosts = _repo.GetUnitCostsForFlat(flatId);
+            var coldWaterEstimatedValue = 0;
+            var hotWaterEstimatedValue = 0;
+            var heatingEstimatedValue = 0;
+            var residentsAmount = 0;
+            if(month == 1 || month ==7)
+            {
+                var hotWaterRefund = 0;
+                var coldWaterRefund = 0;
+                var heatingRefund = 0;
+            }
+
             return Ok();
         }
 

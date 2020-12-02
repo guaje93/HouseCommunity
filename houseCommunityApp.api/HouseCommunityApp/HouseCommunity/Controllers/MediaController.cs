@@ -63,6 +63,17 @@ namespace HouseCommunity.Controllers
             return Ok(media);
         }
 
+        [HttpPut("unlock")]
+        public async Task<IActionResult> UnlockMedia(MediaUpdatedByAdministrationDTO addMediaToDbRequest)
+        {
+            var media = await _repo.UnlockMedia(addMediaToDbRequest);
+
+            if (media == null)
+                return Unauthorized();
+
+            return Ok(media);
+        }
+
         [HttpPost("create-empty-media-entry")]
         public async Task<IActionResult> AddEmptyMediaEntryForUser(AddEmptyMediaRequest addMediaToDbRequest)
         {

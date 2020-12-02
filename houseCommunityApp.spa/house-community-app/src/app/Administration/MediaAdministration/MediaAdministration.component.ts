@@ -33,8 +33,12 @@ export class MediaAdministrationComponent implements OnInit {
   usersToSendData: any[];
 
 
-  constructor(private userService: UserService, private alertifyService: AlertifyService,
-    private authService: AuthService, private mediaService: MediaService, public dialog: MatDialog,) {
+  constructor(private userService: UserService, 
+              private alertifyService: AlertifyService,
+              private authService: AuthService, 
+              private mediaService: MediaService, 
+              public dialog: MatDialog
+              ) {
   }
 
   ngOnInit() {
@@ -183,6 +187,24 @@ export class MediaAdministrationComponent implements OnInit {
       }
     );
     }
+
+    unlockMedia(media: any) {
+      let model: any = {
+  
+        userId: this.authService.decodedToken.nameid,
+        mediaId: media.id,
+      }
+      this.mediaService.unlockMedia(model).subscribe(
+        data => {
+      this.getAllusers();
+      this.alertifyService.success('Cofnięto!');
+  
+        },
+        error => {
+          this.alertifyService.error('Błąd! Nie cofnięto!');
+        }
+      );
+      }
 }
 
 

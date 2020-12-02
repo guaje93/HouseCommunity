@@ -16,7 +16,7 @@
             </mat-form-field>
             <mat-form-field appearance="fill">
               <mat-label>Obecny stan</mat-label>
-              <input matInput [(ngModel)]="media.CurrentValue" name="currentValue" />
+              <input matInput [(ngModel)]="media.CurrentValue" name="currentValue" type="number" [min]='data.LastValue' />
             </mat-form-field>
             <mat-form-field appearance="fill">
               <mat-label>Dodatkowe informacje</mat-label>

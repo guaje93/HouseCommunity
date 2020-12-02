@@ -11,5 +11,6 @@ namespace HouseCommunity.Data
         Task<Payment> GetPaymentById(int id);
         Task<Payment> UpdatePayUOrderId(int id, string orderId); 
         Task<Payment> UpdateOrderStatus(string orderid, string status);
+        Task<Cost> GetUnitCostsForFlat(int flatId);
     }
 }

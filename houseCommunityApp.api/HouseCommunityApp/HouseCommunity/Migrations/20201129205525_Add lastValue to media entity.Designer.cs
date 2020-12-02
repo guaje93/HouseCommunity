@@ -4,14 +4,16 @@ using HouseCommunity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HouseCommunity.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201129205525_Add lastValue to media entity")]
+    partial class AddlastValuetomediaentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,9 +85,6 @@ namespace HouseCommunity.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CostId")
-                        .HasColumnType("int");
-
                     b.Property<int>("HousingDevelopmentId")
                         .HasColumnType("int");
 
@@ -93,44 +92,9 @@ namespace HouseCommunity.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("CostId");
-
                     b.HasIndex("HousingDevelopmentId");
 
                     b.ToTable("Buildings");
-                });
-
-            modelBuilder.Entity("HouseCommunity.Model.Cost", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("AdministrationUnitCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("ColdWaterUnitCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("ExUnitCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("GarbageUnitCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("HeatingUnitCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("HotWaterUnitCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("OperatingUnitCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cost");
                 });
 
             modelBuilder.Entity("HouseCommunity.Model.Flat", b =>
@@ -140,17 +104,11 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("Area")
-                        .HasColumnType("float");
-
                     b.Property<int>("BuildingId")
                         .HasColumnType("int");
 
                     b.Property<string>("FlatNumber")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ResidentsAmount")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -181,10 +139,10 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("AcceptanceDate")
+                    b.Property<DateTime>("AcceptanceDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("CreationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<double>("CurrentValue")
@@ -364,10 +322,6 @@ namespace HouseCommunity.Migrations
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("HouseCommunity.Model.Cost", "Cost")
-                        .WithMany()
-                        .HasForeignKey("CostId");
 
                     b.HasOne("HouseCommunity.Model.HousingDevelopment", "HousingDevelopment")
                         .WithMany("Buildings")

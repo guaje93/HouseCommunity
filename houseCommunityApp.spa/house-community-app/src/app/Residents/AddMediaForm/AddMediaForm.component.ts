@@ -33,6 +33,7 @@ export class AddMediaFormComponent implements OnInit {
   ngOnInit() {
     console.log(this.data);
     this.media.Id = this.data.Id;
+    this.media.CurrentValue = this.data.LastValue;
   }
 
   onFileDropped($event): void {

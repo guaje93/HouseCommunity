@@ -16,6 +16,7 @@ namespace HouseCommunity.Data.Interfaces
         Task<IEnumerable<MediaForAndministrationDTO>> GetMedia(int id);
         Task<Media> UpdateMedia(MediaUpdatedByAdministrationDTO addMediaToDbRequest);
         Task<Media> UpdateMedia(MediaUpdatedByUserDTO addMediaToDbRequest);
+        Task<Media> UnlockMedia(MediaUpdatedByAdministrationDTO addMediaToDbRequest);
     }
 
 

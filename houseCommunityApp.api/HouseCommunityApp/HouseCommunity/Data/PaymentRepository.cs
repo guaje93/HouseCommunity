@@ -46,6 +46,12 @@ namespace HouseCommunity.Data
             }).ToList();
             }
 
+        public async Task<Cost> GetUnitCostsForFlat(int flatId)
+        {
+            var flat = await _context.Flats.Include(p => p.Building).ThenInclude(p => p.Cost).FirstOrDefaultAsync(p => p.Id == flatId);
+            return flat.Building.Cost;
+        }
+
         public async Task<Payment> UpdateOrderStatus(string orderid, string status)
         {
             var payment = await _context.Payments.FirstOrDefaultAsync(p => p.OrderId == orderid);

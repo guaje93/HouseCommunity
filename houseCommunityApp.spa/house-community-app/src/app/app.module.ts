@@ -40,6 +40,9 @@ import { MediaAdministrationComponent } from './administration/mediaAdministrati
 import { AnnouncementsAdministrationComponent } from './administration/announcementsAdministration/announcementsAdministration.component';
 import { UserRoleDirective } from './directives/userRole.directive';
 import { UserDirective } from './directives/user.directive';
+import { PaymentFormComponent } from './administration/paymentForm/paymentForm.component';
+import { DamageComponent } from './residents/Damage/Damage.component';
+import { RegisterUserComponent } from './buildingOwners/RegisterUser/RegisterUser.component';
 
 @NgModule({
   declarations: [							
@@ -65,8 +68,11 @@ import { UserDirective } from './directives/user.directive';
       NavAdministrationComponent,
       MediaAdministrationComponent,
       AnnouncementsAdministrationComponent,
+      PaymentFormComponent,
+      DamageComponent,
       UserDirective,
-    UserRoleDirective
+    UserRoleDirective,
+    RegisterUserComponent
    ],
   imports: [
     RouterModule.forRoot(AppRoutes),

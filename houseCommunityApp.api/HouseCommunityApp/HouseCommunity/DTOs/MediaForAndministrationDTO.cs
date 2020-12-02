@@ -16,7 +16,7 @@ namespace HouseCommunity.DTOs
         public MediaEnum MediaType { get; set; }
         public DateTime StartPeriodDate { get; set; }
         public DateTime EndPeriodDate { get; set; }
-        public DateTime CreationDate { get; set; }
+        public DateTime ? CreationDate { get; set; }
         public MediaStatus Status { get; set; }
     }
 }

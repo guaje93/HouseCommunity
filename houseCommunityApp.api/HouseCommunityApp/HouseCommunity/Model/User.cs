@@ -16,7 +16,7 @@ namespace HouseCommunity.Model
         public DateTime Birthdate { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
-        public int UserRole { get; set; }
+        public UserRole UserRole { get; set; }
         public ICollection<UserAnnouncement> UserAnnouncements { get; set; }
         public Flat Flat { get; set; }
     }

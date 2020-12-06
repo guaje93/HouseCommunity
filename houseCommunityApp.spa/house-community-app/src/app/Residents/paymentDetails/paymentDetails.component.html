@@ -1,11 +1,42 @@
 <div mat-dialog-content>
- <div>
-  <p>Nazwa: <span>{{data.name}}</span></p>
- </div>
- <div>
-  <p>Opis: <span>{{data.description}}</span></p>
- </div>
- <div>
-  <p>Okres: <span>{{data.period}}</span></p>
- </div>
+    <div>
+        <p>Woda ciepła: <span>{{data.hotWaterValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.hotWaterDescription}}></i>
+        </p>
+    </div>
+    <div>
+        <p>Woda zimna: <span>{{data.coldWaterValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.coldWaterDescription}}></i>
+        </p>
+    </div>
+    <div>
+        <p>Ogrzewanie: <span>{{data.heatingValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.heatingDescription}}></i>
+        </p>
+    </div>
+    <div>
+        <p>Wywóz śmieci: <span>{{data.garbageValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.garbageDescription}}></i>
+        </p>
+    </div>
+    <div>
+        <p>Administracja: <span>{{data.administrationValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.administrationDescription}}></i>
+        </p>
+    </div>
+    <div>
+        <p>Koszty eksploatacji: <span>{{data.operatingCostValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.operatingCostDescription}}></i>
+        </p>
+    </div>
+    <div>
+        <p>Wyrównanie opłaty za wodę: <span>{{data.waterRefundValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.waterRefundDescription}}></i>
+        </p>
+    </div>
+    <div>
+        <p>Wyrównanie opłaty za ciepło: <span>{{data.heatingRefundValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.heatingRefundDescription}}></i>
+        </p>
+    </div>
 </div>

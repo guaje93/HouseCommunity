@@ -43,6 +43,7 @@ import { UserDirective } from './directives/user.directive';
 import { PaymentFormComponent } from './administration/paymentForm/paymentForm.component';
 import { DamageComponent } from './residents/Damage/Damage.component';
 import { RegisterUserComponent } from './buildingOwners/RegisterUser/RegisterUser.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [							
@@ -90,8 +91,8 @@ import { RegisterUserComponent } from './buildingOwners/RegisterUser/RegisterUse
     MatSelectModule,
     MatButtonModule,
     ReactiveFormsModule,
-    PdfJsViewerModule
-
+    PdfJsViewerModule,
+    MatTooltipModule  
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

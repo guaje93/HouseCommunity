@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { AuthService } from 'src/app/_services/auth.service';
+import { PaymentService } from 'src/app/_services/payment.service';
 import { UserService } from 'src/app/_services/user.service';
 import { PaymentFormComponent } from '../paymentForm/paymentForm.component';
 
@@ -28,7 +29,8 @@ export class PaymentsAdministrationComponent implements OnInit {
 
   constructor(private userService: UserService, 
               private alertifyService: AlertifyService,
-              private authService: AuthService, 
+              private authService: AuthService,
+              private paymentService: PaymentService, 
               public dialog: MatDialog
               ) { }
 
@@ -104,13 +106,11 @@ export class PaymentsAdministrationComponent implements OnInit {
   }
 
   generateEmptyPayment(flat: any){
-      const dialogRef = this.dialog.open(PaymentFormComponent, {
-        width: '80%',
-        data: flat
-      });
-  
-      dialogRef.afterClosed().subscribe(() => {
-        console.log('The dialog was closed');
-      });
+      this.paymentService.createNewPayment(new Date(), flat.flatId).subscribe(
+        data => 
+        {console.log(data);
+        this.alertifyService.success("Stworzono płatność");
+        }
+        );
     }
   }

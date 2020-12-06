@@ -14,5 +14,9 @@ namespace HouseCommunity.Model
         public Address Address { get; set; }
         public int AddressId { get; set; }
         public Cost Cost{ get; set; }
+        public User HouseManager { get; set; }
+        public double HeatingEstimatedUsageForOneHuman { get; set; }
+        public double ColdWaterEstimatedUsageForOneHuman { get; set; }
+        public double HotWaterEstimatedUsageForOneHuman { get; set; }
     }
 }

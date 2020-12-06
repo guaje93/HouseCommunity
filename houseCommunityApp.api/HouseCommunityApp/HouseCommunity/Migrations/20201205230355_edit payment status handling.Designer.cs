@@ -4,14 +4,16 @@ using HouseCommunity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HouseCommunity.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201205230355_edit payment status handling")]
+    partial class editpaymentstatushandling
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,9 +97,6 @@ namespace HouseCommunity.Migrations
                     b.Property<double>("HotWaterEstimatedUsageForOneHuman")
                         .HasColumnType("float");
 
-                    b.Property<int?>("HouseManagerId")
-                        .HasColumnType("int");
-
                     b.Property<int>("HousingDevelopmentId")
                         .HasColumnType("int");
 
@@ -106,8 +105,6 @@ namespace HouseCommunity.Migrations
                     b.HasIndex("AddressId");
 
                     b.HasIndex("CostId");
-
-                    b.HasIndex("HouseManagerId");
 
                     b.HasIndex("HousingDevelopmentId");
 
@@ -430,10 +427,6 @@ namespace HouseCommunity.Migrations
                     b.HasOne("HouseCommunity.Model.Cost", "Cost")
                         .WithMany()
                         .HasForeignKey("CostId");
-
-                    b.HasOne("HouseCommunity.Model.User", "HouseManager")
-                        .WithMany()
-                        .HasForeignKey("HouseManagerId");
 
                     b.HasOne("HouseCommunity.Model.HousingDevelopment", "HousingDevelopment")
                         .WithMany("Buildings")

@@ -3,12 +3,11 @@
     public class Cost
     {
         public int Id { get; set; }
-        public decimal ColdWaterUnitCost { get; set; }
-        public decimal HotWaterUnitCost { get; set; }
-        public decimal HeatingUnitCost { get; set; }
-        public decimal GarbageUnitCost { get; set; }
-        public decimal ExUnitCost { get; set; }
-        public decimal OperatingUnitCost { get; set; }
-        public decimal AdministrationUnitCost { get; set; }
+        public double ColdWaterUnitCost { get; set; }
+        public double HotWaterUnitCost { get; set; }
+        public double HeatingUnitCost { get; set; }
+        public double GarbageUnitCost { get; set; }
+        public double OperatingUnitCost { get; set; }
+        public double AdministrationUnitCost { get; set; }
     }
 }

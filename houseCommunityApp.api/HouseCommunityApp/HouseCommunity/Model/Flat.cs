@@ -16,5 +16,8 @@ namespace HouseCommunity.Model
         public int ResidentsAmount { get; set; }
         public ICollection<Media> MediaHistory { get; set; }
         public ICollection<Payment> Payments { get; set; }
+        public double HeatingEstimatedUsageForOneHuman { get; set; }
+        public double ColdWaterEstimatedUsageForOneHuman { get; set; }
+        public double HotWaterEstimatedUsageForOneHuman { get; set; }
     }
 }

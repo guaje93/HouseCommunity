@@ -4,14 +4,16 @@ using HouseCommunity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HouseCommunity.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201205092149_upadte payment details with description fields")]
+    partial class upadtepaymentdetailswithdescriptionfields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,9 +97,6 @@ namespace HouseCommunity.Migrations
                     b.Property<double>("HotWaterEstimatedUsageForOneHuman")
                         .HasColumnType("float");
 
-                    b.Property<int?>("HouseManagerId")
-                        .HasColumnType("int");
-
                     b.Property<int>("HousingDevelopmentId")
                         .HasColumnType("int");
 
@@ -106,8 +105,6 @@ namespace HouseCommunity.Migrations
                     b.HasIndex("AddressId");
 
                     b.HasIndex("CostId");
-
-                    b.HasIndex("HouseManagerId");
 
                     b.HasIndex("HousingDevelopmentId");
 
@@ -251,6 +248,9 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("BookStatus")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("DetailsId")
                         .HasColumnType("int");
 
@@ -272,8 +272,8 @@ namespace HouseCommunity.Migrations
                     b.Property<DateTime>("PaymentDeadline")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PaymentStatus")
-                        .HasColumnType("int");
+                    b.Property<string>("PaymentStatus")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -430,10 +430,6 @@ namespace HouseCommunity.Migrations
                     b.HasOne("HouseCommunity.Model.Cost", "Cost")
                         .WithMany()
                         .HasForeignKey("CostId");
-
-                    b.HasOne("HouseCommunity.Model.User", "HouseManager")
-                        .WithMany()
-                        .HasForeignKey("HouseManagerId");
 
                     b.HasOne("HouseCommunity.Model.HousingDevelopment", "HousingDevelopment")
                         .WithMany("Buildings")

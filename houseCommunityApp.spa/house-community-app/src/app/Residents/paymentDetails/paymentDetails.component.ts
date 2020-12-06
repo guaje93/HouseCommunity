@@ -17,5 +17,6 @@ export class PaymentDetailsComponent implements OnInit {
     this.dialogRef.close();
   }
   ngOnInit() {
+    console.log(this.data);
   }
 }

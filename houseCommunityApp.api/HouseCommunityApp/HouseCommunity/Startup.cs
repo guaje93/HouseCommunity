@@ -50,6 +50,7 @@ namespace HouseCommunity
             services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<IPayURepository, PayURepository>();
             services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+            services.AddScoped<IBuildingRepository, BuildingRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,

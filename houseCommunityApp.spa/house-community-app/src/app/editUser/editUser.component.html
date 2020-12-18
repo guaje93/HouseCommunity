@@ -1,4 +1,4 @@
-<mat-dialog-content class="mat-typography" style="width: 70vw;">
+<mat-dialog-content class="mat-typography" style="width: 100%;">
   <div style="margin: 2em;">
 
     <p>Dane osobowe:</p>
@@ -32,6 +32,51 @@
         <input matInput [disabled]="emailDisabled" [(ngModel)]="email" style="display: inline-block;"> 
         <button style="cursor: pointer; display: inline-block;" (click)="editEmail()">
           <mat-icon matSuffix >input</mat-icon>
+        </button>
+      </div>
+    </mat-form-field>
+  </div>
+  <div style="margin: 2em;">
+    <p>Mieszkanie:</p>
+    <mat-form-field appearance="standard">
+      <mat-label>Liczba mieszkańców</mat-label>
+      <div style="display: flex; justify-content: space-between;">
+        <input matInput [disabled]="residentsAmountDisabled" [(ngModel)]="residentsAmount" style="display: inline-block;"> 
+        <button style="cursor: pointer; display: inline-block;" (click)="editResidentsAmount()">
+          <mat-icon matSuffix>input</mat-icon>
+        </button>
+      </div>
+    </mat-form-field>
+    <mat-form-field appearance="standard">
+      <mat-label>Powierzchnia</mat-label>
+      <div style="display: flex; justify-content: space-between;">
+        <input matInput [disabled]="true" [(ngModel)]="area" style="display: inline-block;"> 
+      </div>
+    </mat-form-field>
+    <mat-form-field appearance="standard">
+      <mat-label>Szacunkowe zużycie wody ciepłej w m3/msc</mat-label>
+      <div style="display: flex; justify-content: space-between;" matTooltip={{hotWaterDescription}}>
+        <input matInput [disabled]="hotWaterUsageDisabled" [(ngModel)]="hotWaterEstimatedUsage" style="display: inline-block;"> 
+        <button style="cursor: pointer; display: inline-block;" (click)="editHotWaterUsage()">
+          <mat-icon matSuffix>input</mat-icon>
+        </button>
+      </div>
+    </mat-form-field>
+    <mat-form-field appearance="standard">
+      <mat-label>Szacunkowe zużycie wody zimnej/msc</mat-label>
+      <div style="display: flex; justify-content: space-between;" matTooltip={{coldWaterDescription}}>
+        <input matInput [disabled]="coldWaterUsageDisabled" [(ngModel)]="coldWaterEstimatedUsage" style="display: inline-block;"> 
+        <button style="cursor: pointer; display: inline-block;" (click)="editColdWaterUsage()">
+          <mat-icon matSuffix>input</mat-icon>
+        </button>
+      </div>
+    </mat-form-field>
+    <mat-form-field appearance="standard">
+      <mat-label>Szacunkowe zużycie energii na ogrzewanie/msc</mat-label>
+      <div style="display: flex; justify-content: space-between;" matTooltip={{heatingDescription}}>
+        <input matInput [disabled]="heatingUsageDisabled" [(ngModel)]="heatingEstimatedUsage" style="display: inline-block;"> 
+        <button style="cursor: pointer; display: inline-block;" (click)="editHeatingUsage()">
+          <mat-icon matSuffix>input</mat-icon>
         </button>
       </div>
     </mat-form-field>

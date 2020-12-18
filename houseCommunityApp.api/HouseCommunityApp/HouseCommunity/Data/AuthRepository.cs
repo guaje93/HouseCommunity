@@ -1,4 +1,5 @@
-﻿using HouseCommunity.Model;
+﻿using HouseCommunity.DTOs;
+using HouseCommunity.Model;
 using HouseCommunity.Request;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -110,6 +111,27 @@ namespace HouseCommunity.Data
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
             
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task<User> RegisterUser(UserForRegisterDTO userForRegisterDTO)
+        {
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(userForRegisterDTO.Password, out passwordHash, out passwordSalt);
+            
+            var flat = await _context.Flats.Include(p => p.Residents).FirstOrDefaultAsync(p => p.Id == userForRegisterDTO.FlatId);
+            var user = new User()
+            {
+                UserName = userForRegisterDTO.UserName,
+                FirstName = userForRegisterDTO.FirstName,
+                LastName = userForRegisterDTO.LastName,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Email = userForRegisterDTO.Email
+            };
+            flat.Residents.Add(user);
+
             await _context.SaveChangesAsync();
             return user;
         }

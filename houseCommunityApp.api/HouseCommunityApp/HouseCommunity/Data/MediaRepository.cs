@@ -193,7 +193,7 @@ namespace HouseCommunity.Data
         {
             var user = await _context.Users.FirstOrDefaultAsync(p => p.Id == addMediaToDbRequest.UserId);
             //2 = Administration
-            if (user.UserRole == 2)
+            if (user.UserRole == UserRole.Administrator)
             {
                 var media = await _context.MediaHistory.FirstOrDefaultAsync(p => p.Id == addMediaToDbRequest.MediaId);
                 if (media != null)
@@ -215,7 +215,7 @@ namespace HouseCommunity.Data
         {
             var user = await _context.Users.FirstOrDefaultAsync(p => p.Id == addMediaToDbRequest.UserId);
             //2 = Administration
-            if (user.UserRole == 2)
+            if (user.UserRole == UserRole.Administrator)
             {
                 var media = await _context.MediaHistory.FirstOrDefaultAsync(p => p.Id == addMediaToDbRequest.MediaId);
                 if (media != null)

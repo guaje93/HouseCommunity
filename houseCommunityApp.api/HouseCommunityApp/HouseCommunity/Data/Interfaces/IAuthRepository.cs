@@ -1,4 +1,5 @@
-﻿using HouseCommunity.Model;
+﻿using HouseCommunity.DTOs;
+using HouseCommunity.Model;
 using HouseCommunity.Request;
 using System.Threading.Tasks;
 
@@ -13,5 +14,6 @@ namespace HouseCommunity.Data
         Task<User> ResetPassword(string username, string password);
         Task<string> GetUserNameById(int id);
         Task<User> ChangePassword(PasswordChangeRequest passwordChangeRequest);
+        Task<User> RegisterUser(UserForRegisterDTO userForRegisterDTO);
     }
 }

@@ -9,7 +9,7 @@ namespace HouseCommunity.Data
     public interface IUserRepository
     {
         Task<UserForInfoDTO> GetUser(int id);
-        Task<User> UpdateUserContactData(UserContactData userContactData);
+        Task<User> UpdateUserDefinedData(UserDefinedData userContactData);
         Task<ICollection<ResidentsForListDTO>> GetResidents();
     }
 }

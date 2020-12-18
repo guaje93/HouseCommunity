@@ -2,6 +2,6 @@
 {
     public enum UserRole
     {
-        Resident, Administrator, HouseManager
+       Unknown = 0, Resident = 1, Administrator = 2, HouseManager = 3
     }
 }

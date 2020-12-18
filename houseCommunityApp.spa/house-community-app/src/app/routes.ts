@@ -13,6 +13,7 @@ import { PaymentsAdministrationComponent } from './administration/paymentsAdmini
 import { AnnouncementsAdministrationComponent } from './administration/announcementsAdministration/announcementsAdministration.component';
 import { MediaAdministrationComponent } from './administration/mediaAdministration/mediaAdministration.component';
 import { DamageComponent } from './residents/Damage/Damage.component';
+import { RegisterUserComponent } from './buildingOwners/RegisterUser/RegisterUser.component';
 
 export const AppRoutes: Routes = [
 
@@ -36,6 +37,7 @@ export const AppRoutes: Routes = [
             { path: 'rent', component: RentComponent },
             { path: 'chat', component: ChatComponent },
             { path: 'damage', component: DamageComponent },
+            { path: 'register', component: RegisterUserComponent },
         ]
     },
     { path: '**', redirectTo: '/login', pathMatch: 'full' },

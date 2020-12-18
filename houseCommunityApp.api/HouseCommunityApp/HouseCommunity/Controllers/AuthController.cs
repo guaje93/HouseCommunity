@@ -63,6 +63,23 @@ namespace HouseCommunity.Controllers
 
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> LogIn(UserForRegisterDTO userForRegisterDTO)
+        {
+
+            var userFromRepo = await _repo.RegisterUser(userForRegisterDTO);
+
+            if (userFromRepo == null)
+                return Unauthorized();
+
+            return Ok(
+                new
+                {
+                    result = "Success"
+                });
+
+        }
+
         [HttpPost("req-reset-password")]
         public async Task<IActionResult> ResetPasswordRequest(UserForPasswordResetRequest usernameuserForLoginDTO)
         {

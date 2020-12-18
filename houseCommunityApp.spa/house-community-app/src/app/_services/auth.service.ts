@@ -41,6 +41,10 @@ hasRole(role: Role) {
       })
     );
   }
+
+  registerUser(model: any) {
+    return this.http.post(this.baseUrl + 'register', model);
+  }
   requestReset(body): Observable<any> {
     return this.http.post(`${this.baseUrl}req-reset-password`, body);
   }

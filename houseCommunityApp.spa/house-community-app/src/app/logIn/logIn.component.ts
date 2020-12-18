@@ -26,13 +26,7 @@ hide: boolean= true;
       next => {
         console.log(next);
         this.alertifyService.success("Zalogowano " +  this.model.username);
-        if(next.userRole === 1){
           this.router.navigate(['home']);
-        }
-        else if(next.userRole === 2)
-        {
-          this.router.navigate(['homeAdministration']);
-        }
       },
       error => {
         this.alertifyService.error(error);

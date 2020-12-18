@@ -5,6 +5,7 @@ import { AuthService } from '../../_services/auth.service';
 import {MatDialog} from '@angular/material/dialog';
 import { EditUserComponent } from '../../editUser/editUser.component';
 import { ChangePasswordComponent } from '../../changePassword/changePassword.component';
+import { Role } from 'src/app/Model/Role';
 
 @Component({
   selector: 'app-nav',
@@ -14,14 +15,15 @@ import { ChangePasswordComponent } from '../../changePassword/changePassword.com
 export class NavComponent implements OnInit {
 
   model: any = {};
-
+Role: Role;
   constructor(
     public authService: AuthService,
     private alertifyService: AlertifyService,
     private router: Router,
     public dialog: MatDialog
   ) {}
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
 
   loggedOut() {
@@ -31,7 +33,7 @@ export class NavComponent implements OnInit {
   }
 
   openEditDataDialog() {
-    const dialogRef = this.dialog.open(EditUserComponent, {height: '85%', width: '70%'});
+    const dialogRef = this.dialog.open(EditUserComponent, {height: '85%', width: '40%'});
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
@@ -46,4 +48,15 @@ export class NavComponent implements OnInit {
     });
   }
 
+  hasAdministrationAccess(){
+    return this.authService.user.role === Role.Admin;
+  }
+
+  hasHouseManagerAccess(){
+    return this.authService.user.role === Role.HouseManager;
+  }
+
+  hasUserAccess(){
+    return this.authService.user.role === Role.User;
+  }
 }

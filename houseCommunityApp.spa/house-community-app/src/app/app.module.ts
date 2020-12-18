@@ -16,14 +16,14 @@ import { NewsComponent } from './residents/News/News.component';
 import { RentComponent } from './residents/rent/rent.component';
 import { EditUserComponent } from './editUser/editUser.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ForgetPasswordComponent } from './forgetPassword/forgetPassword.component';
 import { ResetPasswordComponent } from './resetPassword/resetPassword.component';
 import { ChangePasswordComponent } from './changePassword/changePassword.component';
 import { DragAndDropDirective } from './directives/dragAndDrop.directive';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,7 +34,6 @@ import { PaymentDetailsComponent } from './residents/paymentDetails/paymentDetai
 import { ChatComponent } from './chat/chat.component';
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { HomeAdministrationComponent } from './administration/homeAdministration/homeAdministration.component';
-import { NavAdministrationComponent } from './administration/navAdministration/navAdministration.component';
 import { PaymentsAdministrationComponent } from './administration/paymentsAdministration/paymentsAdministration.component';
 import { MediaAdministrationComponent } from './administration/mediaAdministration/mediaAdministration.component';
 import { AnnouncementsAdministrationComponent } from './administration/announcementsAdministration/announcementsAdministration.component';
@@ -44,6 +43,8 @@ import { PaymentFormComponent } from './administration/paymentForm/paymentForm.c
 import { DamageComponent } from './residents/Damage/Damage.component';
 import { RegisterUserComponent } from './buildingOwners/RegisterUser/RegisterUser.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { RegisterFormComponent } from './buildingOwners/registerForm/registerForm.component';
+import {MatCardModule} from '@angular/material/card'
 
 @NgModule({
   declarations: [							
@@ -66,14 +67,14 @@ import {MatTooltipModule} from '@angular/material/tooltip';
       ChatComponent,
       HomeAdministrationComponent,
       PaymentsAdministrationComponent,
-      NavAdministrationComponent,
       MediaAdministrationComponent,
       AnnouncementsAdministrationComponent,
       PaymentFormComponent,
       DamageComponent,
       UserDirective,
     UserRoleDirective,
-    RegisterUserComponent
+    RegisterUserComponent,
+    RegisterFormComponent
    ],
   imports: [
     RouterModule.forRoot(AppRoutes),
@@ -92,7 +93,9 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatButtonModule,
     ReactiveFormsModule,
     PdfJsViewerModule,
-    MatTooltipModule  
+    MatTooltipModule,
+    CommonModule,
+    MatCardModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

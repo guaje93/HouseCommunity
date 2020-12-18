@@ -46,9 +46,9 @@ namespace HouseCommunity.Controllers
 
 
         [HttpPut("update-contact-data")]
-        public async Task<IActionResult> UpdateUserContactData(UserContactData userContactData)
+        public async Task<IActionResult> UpdateUserContactData(UserDefinedData userContactData)
         {
-            var userFromRepo = await _repo.UpdateUserContactData(userContactData);
+            var userFromRepo = await _repo.UpdateUserDefinedData(userContactData);
 
             if (userFromRepo == null)
                 return Unauthorized();

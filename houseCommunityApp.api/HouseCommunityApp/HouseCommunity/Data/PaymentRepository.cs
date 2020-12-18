@@ -57,22 +57,22 @@ namespace HouseCommunity.Data
 
                 case MediaEnum.ColdWater:
                     {
-                        if (flat.ColdWaterEstimatedUsageForOneHuman > 0)
-                            return flat.ColdWaterEstimatedUsageForOneHuman;
+                        if (flat.ColdWaterEstimatedUsage > 0)
+                            return flat.ColdWaterEstimatedUsage;
                         else
                             return flat.Building.ColdWaterEstimatedUsageForOneHuman;
                     }
                 case MediaEnum.HotWater:
                     {
-                        if (flat.HotWaterEstimatedUsageForOneHuman > 0)
-                            return flat.HotWaterEstimatedUsageForOneHuman;
+                        if (flat.HotWaterEstimatedUsage > 0)
+                            return flat.HotWaterEstimatedUsage;
                         else
                             return flat.Building.HotWaterEstimatedUsageForOneHuman;
                     }
                 case MediaEnum.Heat:
                     {
-                        if (flat.HeatingEstimatedUsageForOneHuman > 0)
-                            return flat.HeatingEstimatedUsageForOneHuman;
+                        if (flat.HeatingEstimatedUsage > 0)
+                            return flat.HeatingEstimatedUsage;
                         else
                             return flat.Building.HeatingEstimatedUsageForOneHuman;
                     }

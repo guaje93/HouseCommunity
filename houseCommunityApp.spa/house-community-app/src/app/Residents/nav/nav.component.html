@@ -3,21 +3,34 @@
 
   <div class="container">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item" routerLinkActive="active">
+      <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
         <a class="nav-link" [routerLink]="['/rent']">Czynsze </a>
       </li>
-      <li class="nav-item" routerLinkActive="active">
+      <li class="nav-item" routerLinkActive="active"  *ngIf="hasAdministrationAccess()">
+        <a class="nav-link" [routerLink]="['/paymentsAdministration']">Czynsze </a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
         <a class="nav-link" [routerLink]="['/media']">Media</a>
       </li>
-      <li class="nav-item" routerLinkActive="active">
+      <li class="nav-item" routerLinkActive="active"  *ngIf="hasAdministrationAccess()">
+        <a class="nav-link" [routerLink]="['/mediaAdministration']">Media</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active"  *ngIf="hasAdministrationAccess()">
+        <a class="nav-link" [routerLink]="['/announcementsAdministration']">Aktualności</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active"  *ngIf="hasUserAccess()">
         <a class="nav-link" [routerLink]="['/news']">Aktualności</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/chat']">Czat</a>
       </li>
-      <li class="nav-item" routerLinkActive="active">
+      <li class="nav-item" routerLinkActive="active" *ngIf="hasHouseManagerAccess()">
         <a class="nav-link" [routerLink]="['/damage']">Usterki</a>
       </li>
+      <li class="nav-item" routerLinkActive="active" *ngIf="hasHouseManagerAccess()">
+        <a class="nav-link" [routerLink]="['/register']">Dodaj użytkownika</a>
+      </li>
+
     </ul>
     <div *ngIf="authService.loggedIn()" class="dropdown" dropdown>
       <a class="btn dropdown-toggle text-light" dropdownToggle>

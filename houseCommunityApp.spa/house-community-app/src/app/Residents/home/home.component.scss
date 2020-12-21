@@ -1,0 +1,44 @@
+.example-card {
+    max-width: 400px;
+    margin: 1em 1em 1em 1em
+  }
+  
+
+  .example-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+  }
+
+  a:link {
+    color: green;
+    background-color: transparent;
+    text-decoration: none;
+  }
+  
+  a:visited {
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: green;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+  
+  a:active {
+    color: green;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+
+  button:hover{
+background: none;
+color: none;
+  }
+
+  button{
+    background: none;
+color: none;      
+}

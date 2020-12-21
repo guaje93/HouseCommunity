@@ -15,5 +15,7 @@ namespace HouseCommunity.Data
         Task<string> GetUserNameById(int id);
         Task<User> ChangePassword(PasswordChangeRequest passwordChangeRequest);
         Task<User> RegisterUser(UserForRegisterDTO userForRegisterDTO);
+        Task<bool> HasAccessToAdministration(int userId);
+
     }
 }

@@ -9,6 +9,7 @@ namespace HouseCommunity.Model
     {
         public int Id { get; set; }
         public ICollection<Flat> Flats { get; set; }
+        public ICollection<Damage> Damages { get; set; }
         public HousingDevelopment HousingDevelopment { get; set; }
         public int HousingDevelopmentId { get; set; }
         public Address Address { get; set; }

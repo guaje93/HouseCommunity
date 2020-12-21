@@ -1,4 +1,5 @@
-﻿using HouseCommunity.Data;
+﻿using AutoMapper;
+using HouseCommunity.Data;
 using HouseCommunity.DTOs;
 using HouseCommunity.Model;
 using HouseCommunity.Request;
@@ -19,11 +20,15 @@ namespace HouseCommunity.Controllers
     {
         private readonly IPaymentRepository _repo;
         private readonly IPayURepository _payURepository;
+        private readonly IAuthRepository _authRepository;
+        private readonly IMapper _mapper;
 
-        public PaymentController(IPaymentRepository paymentRepository, IPayURepository payURepository)
+        public PaymentController(IPaymentRepository paymentRepository, IPayURepository payURepository, IAuthRepository authRepository, IMapper mapper)
         {
             _repo = paymentRepository;
             this._payURepository = payURepository;
+            this._authRepository = authRepository;
+            this._mapper = mapper;
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetNotPerformedPaymentsByUserId(int id)
@@ -98,6 +103,30 @@ namespace HouseCommunity.Controllers
         [HttpPost("calculate-costs/{flatId}")]
         public async Task<IActionResult> GetCalculatedCostsForPayment(int flatId, [FromBody] DateTime date)
         {
+            PaymentDetail paymentDetails = await GeneratePaymentDetails(flatId, date);
+
+            return Ok(paymentDetails);
+        }
+
+        [HttpPost("create-new-payment")]
+        public async Task<IActionResult> CreateNewPayment(PaymentDetailsToCreateEmptyDTO paymentDetailsToCreateEmptyDTO)
+        {
+            var access = await _authRepository.HasAccessToAdministration(paymentDetailsToCreateEmptyDTO.UserId);
+
+            if (!access)
+                return BadRequest("User has no proper priviliges");
+
+            var payments = await _repo.GetPayments(paymentDetailsToCreateEmptyDTO.UserId);
+            if (payments.Any(p => p.Month == paymentDetailsToCreateEmptyDTO.Period.Month && p.Year == paymentDetailsToCreateEmptyDTO.Period.Year))
+                return BadRequest("One payment already created");
+
+            var payment = await _repo.CreateNewPayment(paymentDetailsToCreateEmptyDTO.FlatId, paymentDetailsToCreateEmptyDTO);
+            //_mapper.Map<UserDto>(user);
+            return Ok();
+        }
+
+        private async Task<PaymentDetail> GeneratePaymentDetails(int flatId, DateTime date)
+        {
             var unitCosts = await _repo.GetUnitCostsForFlat(flatId);
             var coldWaterEstimatedUsage = await _repo.GetEstimatedMediaUsage(flatId, MediaEnum.ColdWater);
             var hotWaterEstimatedUsage = await _repo.GetEstimatedMediaUsage(flatId, MediaEnum.HotWater);
@@ -119,36 +148,32 @@ namespace HouseCommunity.Controllers
                 var mediaUsageInLastPeriod = await _repo.GetMediaFromLastPeriod(flatId, date);
                 hotWaterRealUsageInLastPeriod = mediaUsageInLastPeriod.Where(p => p.MediaType == MediaEnum.HotWater).Sum(p => p.CurrentValue);
                 coldWaterRealUsageInLastPeriod = mediaUsageInLastPeriod.Where(p => p.MediaType == MediaEnum.ColdWater).Sum(p => p.CurrentValue);
-                heatingRealUsageInLastPeriod = mediaUsageInLastPeriod.Where(p => p.MediaType == MediaEnum.Heat).Sum(p => p.CurrentValue);        
-            
+                heatingRealUsageInLastPeriod = mediaUsageInLastPeriod.Where(p => p.MediaType == MediaEnum.Heat).Sum(p => p.CurrentValue);
             }
 
             var paymentDetails = new PaymentDetail()
             {
-                AdministrationValue = Math.Round(flatAreaRatio * unitCosts.AdministrationUnitCost,2),
+                AdministrationValue = Math.Round(flatAreaRatio * unitCosts.AdministrationUnitCost, 2),
                 AdministrationDescription = $"Udział powierzchni mieszkania w powierzchni budynku: {flatAreaRatio} * koszt jednostkowy: {unitCosts.AdministrationUnitCost}zł",
-                GarbageValue = Math.Round(residentsAmount * unitCosts.GarbageUnitCost,2),
+                GarbageValue = Math.Round(residentsAmount * unitCosts.GarbageUnitCost, 2),
                 GarbageDescription = $"Liczba mieszkańców: {residentsAmount} * koszt jednostkowy: {unitCosts.GarbageUnitCost}zł",
-                OperatingCostValue = Math.Round(residentsAmount * unitCosts.OperatingUnitCost,2),
+                OperatingCostValue = Math.Round(residentsAmount * unitCosts.OperatingUnitCost, 2),
                 OperatingCostDescription = $"Udział powierzchni mieszkania w powierzchni budynku: {flatAreaRatio} * koszt jednostkowy: {unitCosts.OperatingUnitCost}zł",
-                ColdWaterValue = Math.Round(coldWaterEstimatedUsage * unitCosts.ColdWaterUnitCost,2),
+                ColdWaterValue = Math.Round(coldWaterEstimatedUsage * unitCosts.ColdWaterUnitCost, 2),
                 ColdWaterDescription = $"Prognozowane zużycie zimnej wody/msc: {coldWaterEstimatedUsage}m3 * koszt jednostkowy: {unitCosts.ColdWaterUnitCost}zł/m3",
-                HotWaterValue = Math.Round(hotWaterEstimatedUsage * unitCosts.HotWaterUnitCost,2),
+                HotWaterValue = Math.Round(hotWaterEstimatedUsage * unitCosts.HotWaterUnitCost, 2),
                 HotWaterDescription = $"Prognozowane zużycie ciepłej wody/msc: {hotWaterEstimatedUsage}m3 * koszt jednostkowy: {unitCosts.HotWaterUnitCost}zł/m3",
-                HeatingValue = Math.Round(heatingEstimatedUsage * unitCosts.HeatingUnitCost,2),
+                HeatingValue = Math.Round(heatingEstimatedUsage * unitCosts.HeatingUnitCost, 2),
                 HeatingDescription = $"Prognozowane zużycie energii: {heatingEstimatedUsage}GJ * koszt jednostkowy: {unitCosts.HeatingUnitCost}zł/GJ",
-                HeatingRefundValue = Math.Round((heatingRealUsageInLastPeriod - heatingEstimatedUsageInLastPeriodExceptCurrent - heatingEstimatedUsage) * unitCosts.HeatingUnitCost,2),
+                HeatingRefundValue = Math.Round((heatingRealUsageInLastPeriod - heatingEstimatedUsageInLastPeriodExceptCurrent - heatingEstimatedUsage) * unitCosts.HeatingUnitCost, 2),
                 HeatingRefundDescription = $"(Rzeczywiste zużycie energii: {heatingRealUsageInLastPeriod}GJ (ostatnie pół roku) - Opłacone zużycie energii (ostatnie pół roku): {heatingEstimatedUsageInLastPeriodExceptCurrent + heatingEstimatedUsage}GJ) * koszt jednostkowy: {unitCosts.HeatingUnitCost}zł/GJ",
-                
+
                 WaterRefundValue = Math.Round((hotWaterRealUsageInLastPeriod - hotWaterEstimatedUsageInLastPeriodExceptCurrent - hotWaterEstimatedUsage) * unitCosts.HotWaterUnitCost +
-                                   (coldWaterRealUsageInLastPeriod - coldWaterEstimatedUsageInLastPeriodExceptCurrent - coldWaterEstimatedUsage) * unitCosts.ColdWaterUnitCost,2),
+                                   (coldWaterRealUsageInLastPeriod - coldWaterEstimatedUsageInLastPeriodExceptCurrent - coldWaterEstimatedUsage) * unitCosts.ColdWaterUnitCost, 2),
                 WaterRefundDescription = $"(Rzeczywiste zużycie wody ciepłej (ostatnie pół roku): {hotWaterRealUsageInLastPeriod}m3 - Opłacone zużycie wody ciepłej (ostatnie pół roku): {hotWaterEstimatedUsageInLastPeriodExceptCurrent + hotWaterEstimatedUsage}m3) * koszt jednostkowy: {unitCosts.HotWaterUnitCost}zł/m3 + " +
-                $"(Rzeczywiste zużycie wody zimnej (ostatnie pół roku): {coldWaterRealUsageInLastPeriod}m3 - Opłacone zużycie wody zimnej (ostatnie pół roku): {coldWaterEstimatedUsageInLastPeriodExceptCurrent + coldWaterEstimatedUsage}m3) * koszt jednostkowy: {unitCosts.ColdWaterUnitCost}zł/m3"       
+                $"(Rzeczywiste zużycie wody zimnej (ostatnie pół roku): {coldWaterRealUsageInLastPeriod}m3 - Opłacone zużycie wody zimnej (ostatnie pół roku): {coldWaterEstimatedUsageInLastPeriodExceptCurrent + coldWaterEstimatedUsage}m3) * koszt jednostkowy: {unitCosts.ColdWaterUnitCost}zł/m3"
             };
-            var payment = await _repo.CreateNewPayment(flatId, date, paymentDetails); 
-
-            return Ok();
+            return paymentDetails;
         }
-
     }
 }

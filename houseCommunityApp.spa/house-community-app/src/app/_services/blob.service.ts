@@ -51,8 +51,11 @@ export class BlobService {
     if (fileType === FileTypeEnum.MEDIA) {
       this.containerName = environment.mediaContainerName;
     }
-    else {
+    else if(fileType === FileTypeEnum.ANNOUNCEMENT) {
       this.containerName = environment.announcementContainerName;
+    }
+    else if(fileType === FileTypeEnum.DAMAGE){
+      this.containerName = environment.damageContainerName;
     }
 
     const pipeline = newPipeline(new AnonymousCredential(), {
@@ -103,6 +106,10 @@ export class BlobService {
     req.FileUrl = `https://${this.accountName}.blob.core.windows.net/${this.containerName}/${fileName}`;
     console.log(req);
     return req;
+  }
+
+  getUrl(fileName: string) {
+    return `https://${this.accountName}.blob.core.windows.net/${this.containerName}/${fileName}`;
   }
 
   formatBytes(bytes, decimals = 2): string {

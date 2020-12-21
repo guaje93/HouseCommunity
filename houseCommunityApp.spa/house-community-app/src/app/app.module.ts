@@ -45,6 +45,8 @@ import { RegisterUserComponent } from './buildingOwners/RegisterUser/RegisterUse
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { RegisterFormComponent } from './buildingOwners/registerForm/registerForm.component';
 import {MatCardModule} from '@angular/material/card'
+import { DamageManageComponent } from './BuildingOwners/damageManage/damageManage.component';
+import { DamageInfoComponent } from './BuildingOwners/DamageInfo/DamageInfo.component';
 
 @NgModule({
   declarations: [							
@@ -74,7 +76,9 @@ import {MatCardModule} from '@angular/material/card'
       UserDirective,
     UserRoleDirective,
     RegisterUserComponent,
-    RegisterFormComponent
+    RegisterFormComponent,
+    DamageManageComponent,
+    DamageInfoComponent
    ],
   imports: [
     RouterModule.forRoot(AppRoutes),

@@ -38,8 +38,8 @@ export class PaymentsAdministrationComponent implements OnInit {
     this.getAllusers();
   }
 
-  displayedColumns: string[] = ['Building', 'Generate'];
-  displayedMediaColumns: string[] = ['Type', 'StartDate', 'EndDate', 'Value', 'Accept'];
+  displayedColumns: string[] = ['Building', 'Payment'];
+  displayedPaymentColumns: string[] = ['Name', 'Value', 'Status', 'Action'];
 
   getAllusers() {
     this.users = [];
@@ -48,7 +48,26 @@ export class PaymentsAdministrationComponent implements OnInit {
     this.userService.getAllusers().subscribe(data => {
       this.users = data as any[];
 
-     
+      this.users.forEach(user => {
+        this.paymentService.getPaymentsForUser(user.userId).subscribe(paymentData => {
+          user.paymentList = paymentData;
+          user.paymentList.forEach(payment => {
+            if (payment.paymentStatus == 1)
+            payment.paymentStatus = "Czeka na użykownika";
+            else if (payment.paymentStatus == 2)
+            payment.paymentStatus = "Płatność rozpoczęta";
+            else if (payment.paymentStatus == 3)
+            payment.paymentStatus = "Płatność przerwana";
+            else if (payment.paymentStatus == 4)
+            payment.paymentStatus = "Płatność zakończona";
+            else if (payment.paymentStatus == 5)
+            payment.paymentStatus = "Płatność zaksiegowana";
+          });
+          console.log(this.users);
+        }
+
+        );
+      })
       this.filteredHouseDevelopments = this.users.map(user => {
         let houseDev =
         {
@@ -64,8 +83,26 @@ export class PaymentsAdministrationComponent implements OnInit {
       this.totalNotGeneratedMedia = [];
       this.totalWaitingForBookMedia = [];
       this.totalWaitingForUserMedia = [];
+
+      this.users.forEach(p => {
+        this.paymentService.getPaymentsForUser(p.userId).subscribe(data => {
+          console.log(data);
+          if ((data as any[]).length === 0) this.totalNotGeneratedMedia.push(data);
+          if ((data as any[]).length > 0) {
+            (data as any[]).forEach(element => {
+              if (element.status === 0) this.totalWaitingForUserMedia.push(data);
+              if (element.status === 1) this.totalWaitingForBookMedia.push(data);
+              if (element.status === 2) this.totalBookedMedia.push(data);
+            });
+          }
+
+        })
+      });
+      console.log(this.users);
+      console.log(this.filteredHouseDevelopments);
     });
   }
+    
 
   filterBuildings($event) {
     this.filteredFlats = [];
@@ -96,7 +133,7 @@ export class PaymentsAdministrationComponent implements OnInit {
           flatId: flat.flatId,
           building: flat.address,
           local: flat.localNumber,
-          mediaList: flat.mediaList
+          paymentList: flat.paymentList
         };
         console.log(flat);
         return flat1;
@@ -105,12 +142,21 @@ export class PaymentsAdministrationComponent implements OnInit {
       )));
   }
 
-  generateEmptyPayment(flat: any){
-      this.paymentService.createNewPayment(new Date(), flat.flatId).subscribe(
-        data => 
-        {console.log(data);
-        this.alertifyService.success("Stworzono płatność");
-        }
-        );
+  openDialog(flat: any){
+    const dialogRef = this.dialog.open(PaymentFormComponent, {
+      width: '80%',
+      data: flat
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      console.log('The dialog was closed');
+    });
+  }
+
+    
+    
+
+    unlockPayment(payment: any){
+
     }
   }

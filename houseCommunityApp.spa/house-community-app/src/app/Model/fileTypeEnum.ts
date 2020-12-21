@@ -1,4 +1,5 @@
 
 export enum FileTypeEnum {
-    MEDIA, ANNOUNCEMENT
+  MEDIA, ANNOUNCEMENT,
+  DAMAGE
 }

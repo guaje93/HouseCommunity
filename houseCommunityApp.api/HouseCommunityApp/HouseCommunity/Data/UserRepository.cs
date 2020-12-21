@@ -27,7 +27,7 @@ namespace HouseCommunity.Data
 
         #region Methods
 
-        public async Task<UserForInfoDTO> GetUser(int id)
+        public async Task<User> GetUser(int id)
         {
             var user = await _context.Users.Include(p => p.Flat)
                                            .ThenInclude(p => p.Building)
@@ -37,45 +37,20 @@ namespace HouseCommunity.Data
             if (user == null)
                 return null;
 
-            return new UserForInfoDTO()
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Birthdate = user.Birthdate,
-                Id = user.Id,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Area = user.Flat.Area,
-                ResidentsAmount = user.Flat.ResidentsAmount,
-                ColdWaterEstimatedUsage = user.Flat.ColdWaterEstimatedUsage,
-                HotWaterEstimatedUsage = user.Flat.HotWaterEstimatedUsage,
-                HeatingEstimatedUsage = user.Flat.HeatingEstimatedUsage,
-                ColdWaterUnitCost = user.Flat.Building.Cost.ColdWaterUnitCost,
-                HotWaterUnitCost = user.Flat.Building.Cost.HotWaterUnitCost,
-                HeatingUnitCost = user.Flat.Building.Cost.HeatingUnitCost,
-
-            };
+            return user;
         }
 
-        public async Task<ICollection<ResidentsForListDTO>> GetResidents()
+        public async Task<ICollection<User>> GetUsersWithRole(UserRole userRole)
         {
             var users = await _context.Users
                                       .Include(p => p.Flat)
                                       .ThenInclude(p => p.Building)
-                                      .ThenInclude(p => p.HousingDevelopment)
-                                      .Where(p => p.UserRole == UserRole.Resident)
-                                      .Select(user => new ResidentsForListDTO()
-                                      {
-                                          HousingDevelopmentId = user.Flat.Building.HousingDevelopment.Id,
-                                          HousingDevelopmentName = user.Flat.Building.HousingDevelopment.Name,
-                                          UserId = user.Id,
-                                          UserEmail = user.Email,
-                                          BuildingId = user.Flat.BuildingId,
-                                          FlatId = user.Flat.Id,
-                                          LocalNumber =  user.Flat.FlatNumber, 
-                                          Address = user.Flat.Building.Address.ToString(),
-                                          Name = $"{user.FirstName} {user.LastName}"
-                                      }).ToListAsync();
+                                      .ThenInclude(p => p.Address)
+                                      .Include(p => p.Flat)
+                                      .ThenInclude(p => p.Building)
+                                      .ThenInclude( p => p.HousingDevelopment)
+                                      .Where(p => p.UserRole == userRole)
+                                      .ToListAsync();
             return users;
         }
 

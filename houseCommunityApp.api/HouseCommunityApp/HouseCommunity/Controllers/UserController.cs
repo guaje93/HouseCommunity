@@ -1,6 +1,10 @@
-﻿using HouseCommunity.Data;
+﻿using AutoMapper;
+using HouseCommunity.Data;
+using HouseCommunity.DTOs;
+using HouseCommunity.Model;
 using HouseCommunity.Request;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HouseCommunity.Controllers
@@ -10,10 +14,12 @@ namespace HouseCommunity.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _repo;
+        private readonly IMapper _mapper;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, IMapper mapper)
         {
             _repo = userRepository;
+            _mapper = mapper;
         }
 
 
@@ -27,7 +33,7 @@ namespace HouseCommunity.Controllers
                 return Unauthorized();
 
             return Ok(
-               userFromRepo
+               _mapper.Map<UserForInfoDTO>(userFromRepo)
                );
         }
 
@@ -35,13 +41,14 @@ namespace HouseCommunity.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
 
-            var usersFromRepo = await _repo.GetResidents();
+            var usersFromRepo = await _repo.GetUsersWithRole(UserRole.Resident);
 
             if (usersFromRepo == null)
                 return BadRequest();
 
             return Ok(
-               usersFromRepo);
+               usersFromRepo.Select(p => _mapper.Map<ResidentsForListDTO>(p))
+               );
         }
 
 
@@ -51,10 +58,10 @@ namespace HouseCommunity.Controllers
             var userFromRepo = await _repo.UpdateUserDefinedData(userContactData);
 
             if (userFromRepo == null)
-                return Unauthorized();
+                return BadRequest();
 
             return Ok(
-               userFromRepo
+               _mapper.Map<UserForInfoDTO>(userFromRepo)
                );
         }
     }

@@ -24,8 +24,11 @@
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/chat']">Czat</a>
       </li>
-      <li class="nav-item" routerLinkActive="active" *ngIf="hasHouseManagerAccess()">
+      <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
         <a class="nav-link" [routerLink]="['/damage']">Usterki</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" *ngIf="hasHouseManagerAccess()">
+        <a class="nav-link" [routerLink]="['/damageManage']">Usterki</a>
       </li>
       <li class="nav-item" routerLinkActive="active" *ngIf="hasHouseManagerAccess()">
         <a class="nav-link" [routerLink]="['/register']">Dodaj użytkownika</a>

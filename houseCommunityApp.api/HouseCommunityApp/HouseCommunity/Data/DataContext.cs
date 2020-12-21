@@ -6,7 +6,6 @@ namespace HouseCommunity.Data
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
-
         public DbSet<Flat> Flats { get; set; }
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Address> Addresses { get; set; }
@@ -16,6 +15,10 @@ namespace HouseCommunity.Data
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<HousingDevelopment> HousingDevelopments { get; set; }
         public DbSet<UserAnnouncement> UserAnnouncements { get; set; }
+        public DbSet<Damage> Damages { get; set; }
+        public DbSet<BlobFile> BlobFiles { get; set; }
+        public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
     }
 }

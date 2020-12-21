@@ -1,5 +1,71 @@
 <app-nav></app-nav>
-<div style="position:relative;height:100%; width: 100%; opacity: 0.9; background-color: white;  position:fixed;
-">
-  Damage works!
+<div style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: auto; padding: 3em;">
+    <h2 style="margin: 1em;">Opisz odkrytą szkodę:</h2>
+
+    <div class="container-fluid">
+        <div class="row">
+              <div class="col-md-6">
+                <form>
+                  <mat-form-field appearance="fill">
+                    <mat-label>Nazwa</mat-label>
+                    <input matInput type="text" [(ngModel)]="data.title" name="type" />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill">
+                    <mat-label>Opis</mat-label>
+                    <textarea name="description" [(ngModel)]="data.description" matInput 
+                    cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="10"
+                    cdkAutosizeMaxRows="200"></textarea>
+                  </mat-form-field>
+                </form>
+      
+              </div>
+      
+            <div class="col-md-6">
+
+                <div class="container" appDragAndDrop (fileDropped)="onFileDropped($event)">
+                    <input type="file" #fileDropRef id="fileDropRef" multiple
+                        (change)="fileBrowseHandler($event.target.files)" />
+                    <img src="../../assets/ic-upload-files.svg" alt="">
+                    <h3>Przeciągnij i upuść pliki tutaj</h3>
+                    <h3>lub</h3>
+                    <label for="fileDropRef">Wyszukaj pliki</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="files-list">
+        <h2 style="margin: 1em;"> Lista pilków:</h2>
+        <div class="single-file" *ngFor="let file of files; let i = index">
+            <div class="info">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="info">
+                            <div style="display:inline-block; width: 30%;">
+                                <div style="display: inline-block;">
+
+                                    <img src="../../assets/ic-file.svg" width="45px" alt="file">
+                                </div>
+                                <div>
+
+                                    <h4 class="name">
+                                        {{ file?.name }}
+                                    </h4>
+                                    <p class="size">
+                                        {{ blobService.formatBytes(file?.size) }}
+                                    </p>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="deleteFile(i)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+    <button mat-raised-button color="primary" (click)="addDamage()">Zgłoś</button>
+
+    </div>
 </div>

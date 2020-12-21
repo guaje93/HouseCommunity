@@ -1,0 +1,24 @@
+<div mat-dialog-content>
+  <div>
+    <h2 style="margin-bottom: 2em;">{{data.title}}</h2>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <form>
+            <mat-form-field appearance="fill" style="width: 100%;">
+              <mat-label>Opis</mat-label>
+              <textarea name="description" [(ngModel)]="data.description" matInput
+              cdkTextareaAutosize
+              #autosize="cdkTextareaAutosize"
+              cdkAutosizeMinRows="10"
+              cdkAutosizeMaxRows="200"></textarea>            
+            </mat-form-field>
+          
+          </form>
+           <img *ngFor="let file of data.filesPaths" [src]="file" style="width: 30%; cursor: pointer;" (click)="openImagePreview(file)">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

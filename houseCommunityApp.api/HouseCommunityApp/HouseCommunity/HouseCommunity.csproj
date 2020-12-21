@@ -15,14 +15,22 @@
     <Compile Remove="Migrations\20201202211517_Add cost table.Designer.cs" />
     <Compile Remove="Migrations\20201202211734_Add cost table.cs" />
     <Compile Remove="Migrations\20201202211734_Add cost table.Designer.cs" />
+    <Compile Remove="Migrations\20201220205734_Add damage.cs" />
+    <Compile Remove="Migrations\20201220205734_Add damage.Designer.cs" />
+    <Compile Remove="Migrations\20201221135950_Add chat.cs" />
+    <Compile Remove="Migrations\20201221135950_Add chat.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.6.0" />
     <PackageReference Include="Azure.Storage.Common" Version="12.5.2" />
     <PackageReference Include="MailKit" Version="2.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">

@@ -31,6 +31,7 @@ hasRole(role: Role) {
         const user = response;
         if (user) {
           localStorage.setItem('token', user.token);
+          localStorage.setItem('role', user.user.userRole);
           this.decodedToken = this.jwtHelper.decodeToken(user.token);
           this.user = new User();
           this.user.token = user.token;

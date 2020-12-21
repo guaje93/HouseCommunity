@@ -136,6 +136,11 @@ namespace HouseCommunity.Data
             return user;
         }
 
+        public async Task<bool> HasAccessToAdministration(int userId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(p => p.Id == userId);
+            return user.UserRole == UserRole.Administrator;
+        }
 
 
 

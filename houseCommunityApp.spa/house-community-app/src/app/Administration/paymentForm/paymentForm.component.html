@@ -1,33 +1,94 @@
 <div style="display: block;">
       <form style="display: block;">
-        <mat-form-field appearance="fill">
-          <mat-label>Woda zimna:</mat-label>
-          <input matInput type="text" name="coldWater" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Woda ciepła</mat-label>
-          <input matInput type="number" name="hotWater" disabled />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Ogrzewanie</mat-label>
-          <input matInput name="heating" type="number" [min]='data.LastValue' />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Wywóz śmieci</mat-label>
-          <input matInput name="garbage" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Fundusz remontowy</mat-label>
-          <input matInput name="renovation" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Administracja</mat-label>
-          <input matInput name="administration" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Koszty eksploatacyjne</mat-label>
-          <input matInput name="operatingCosts" />
-        </mat-form-field>
+        <div style="display: flex;">
+          <mat-form-field appearance="fill">
+            <mat-label>Woda zimna (zł):</mat-label>
+            <input matInput type="number" name="coldWater"  [(value)]="paymentData.coldWaterValue" />
+          </mat-form-field>
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Opis:</mat-label>
+            <input matInput type="text" name="coldWaterDescription" [(value)]="paymentData.coldWaterDescription" />
+          </mat-form-field>
+        </div>
+        <div style="display: flex;">
+          <mat-form-field appearance="fill">
+            <mat-label>Woda ciepła (zł):</mat-label>
+            <input matInput type="number" name="hotWater"  [(value)]="paymentData.hotWaterValue" />
+          </mat-form-field>
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Opis:</mat-label>
+            <input matInput type="text" name="hotWaterDescription" [(value)]="paymentData.hotWaterDescription"  />
+          </mat-form-field>
+        </div>
+        <div style="display: flex;">
+          <mat-form-field appearance="fill">
+            <mat-label>Ogrzewanie (zł):</mat-label>
+            <input matInput type="text" name="heating" [(value)]="paymentData.heatingValue"  />
+          </mat-form-field>
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Opis:</mat-label>
+            <input matInput type="text" name="heatingDescription" [(value)]="paymentData.heatingDescription"  />
+          </mat-form-field>
+        </div>
+        <div style="display: flex;">
+          <mat-form-field appearance="fill">
+            <mat-label>Wywóz śmieci (zł):</mat-label>
+            <input matInput type="text" name="garbage" [(value)]="paymentData.garbageValue"  />
+          </mat-form-field>
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Opis:</mat-label>
+            <input matInput type="text" name="heatingDescription" [(value)]="paymentData.garbageDescription"  />
+          </mat-form-field>
+        </div>
+       
+        <div style="display: flex;">
+
+          <mat-form-field appearance="fill">
+            <mat-label>Administracja (zł):</mat-label>
+            <input matInput name="administration" [(value)]="paymentData.administrationValue" />
+          </mat-form-field>
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Opis:</mat-label>
+            <input matInput name="administrationDescription" [(value)]="paymentData.administrationDescription"/>
+          </mat-form-field>
+        </div>
+        <div style="display: flex;">
+
+          <mat-form-field appearance="fill">
+            <mat-label>Koszty eksploatacyjne (zł):</mat-label>
+            <input matInput name="operatingCosts" [(value)]="paymentData.operatingCostValue" />
+          </mat-form-field>
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Opis:</mat-label>
+            <input matInput name="operatingCosts" [(value)]="paymentData.operatingCostDescription" />
+          </mat-form-field>
+        </div>
+
+        <div style="display: flex;">
+
+          <mat-form-field appearance="fill">
+            <mat-label>Wyrównanie za wodę (zł):</mat-label>
+            <input matInput name="waterRefund" [(value)]="paymentData.waterRefundValue" />
+          </mat-form-field>
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Opis:</mat-label>
+            <input matInput name="waterRefundDescription" [(value)]="paymentData.waterRefundDescription" />
+          </mat-form-field>
+        </div>
+
+        <div style="display: flex;">
+
+          <mat-form-field appearance="fill">
+            <mat-label>Wyrównanie za ogrzewanie (zł):</mat-label>
+            <input matInput name="heatingRefund" [(value)]="paymentData.heatingRefundValue" />
+          </mat-form-field>
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Opis:</mat-label>
+            <input matInput name="heatingRefundDescription" [(value)]="paymentData.heatingRefundDescription" />
+          </mat-form-field>
+        </div>
+        <button class="btn-primary"
+        (click)="addPayment()">Upload plików</button>
       </form>
 
     </div>

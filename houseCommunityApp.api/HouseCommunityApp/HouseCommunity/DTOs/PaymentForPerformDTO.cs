@@ -15,5 +15,7 @@ namespace HouseCommunity.DTOs
         public DateTime PaymentDeadline { get; set; }
         public DateTime ? PaymentBookDate { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
     }
 }

@@ -17,7 +17,11 @@ createNewOrder(element: any) {
   return this.http.post(this.baseUrl + 'create-new-order',element);
 }
 
-createNewPayment(element: Date, id: number) {
+createNewPayment(paymentData: any) {
+  return this.http.post(this.baseUrl + 'create-new-payment/', paymentData);
+}
+
+getPaymentDetails(element: Date, id: number) {
   return this.http.post(this.baseUrl + 'calculate-costs/' + id, element);
 }
 }

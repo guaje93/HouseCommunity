@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { Role } from 'src/app/Model/Role';
+import { AlertifyService } from 'src/app/_services/alertify.service';
+import { AuthService } from 'src/app/_services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +12,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  Role: Role;
+  constructor(
+    public authService: AuthService,
+    private alertifyService: AlertifyService,
+    private router: Router,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit() {
   }
+  hasAdministrationAccess(){
+    return this.authService.user.role === Role.Admin;
+  }
 
+  hasHouseManagerAccess(){
+    return this.authService.user.role === Role.HouseManager;
+  }
+
+  hasUserAccess(){
+    return this.authService.user.role === Role.User;
+  }
 }

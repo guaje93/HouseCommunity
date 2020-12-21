@@ -18,6 +18,7 @@ namespace HouseCommunity.Model
         public string Email { get; set; }
         public UserRole UserRole { get; set; }
         public ICollection<UserAnnouncement> UserAnnouncements { get; set; }
+        public ICollection<UserConversation> UserConversations { get; set; }
         public Flat Flat { get; set; }
     }
 }

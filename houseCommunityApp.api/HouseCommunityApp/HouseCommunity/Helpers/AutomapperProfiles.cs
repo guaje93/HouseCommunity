@@ -36,6 +36,9 @@ namespace HouseCommunity.Helpers
             CreateMap<Damage, GetDamageForHouseManagerDTO>().ForMember(dest => dest.User, opt => opt.MapFrom(source => $"{source.RequestCreator.FirstName} {source.RequestCreator.LastName}, Mieszkanie nr {source.RequestCreator.Flat.FlatNumber}"))
                                                             .ForMember(dest => dest.FilesPaths, opt => opt.MapFrom(source => source.BlobFiles.Select(p => p.FileUrl)));
 
+            CreateMap<Message, MessageDTO>();
+
+
             //FirstName = user.FirstName,
             //    LastName = user.LastName,
             //    Birthdate = user.Birthdate,

@@ -40,6 +40,18 @@ namespace HouseCommunity.Data
             return user;
         }
 
+        public async Task<ICollection<User>> GetUsers()
+        {
+            var users = await _context.Users
+                                      .Include(p => p.Flat)
+                                      .ThenInclude(p => p.Building)
+                                      .ThenInclude(p => p.Address)
+                                      .Include(p => p.Flat)
+                                      .ThenInclude(p => p.Building)
+                                      .ThenInclude(p => p.HousingDevelopment).ToListAsync();      
+            return users;
+        }
+
         public async Task<ICollection<User>> GetUsersWithRole(UserRole userRole)
         {
             var users = await _context.Users

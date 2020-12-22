@@ -71,6 +71,7 @@ namespace HouseCommunity
             services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
             services.AddScoped<IBuildingRepository, BuildingRepository>();
             services.AddScoped<IDamageRepository, DamageRepository>();
+            services.AddScoped<IChatRepository, ChatRepository>();
             services.AddSignalR();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
             {

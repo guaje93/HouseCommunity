@@ -2,6 +2,7 @@
 {
     public enum ChatType
     {
-        PRIVATE, BUILDING, COMMUNITY, ADMINISTRATION, HOUSEMANAGERS
+        PRIVATE = 1, 
+        GROUP = 2
     }
 }

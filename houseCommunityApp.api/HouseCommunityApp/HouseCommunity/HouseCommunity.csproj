@@ -19,6 +19,8 @@
     <Compile Remove="Migrations\20201220205734_Add damage.Designer.cs" />
     <Compile Remove="Migrations\20201221135950_Add chat.cs" />
     <Compile Remove="Migrations\20201221135950_Add chat.Designer.cs" />
+    <Compile Remove="Migrations\20201222112511_Change message id.cs" />
+    <Compile Remove="Migrations\20201222112511_Change message id.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

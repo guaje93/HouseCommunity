@@ -19,6 +19,7 @@ namespace HouseCommunity.Data
         public DbSet<BlobFile> BlobFiles { get; set; }
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<UserConversation> UserConversations{ get; set; }
 
     }
 }

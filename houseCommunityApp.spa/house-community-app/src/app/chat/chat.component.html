@@ -1,46 +1,86 @@
 <div>
   <app-nav></app-nav>
-  <div style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: auto; padding: 3em;">
-      <h2 style="margin-bottom: 2em;">Czat</h2>
-      <div class="container">  
-        <h3 class=" text-center chat_header">Chat Application</h3>  
-        <div class="messaging">  
-          <div class="inbox_msg">  
-            <div class="mesgs">  
-              <div class="msg_history">  
-                <div *ngFor="let msg of messages">  
-                <div class="incoming_msg" *ngIf="msg.type == 'received'">  
-                  <div class="incoming_msg_img"> </div>  
-                  <div class="received_msg">  
-                    <div class="received_withd_msg">  
-                      <p>  
-                       {{msg.message}}   
-                      </p>  
-                      <span class="time_date"> {{msg.date | date:'medium'}} </span>  
-                    </div>  
-                  </div>  
-                </div>  
-                <div class="outgoing_msg" *ngIf="msg.type == 'sent'">  
-                  <div class="sent_msg">  
-                    <p>  
-                        {{msg.message}}   
-                    </p>  
-                    <span class="time_date"> {{msg.date | date:'medium'}}</span>  
-                  </div>  
-                </div>  
-              </div>  
-              </div>  
-              <div class="type_msg">  
-                <div class="input_msg_write">  
-                  <input type="text" class="write_msg" [value]="txtMessage"  
-                  (input)="txtMessage=$event.target.value" (keydown.enter)="sendMessage()" placeholder="Type a message" />  
-                  <button class="msg_send_btn" type="button"  (click)="sendMessage()"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>  
-                </div>  
-              </div>  
-            </div>  
-          </div>  
-        
-        </div>  
-      </div>  
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-md-4" style="background-color: white;">
+        <mat-radio-group aria-labelledby="example-radio-group-label" [(ngModel)]="option" (change)="optionChange()"  class="example-radio-group">
+          <mat-radio-button class="example-radio-button" value="0">
+            Budynek
+          </mat-radio-button>
+          <mat-radio-button class="example-radio-button" value="1">
+            Osiedle
+          </mat-radio-button>
+          <mat-radio-button class="example-radio-button" value="2">
+            Zarządcy
+          </mat-radio-button>
+          <mat-radio-button class="example-radio-button" value="3">
+            Administracja
+          </mat-radio-button>
+          <mat-radio-button class="example-radio-button" value="4">
+            Grupy
+          </mat-radio-button>
+        </mat-radio-group>
+        <mat-card class="example-card" *ngFor="let conversation of filteredConversations; trackBy: trackItem">
+
+          <mat-card-header style="padding: 1px;">
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>{{conversation.firstName}} {{conversation.lastName}}</mat-card-title>
+            <mat-card-subtitle>{{conversation.type}}</mat-card-subtitle>
+            <div class="example-button-container" style="text-align: right;">
+              <button mat-mini-fab color="warn" style="right: 0px;" aria-label="Example icon button with a plus one icon" (click)="loadPrivateChat(conversation.id, conversation.firstName, conversation.lastName)">
+                <mat-icon>launch</mat-icon>
+              </button>
+            </div>
+          </mat-card-header>
+                </mat-card>
+      </div>
+
+      <div class="col-md-8"
+        style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: auto; padding: 3em;">
+        <h2 style="margin-bottom: 2em;">Rozmowa z {{sender}}</h2>
+        <div class="container">
+          <div class="messaging">
+            <div class="inbox_msg">
+              <div class="mesgs">
+                <div class="msg_history">
+                  <div *ngFor="let msg of messages">
+                    <div class="incoming_msg" *ngIf="msg.type == 'received'">
+                      <div class="incoming_msg_img"> </div>
+                      <div class="received_msg">
+                        <div class="received_withd_msg">
+                          <p>
+                            {{msg.message}}
+                          </p>
+                          <span class="time_date"> {{msg.date | date:'medium'}} </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="outgoing_msg" *ngIf="msg.type == 'sent'">
+                      <div class="sent_msg">
+                        <p>
+                          {{msg.message}}
+                        </p>
+                        <span class="time_date"> {{msg.date | date:'medium'}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="type_msg">
+                  <div class="input_msg_write">
+                    <input type="text" class="write_msg" [value]="txtMessage" (input)="txtMessage=$event.target.value"
+                      (keydown.enter)="sendMessage()" placeholder="Wyślij wiadomość" />
+                      <button mat-mini-fab color="primary" style="right: 0px;" aria-label="Example icon button with a plus one icon" (click)="sendMessage()">
+                        <mat-icon>mail</mat-icon>
+                      </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

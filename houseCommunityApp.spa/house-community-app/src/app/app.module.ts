@@ -47,6 +47,7 @@ import { RegisterFormComponent } from './buildingOwners/registerForm/registerFor
 import {MatCardModule} from '@angular/material/card'
 import { DamageManageComponent } from './BuildingOwners/damageManage/damageManage.component';
 import { DamageInfoComponent } from './BuildingOwners/DamageInfo/DamageInfo.component';
+import {MatRadioModule} from '@angular/material/radio'
 
 @NgModule({
   declarations: [							
@@ -99,7 +100,8 @@ import { DamageInfoComponent } from './BuildingOwners/DamageInfo/DamageInfo.comp
     PdfJsViewerModule,
     MatTooltipModule,
     CommonModule,
-    MatCardModule
+    MatCardModule,
+    MatRadioModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

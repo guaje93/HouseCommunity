@@ -11,6 +11,7 @@ namespace HouseCommunity.Request
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public int ResidentsAmount{ get; set; }
+        public string AvatarUrl { get; set; }
         public double ColdWaterEstimatedUsage { get; set; }
         public double HotWaterEstimatedUsage { get; set; }
         public double HeatingEstimatedUsage { get; set; }

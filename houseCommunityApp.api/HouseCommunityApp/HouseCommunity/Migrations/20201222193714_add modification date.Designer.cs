@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HouseCommunity.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201111104151_Update database schema. Add building, flat tables")]
-    partial class UpdatedatabaseschemaAddbuildingflattables
+    [Migration("20201222193714_add modification date")]
+    partial class addmodificationdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -75,6 +75,29 @@ namespace HouseCommunity.Migrations
                     b.ToTable("Announcements");
                 });
 
+            modelBuilder.Entity("HouseCommunity.Model.BlobFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DamageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DamageId");
+
+                    b.ToTable("BlobFiles");
+                });
+
             modelBuilder.Entity("HouseCommunity.Model.Building", b =>
                 {
                     b.Property<int>("Id")
@@ -85,6 +108,21 @@ namespace HouseCommunity.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
+                    b.Property<double>("ColdWaterEstimatedUsageForOneHuman")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("CostId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("HeatingEstimatedUsageForOneHuman")
+                        .HasColumnType("float");
+
+                    b.Property<double>("HotWaterEstimatedUsageForOneHuman")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("HouseManagerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("HousingDevelopmentId")
                         .HasColumnType("int");
 
@@ -92,9 +130,98 @@ namespace HouseCommunity.Migrations
 
                     b.HasIndex("AddressId");
 
+                    b.HasIndex("CostId");
+
+                    b.HasIndex("HouseManagerId");
+
                     b.HasIndex("HousingDevelopmentId");
 
                     b.ToTable("Buildings");
+                });
+
+            modelBuilder.Entity("HouseCommunity.Model.Conversation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Conversations");
+                });
+
+            modelBuilder.Entity("HouseCommunity.Model.Cost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("AdministrationUnitCost")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ColdWaterUnitCost")
+                        .HasColumnType("float");
+
+                    b.Property<double>("GarbageUnitCost")
+                        .HasColumnType("float");
+
+                    b.Property<double>("HeatingUnitCost")
+                        .HasColumnType("float");
+
+                    b.Property<double>("HotWaterUnitCost")
+                        .HasColumnType("float");
+
+                    b.Property<double>("OperatingUnitCost")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cost");
+                });
+
+            modelBuilder.Entity("HouseCommunity.Model.Damage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BuildingId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RequestCreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuildingId");
+
+                    b.HasIndex("RequestCreatorId");
+
+                    b.ToTable("Damages");
                 });
 
             modelBuilder.Entity("HouseCommunity.Model.Flat", b =>
@@ -104,11 +231,26 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<double>("Area")
+                        .HasColumnType("float");
+
                     b.Property<int>("BuildingId")
                         .HasColumnType("int");
 
+                    b.Property<double>("ColdWaterEstimatedUsage")
+                        .HasColumnType("float");
+
                     b.Property<string>("FlatNumber")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("HeatingEstimatedUsage")
+                        .HasColumnType("float");
+
+                    b.Property<double>("HotWaterEstimatedUsage")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ResidentsAmount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -139,14 +281,17 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("AcceptanceDate")
+                    b.Property<DateTime?>("AcceptanceDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("CreationDate")
+                    b.Property<DateTime?>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<double>("CurrentValue")
                         .HasColumnType("float");
+
+                    b.Property<DateTime>("EndPeriodDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FileName")
                         .HasColumnType("nvarchar(max)");
@@ -157,7 +302,16 @@ namespace HouseCommunity.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("LastValue")
+                        .HasColumnType("float");
+
                     b.Property<int>("MediaType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartPeriodDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("UserDescription")
@@ -170,6 +324,34 @@ namespace HouseCommunity.Migrations
                     b.ToTable("MediaHistory");
                 });
 
+            modelBuilder.Entity("HouseCommunity.Model.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SenderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("HouseCommunity.Model.Payment", b =>
                 {
                     b.Property<int>("Id")
@@ -177,13 +359,13 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("BookStatus")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("DetailsId")
                         .HasColumnType("int");
 
                     b.Property<int?>("FlatId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Month")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -198,14 +380,17 @@ namespace HouseCommunity.Migrations
                     b.Property<DateTime>("PaymentDeadline")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PaymentStatus")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<double>("Value")
                         .HasColumnType("float");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -223,14 +408,53 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description")
+                    b.Property<string>("AdministrationDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<double>("AdministrationValue")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ColdWaterDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Period")
+                    b.Property<double>("ColdWaterValue")
+                        .HasColumnType("float");
+
+                    b.Property<string>("GarbageDescription")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("GarbageValue")
+                        .HasColumnType("float");
+
+                    b.Property<string>("HeatingDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeatingRefundDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("HeatingRefundValue")
+                        .HasColumnType("float");
+
+                    b.Property<double>("HeatingValue")
+                        .HasColumnType("float");
+
+                    b.Property<string>("HotWaterDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("HotWaterValue")
+                        .HasColumnType("float");
+
+                    b.Property<string>("OperatingCostDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("OperatingCostValue")
+                        .HasColumnType("float");
+
+                    b.Property<string>("WaterRefundDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("WaterRefundValue")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -243,6 +467,9 @@ namespace HouseCommunity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Birthdate")
                         .HasColumnType("datetime2");
@@ -303,6 +530,42 @@ namespace HouseCommunity.Migrations
                     b.ToTable("UserAnnouncements");
                 });
 
+            modelBuilder.Entity("HouseCommunity.Model.UserConversation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LastMessageReadId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.HasIndex("LastMessageReadId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserConversations");
+                });
+
+            modelBuilder.Entity("HouseCommunity.Model.BlobFile", b =>
+                {
+                    b.HasOne("HouseCommunity.Model.Damage", null)
+                        .WithMany("BlobFiles")
+                        .HasForeignKey("DamageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("HouseCommunity.Model.Building", b =>
                 {
                     b.HasOne("HouseCommunity.Model.Address", "Address")
@@ -311,11 +574,30 @@ namespace HouseCommunity.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HouseCommunity.Model.Cost", "Cost")
+                        .WithMany()
+                        .HasForeignKey("CostId");
+
+                    b.HasOne("HouseCommunity.Model.User", "HouseManager")
+                        .WithMany()
+                        .HasForeignKey("HouseManagerId");
+
                     b.HasOne("HouseCommunity.Model.HousingDevelopment", "HousingDevelopment")
                         .WithMany("Buildings")
                         .HasForeignKey("HousingDevelopmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HouseCommunity.Model.Damage", b =>
+                {
+                    b.HasOne("HouseCommunity.Model.Building", "Building")
+                        .WithMany("Damages")
+                        .HasForeignKey("BuildingId");
+
+                    b.HasOne("HouseCommunity.Model.User", "RequestCreator")
+                        .WithMany()
+                        .HasForeignKey("RequestCreatorId");
                 });
 
             modelBuilder.Entity("HouseCommunity.Model.Flat", b =>
@@ -332,6 +614,17 @@ namespace HouseCommunity.Migrations
                     b.HasOne("HouseCommunity.Model.Flat", "Flat")
                         .WithMany("MediaHistory")
                         .HasForeignKey("FlatId");
+                });
+
+            modelBuilder.Entity("HouseCommunity.Model.Message", b =>
+                {
+                    b.HasOne("HouseCommunity.Model.Conversation", "Conversation")
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId");
+
+                    b.HasOne("HouseCommunity.Model.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId");
                 });
 
             modelBuilder.Entity("HouseCommunity.Model.Payment", b =>
@@ -365,6 +658,21 @@ namespace HouseCommunity.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HouseCommunity.Model.UserConversation", b =>
+                {
+                    b.HasOne("HouseCommunity.Model.Conversation", "Conversation")
+                        .WithMany("Users")
+                        .HasForeignKey("ConversationId");
+
+                    b.HasOne("HouseCommunity.Model.Message", "LastMessageRead")
+                        .WithMany()
+                        .HasForeignKey("LastMessageReadId");
+
+                    b.HasOne("HouseCommunity.Model.User", "User")
+                        .WithMany("UserConversations")
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

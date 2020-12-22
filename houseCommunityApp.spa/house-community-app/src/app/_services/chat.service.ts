@@ -60,6 +60,10 @@ return this.http.get(this.baseUrl + id);
     return this.http.get(this.baseUrl + "get-messages/" + id + '/' + userId);
       }
 
+      public readMessage(model: any){
+        return this.http.post(this.baseUrl + "read-message/", model);
+          }
+
       public saveMessage(conversationId: number, userId: number, receiverId: number, message: Message){
         let model: any={};
         model.conversationId = conversationId;

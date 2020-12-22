@@ -51,12 +51,21 @@ export class ChatComponent implements OnInit {
         type: this.MapType(type),
         firstName: c.firstName,
         lastName: c.lastName,
-        isBuildingSame: c.isBuildingSame
+        isBuildingSame: c.isBuildingSame,
+        avatarUrl: c.avatarUrl,
+        notReadMessages: c.notReadMessages,
+        modificationDate: c.modificationDate
       };
       return conv;
-    }
-    );
+    }).sort((a, b) => {
+      if (a.modificationDate === b.modificationDate) { return 0; }
+      else if (a.modificationDate === null) { return 1; }
+      else if (b.modificationDate === null) { return -1; }
+      else { return a.modificationDate > b.modificationDate ? -1 : 1; }
+    });
+
   }
+
   MapType(type: number): string {
     switch (type) {
       case 1: { return "Mieszkaniec" }
@@ -73,41 +82,48 @@ export class ChatComponent implements OnInit {
       this.message.message = this.txtMessage;
       this.message.date = new Date();
       this.messages.push(this.message);
-      this.chatService.sendMessage(this.message);
-      this.txtMessage = '';
+
       this.chatService.saveMessage(this.currentChatId, this.authService.decodedToken.nameid, this.senderId, this.message).subscribe(data => {
 
       });
     }
   }
-  public trackItem (index: number, item: any) {
+  public trackItem(index: number, item: any) {
     return item.id;
   }
 
-loadPrivateChat(id: number, firstName: string, lastName: string){
+  loadPrivateChat(element: any) {
 
-  this.chatService.loadMessages(id,this.authService.decodedToken.nameid).subscribe(data => {
-  console.log(data);
-  this.sender = firstName + " " + lastName;
-  this.senderId = id;
-  this.messages= [];
-  this.currentChatId = (data as any)?.id;
-  console.log(this.currentChatId);
-  if(data as any[]){
+    this.chatService.loadMessages(element.id, this.authService.decodedToken.nameid).subscribe(data => {
+      console.log(data);
+      this.sender = element.firstName + " " + element.lastName;
+      this.senderId = element.id;
+      this.messages = [];
+      this.currentChatId = (data as any)?.id;
+      console.log(this.currentChatId);
+      if(this.currentChatId){
+        let model: any = {};
+        model.userId = this.authService.decodedToken.nameid;
+        model.conversationId = this.currentChatId;
+        this.chatService.readMessage(model).subscribe(data => 
+          console.log(data))
+      }
+      if (data as any[]) {
 
-    (data as any).messages.forEach(element => {
-      let message= new Message();
-      message.date = element.date;
-      message.message = element.content;
-      message.type = element.type;
-      this.messages.push(message);
-    });
-    this.changeDetection.detectChanges();
+        (data as any).messages.forEach(element => {
+          let message = new Message();
+          message.date = element.date;
+          message.message = element.content;
+          message.type = element.type;
+          this.messages.push(message);
+        });
+        element.notReadMessages = 0;
+        this.changeDetection.detectChanges();
+      }
+
+      console.log(this.messages)
+    })
   }
-
-  console.log(this.messages)
-})
-}
 
   optionChange() {
     console.log(this.option);
@@ -136,8 +152,10 @@ loadPrivateChat(id: number, firstName: string, lastName: string){
           this.changeDetection.detectChanges();
           break;
         }
-      }
+    }
   }
+
+
 
   private subscribeToEvents(): void {
 

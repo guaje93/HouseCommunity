@@ -57,6 +57,9 @@ export class BlobService {
     else if(fileType === FileTypeEnum.DAMAGE){
       this.containerName = environment.damageContainerName;
     }
+    else if(fileType === FileTypeEnum.AVATAR){
+      this.containerName = environment.avatarContainerName;
+    }
 
     const pipeline = newPipeline(new AnonymousCredential(), {
       retryOptions: { maxTries: 4 }, // Retry options

@@ -9,7 +9,7 @@ namespace HouseCommunity.Data
     public interface IUserRepository
     {
         Task<User> GetUser(int id);
-        Task<ICollection<User>> GetUsers();
+        ICollection<User> GetUsers();
         Task<User> UpdateUserDefinedData(UserDefinedData userContactData);
         Task<ICollection<User>> GetUsersWithRole(UserRole userRole);
     }

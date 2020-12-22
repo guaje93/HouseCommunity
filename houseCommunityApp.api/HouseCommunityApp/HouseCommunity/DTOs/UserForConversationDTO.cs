@@ -1,4 +1,5 @@
-﻿using HouseCommunity.Model;
+﻿using System;
+using HouseCommunity.Model;
 
 namespace HouseCommunity.DTOs
 {
@@ -10,5 +11,8 @@ namespace HouseCommunity.DTOs
         public string LastName { get; set; }
         public UserRole UserRole { get; set; }
         public bool IsBuildingSame { get; internal set; }
+        public string AvatarUrl { get; internal set; }
+        public int? NotReadMessages { get; internal set; }
+        public DateTime? ModificationDate { get; internal set; }
     }
 }

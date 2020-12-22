@@ -1,5 +1,4 @@
 .example-header-image {
-    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
     background-size: cover;
   }
 
@@ -41,5 +40,16 @@ margin-left: auto;
     opacity: 1;
     border-width: 0.1rem;
     height: 2.5em;
+}
+.example-button-container{
+    right: 0;
+    position: absolute;
+    width: auto;
+}
+
+.example-radio-button{
+    margin: 5px;
+    margin-bottom: 2em;
+
 }
 

@@ -28,18 +28,39 @@ namespace HouseCommunity.Controllers
         public async Task<IActionResult> GetConversations(int userId)
         {
             var userFromRepo = await _userRepository.GetUser(userId);
-            var users = (await _userRepository.GetUsers()).Where(p => p.Id != userId);
-            return Ok(users.Select(user => new UserForConversationDTO()
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserName = user.UserName,
-                UserRole = user.UserRole,
-                IsBuildingSame = user.Flat?.BuildingId == userFromRepo.Flat?.BuildingId
+            var users = (_userRepository.GetUsers()).Where(p => p.Id != userId);
 
-            }).ToList()
-            );
+            var conversations = (await _chatRepository.GetConversations(userId)).Select(p => p.Conversation);
+            return Ok(users.Select(user =>
+            {
+                var inner = (_chatRepository.GetConversations(user.Id)).GetAwaiter().GetResult().Select(p => p.Conversation);
+
+                var conversation = inner.Intersect(conversations).FirstOrDefault();
+                var lastReadMessage = conversation?.Users.FirstOrDefault(p => p.User.Id == userId)?.LastMessageRead;
+                return new UserForConversationDTO()
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserName = user.UserName,
+                    UserRole = user.UserRole,
+                    IsBuildingSame = user.Flat?.BuildingId == userFromRepo.Flat?.BuildingId,
+                    AvatarUrl = user.AvatarUrl ?? @"https://housecommunitystorage.blob.core.windows.net/avatarcontainer/user_avatar.png",
+                    NotReadMessages = conversation?.Messages.Where(p => p.Sender.Id == user.Id && p.Date > (lastReadMessage?.Date ?? DateTime.MinValue)).Count(),
+                    ModificationDate = conversation?.ModificationDate
+                };
+            }
+            ));
+        }
+
+        [HttpPost("read-message")]
+        public async Task<IActionResult> ReadMessage(ReadMessageDTO readMessageDTO)
+        {
+            var userFromRepo = await _userRepository.GetUser(readMessageDTO.UserId);
+            var conversation = await _chatRepository.GetConversation(readMessageDTO.ConversationId);
+
+            var userConservation = await _chatRepository.UpdateLastReadMessage(conversation, userFromRepo,conversation.Messages.OrderByDescending(p => p.Date).FirstOrDefault());
+            return Ok();
         }
 
         [HttpPost("save-message")]
@@ -47,8 +68,8 @@ namespace HouseCommunity.Controllers
         {
 
             var userFromRepo = await _userRepository.GetUser(message.UserId);
-            var conversation = await _chatRepository.GetConversation(message.ConversationId);  
-            if(conversation != null)
+            var conversation = await _chatRepository.GetConversation(message.ConversationId);
+            if (conversation != null)
             {
                 await _chatRepository.SaveMessage(conversation, message, userFromRepo);
             }
@@ -58,7 +79,7 @@ namespace HouseCommunity.Controllers
                 await _chatRepository.SaveMessage(conversation, message, userFromRepo);
 
             }
-            var users = (await _userRepository.GetUsers()).Where(p => p.Id != message.UserId);
+            var users = (_userRepository.GetUsers()).Where(p => p.Id != message.UserId);
             return Ok(users.Select(user => new UserForConversationDTO()
             {
                 Id = user.Id,
@@ -66,12 +87,12 @@ namespace HouseCommunity.Controllers
                 LastName = user.LastName,
                 UserName = user.UserName,
                 UserRole = user.UserRole,
+                AvatarUrl = user.AvatarUrl ?? @"https://housecommunitystorage.blob.core.windows.net/avatarcontainer/user_avatar.png",
                 IsBuildingSame = user.Flat?.BuildingId == userFromRepo.Flat?.BuildingId
 
             }).ToList()
             );
         }
-
 
         [HttpGet("get-messages/{id}/{userId}")]
         public async Task<IActionResult> GetMessages(int id, int userId)
@@ -92,7 +113,7 @@ namespace HouseCommunity.Controllers
                     msg.Type = p.Sender.Id == userId ? "sent" : "received";
                     return msg;
                 });
-
+                await _chatRepository.UpdateLastReadMessage(conversation.FirstOrDefault(), userFromRepo, messages.OrderByDescending(p => p.Date).FirstOrDefault());
                 return Ok(new
                 {
                     Id = conversation.First().Id,

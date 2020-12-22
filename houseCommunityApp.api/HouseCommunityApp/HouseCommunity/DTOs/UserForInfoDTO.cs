@@ -15,6 +15,7 @@ namespace HouseCommunity.DTOs
         public string Email { get; set; }
         public double Area { get; set; }
         public int ResidentsAmount { get; set; }
+        public string AvatarUrl{ get; set; }
         public double ColdWaterEstimatedUsage { get; set; }
         public double ColdWaterUnitCost{ get; set; }
         public double HotWaterEstimatedUsage { get; set; }

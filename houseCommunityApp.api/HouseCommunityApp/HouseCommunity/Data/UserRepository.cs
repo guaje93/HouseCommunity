@@ -40,15 +40,15 @@ namespace HouseCommunity.Data
             return user;
         }
 
-        public async Task<ICollection<User>> GetUsers()
+        public ICollection<User> GetUsers()
         {
-            var users = await _context.Users
+            var users = _context.Users
                                       .Include(p => p.Flat)
                                       .ThenInclude(p => p.Building)
                                       .ThenInclude(p => p.Address)
                                       .Include(p => p.Flat)
                                       .ThenInclude(p => p.Building)
-                                      .ThenInclude(p => p.HousingDevelopment).ToListAsync();      
+                                      .ThenInclude(p => p.HousingDevelopment).ToList();      
             return users;
         }
 
@@ -79,6 +79,7 @@ namespace HouseCommunity.Data
             user.Flat.ColdWaterEstimatedUsage = userContactData.ColdWaterEstimatedUsage;
             user.Flat.HotWaterEstimatedUsage = userContactData.HotWaterEstimatedUsage;
             user.Flat.HeatingEstimatedUsage = userContactData.HeatingEstimatedUsage;
+            user.AvatarUrl= userContactData.AvatarUrl;
 
             _context.Update(user);
             await _context.SaveChangesAsync();

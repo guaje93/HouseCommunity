@@ -25,7 +25,7 @@ namespace HouseCommunity.Data
             var receiver = await _dataContext.Users.Include(p => p.UserConversations).ThenInclude(p => p.Conversation).FirstOrDefaultAsync(p => p.Id == receiverId);
             var conversation = new Conversation()
             {
-
+                ModificationDate = DateTime.Now
             };
             if (user.UserConversations == null)
                 user.UserConversations = new List<UserConversation>();
@@ -56,7 +56,10 @@ namespace HouseCommunity.Data
                                                   .ThenInclude(p => p.Users)
                                                   .ThenInclude(p => p.User)
                                                   .ThenInclude(p => p.Flat)
-                                                  //.Include(p => p.Messages)
+                                                  .Include(p => p.Users)
+                                                  .ThenInclude(p => p.Conversation)
+                                                  .ThenInclude(p => p.Messages)
+                                                  .ThenInclude(p => p.Sender)
                                                   .FirstOrDefaultAsync(p => p.Id == conversationId);
             return conversation;
         }
@@ -72,6 +75,7 @@ namespace HouseCommunity.Data
                                             .ThenInclude(p => p.Flat)
                                             .Include(p => p.Conversation)
                                             .ThenInclude(p => p.Messages)
+                                            .ThenInclude(p => p.Sender)
                                             .Where(p => p.User.Id == userId);
 
             return await conversations.ToListAsync();
@@ -97,9 +101,21 @@ namespace HouseCommunity.Data
             };
 
             conversation.Messages.Add(newMessage);
+            conversation.ModificationDate = DateTime.Now;
             await _dataContext.SaveChangesAsync();
             return newMessage;
 
+        }
+
+        public async Task<UserConversation> UpdateLastReadMessage(Conversation conversation, User userFromRepo, Message message)
+        {
+            var userConversation = await _dataContext.UserConversations
+                                                     .Include(p => p.User)
+                                                     .Include(p => p.Conversation)
+                                                     .FirstOrDefaultAsync(p => p.Conversation == conversation && p.User == userFromRepo);
+            userConversation.LastMessageRead = message;
+            await _dataContext.SaveChangesAsync();
+            return userConversation; 
         }
     }
 }

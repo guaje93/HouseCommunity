@@ -33,13 +33,12 @@
       <li class="nav-item" routerLinkActive="active" *ngIf="hasHouseManagerAccess()">
         <a class="nav-link" [routerLink]="['/register']">Dodaj użytkownika</a>
       </li>
-
     </ul>
+
     <div *ngIf="authService.loggedIn()" class="dropdown" dropdown>
       <a class="btn dropdown-toggle text-light" dropdownToggle>
         Witaj {{ authService.decodedToken?.unique_name | titlecase }}!
       </a>
-
       <div class="dropdown-menu" *dropdownMenu>
         <button class="dropdown-item" href="#" (click)="openEditDataDialog()"><i class="fa fa-user"></i>Edytuj dane</button>
         <button class="dropdown-item" href="#" (click)="openChangePasswordDialog()"><i class="fa fa-edit"></i>Zmień hasło</button>

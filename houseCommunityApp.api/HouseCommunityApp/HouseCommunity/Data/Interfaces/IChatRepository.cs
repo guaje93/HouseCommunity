@@ -14,5 +14,6 @@ namespace HouseCommunity.Data.Interfaces
         Task<Conversation> GetConversation(int conversationId);
         Task<Message> SaveMessage(Conversation conversation, SaveMessageDTO message, User userFromRepo);
         Task<Conversation> CreateConversation(int userId, int receiverId);
+        Task<UserConversation> UpdateLastReadMessage(Conversation conversation, User userFromRepo, Message message);
     }
 }

@@ -1,6 +1,9 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FileTypeEnum } from '../Model/fileTypeEnum';
 import { AlertifyService } from '../_services/alertify.service';
 import { AuthService } from '../_services/auth.service';
+import { BlobService } from '../_services/blob.service';
 import { UserService } from '../_services/user.service';
 
 @Component({
@@ -29,10 +32,17 @@ export class EditUserComponent implements OnInit {
   hotWaterDescription: string;
   coldWaterDescription: string;
   heatingDescription: string;
+  file: File;
+  fileUrl: string;
+  private fileReader = new FileReader();
+  public base64File: string;
+
   constructor(
-    public authService: AuthService,
-    public alertifyService: AlertifyService,
-    public userService: UserService) {
+    private authService: AuthService,
+    private alertifyService: AlertifyService,
+    private userService: UserService,
+    private blobService: BlobService,
+    private datePipe: DatePipe) {
 
   }
 
@@ -56,11 +66,62 @@ export class EditUserComponent implements OnInit {
       this.hotWaterEstimatedUsage = user.hotWaterEstimatedUsage;
       this.coldWaterEstimatedUsage = user.coldWaterEstimatedUsage;
       this.heatingEstimatedUsage = user.heatingEstimatedUsage;
+    this.fileUrl = user.avatarUrl;
     this.hotWaterDescription = "Cena jednostkowa za 1m3 wody ciepłej: " + user.hotWaterUnitCost + "zł";
     this.coldWaterDescription = "Cena jednostkowa za 1m3 wody zimnej: " + user.coldWaterUnitCost + "zł";
     this.heatingDescription = "Cena jednostkowa za 1GJ energii na ogrzewanie: " + user.heatingUnitCost + "zł";
   });
   }
+
+  onFileDropped($event): void {
+    if($event[0].type == 'image/jpeg'){
+
+      this.file = $event[0];
+      this.readFiles(this.file);
+    }
+    else{
+      this.alertifyService.warning("Zły format pliku. Wybierz format jpeg")
+    }
+    
+  }
+
+  private readFiles(file: any) {
+    
+    this.fileReader.onload = () => {
+      this.base64File = this.fileReader.result as string;
+
+    };
+    this.fileReader.readAsDataURL(file);
+  }
+
+  private async addFile() {
+    if (this.file) {
+      const currentFileDate = new Date();
+      console.log(this.file);
+      const newName = this.authService.decodedToken.nameid + '_' + this.file.name;
+      let currentFile = new File([this.file], newName);
+      let response = await this.blobService.uploadFile(currentFile, FileTypeEnum.AVATAR);
+
+      if (response._response.status === 201) {
+        const fileName = currentFile.name;
+        this.fileUrl = this.blobService.getUrl(newName);
+      }
+    }
+  }
+
+  fileBrowseHandler($event): void {
+
+    console.log($event);
+    if($event[0].type == 'image/jpeg'){
+
+      this.file = $event[0];
+      this.readFiles(this.file);
+    }
+    else{
+      this.alertifyService.warning("Zły format pliku. Wybierz format jpeg")
+    }
+    }
+
 
   public editResidentsAmount() {
     this.residentsAmountDisabled = !this.residentsAmountDisabled;
@@ -85,7 +146,12 @@ export class EditUserComponent implements OnInit {
     this.hotWaterUsageDisabled = !this.hotWaterUsageDisabled;
   }
 
-  public saveData() {
+  deleteFile(){
+this.fileUrl = '';
+this.base64File = '';
+this.file = null;
+  }
+  public async saveData() {
     let model: any = {};
     model.id = this.authService.decodedToken.nameid;
     model.email = this.email;
@@ -94,6 +160,9 @@ export class EditUserComponent implements OnInit {
     model.hotWaterEstimatedUsage = this.hotWaterEstimatedUsage;
     model.coldWaterEstimatedUsage = this.coldWaterEstimatedUsage;
     model.heatingEstimatedUsage = this.heatingEstimatedUsage;
+    await this.addFile();
+    if(this.file)
+    model.avatarUrl = this.fileUrl;
     this.userService.updateUserContactData(model).subscribe(
       data => {
         this.alertifyService.success("Zapisano zmienione dane")
@@ -108,5 +177,7 @@ export class EditUserComponent implements OnInit {
         this.alertifyService.error("Wystąpił bląd. Dane nie zostały zapisane.")
       };
 
+
+      
   }
 }

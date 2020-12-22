@@ -144,6 +144,9 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("ModificationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -321,8 +324,10 @@ namespace HouseCommunity.Migrations
 
             modelBuilder.Entity("HouseCommunity.Model.Message", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -335,9 +340,6 @@ namespace HouseCommunity.Migrations
 
                     b.Property<int?>("SenderId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -464,6 +466,9 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Birthdate")
                         .HasColumnType("datetime2");
 
@@ -533,12 +538,17 @@ namespace HouseCommunity.Migrations
                     b.Property<int?>("ConversationId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("LastMessageReadId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ConversationId");
+
+                    b.HasIndex("LastMessageReadId");
 
                     b.HasIndex("UserId");
 
@@ -653,6 +663,10 @@ namespace HouseCommunity.Migrations
                     b.HasOne("HouseCommunity.Model.Conversation", "Conversation")
                         .WithMany("Users")
                         .HasForeignKey("ConversationId");
+
+                    b.HasOne("HouseCommunity.Model.Message", "LastMessageRead")
+                        .WithMany()
+                        .HasForeignKey("LastMessageReadId");
 
                     b.HasOne("HouseCommunity.Model.User", "User")
                         .WithMany("UserConversations")

@@ -8,6 +8,7 @@ export const environment = {
   mediaContainerName:"mediacontainer",
   announcementContainerName:"announcementcontainer",
   damageContainerName:"damagecontainer",
+  avatarContainerName:"avatarcontainer",
   key:"8HjupltSBjcgKfTBc8xCgQjg1Yj3V72hmwKtPfpqPtB+6Tagi6g6mzR40b0aiYOxtSAtoch4zckGB7Pt8yPNyg=="
 };
 /*

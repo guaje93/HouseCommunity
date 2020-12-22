@@ -12,5 +12,6 @@ namespace HouseCommunity.Model
         public ICollection<UserConversation> Users { get; set; }
         public ICollection<Message> Messages { get; set; }
         public ChatType Type{ get; set; }
+        public DateTime ModificationDate { get; set; }
     }
 }

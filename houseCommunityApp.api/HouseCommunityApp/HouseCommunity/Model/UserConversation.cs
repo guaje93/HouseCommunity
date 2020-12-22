@@ -10,5 +10,6 @@ namespace HouseCommunity.Model
         public int Id { get; set; }
         public User User { get; set; }
         public Conversation Conversation { get; set; }
+        public Message LastMessageRead { get; set; }
     }
 }

@@ -1,9 +1,11 @@
-<div>
-  <app-nav></app-nav>
-  <div class="container-fluid">
-    <div class="row">
+ <app-nav></app-nav>
+<div style="position:relative; width: 100%; opacity: 0.9; background-color: white; min-height: 100%;  height: auto; padding: 3em;">
+ 
 
-      <div class="col-md-4" style="background-color: white;">
+  <div class="container-fluid" style="height:auto; min-height: 100%;">
+    <div class="row" style="min-height: 100%;">
+
+      <div class="col-md-5" style="background-color: white; min-height: 100%;">
         <mat-radio-group aria-labelledby="example-radio-group-label" [(ngModel)]="option" (change)="optionChange()"  class="example-radio-group">
           <mat-radio-button class="example-radio-button" value="0">
             Budynek
@@ -17,18 +19,20 @@
           <mat-radio-button class="example-radio-button" value="3">
             Administracja
           </mat-radio-button>
-          <mat-radio-button class="example-radio-button" value="4">
+          <!-- <mat-radio-button class="example-radio-button" value="4">
             Grupy
-          </mat-radio-button>
+          </mat-radio-button> -->
         </mat-radio-group>
         <mat-card class="example-card" *ngFor="let conversation of filteredConversations; trackBy: trackItem">
 
           <mat-card-header style="padding: 1px;">
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>{{conversation.firstName}} {{conversation.lastName}}</mat-card-title>
+            <div mat-card-avatar class="example-header-image" [ngStyle]="{ 'background-image': 'url(' + conversation.avatarUrl + ')'}"></div>
+            <mat-card-title>{{conversation.firstName}} {{conversation.lastName}} 
+              <span *ngIf="conversation.notReadMessages" style="color: red;">( +{{conversation.notReadMessages}} )</span>
+            </mat-card-title>
             <mat-card-subtitle>{{conversation.type}}</mat-card-subtitle>
             <div class="example-button-container" style="text-align: right;">
-              <button mat-mini-fab color="warn" style="right: 0px;" aria-label="Example icon button with a plus one icon" (click)="loadPrivateChat(conversation.id, conversation.firstName, conversation.lastName)">
+              <button mat-mini-fab color="warn" style="right: 0px;" aria-label="Example icon button with a plus one icon" (click)="loadPrivateChat(conversation)">
                 <mat-icon>launch</mat-icon>
               </button>
             </div>
@@ -36,7 +40,7 @@
                 </mat-card>
       </div>
 
-      <div class="col-md-8"
+      <div class="col-md-7" *ngIf="senderId"  
         style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: auto; padding: 3em;">
         <h2 style="margin-bottom: 2em;">Rozmowa z {{sender}}</h2>
         <div class="container">
@@ -70,7 +74,7 @@
                   <div class="input_msg_write">
                     <input type="text" class="write_msg" [value]="txtMessage" (input)="txtMessage=$event.target.value"
                       (keydown.enter)="sendMessage()" placeholder="Wyślij wiadomość" />
-                      <button mat-mini-fab color="primary" style="right: 0px;" aria-label="Example icon button with a plus one icon" (click)="sendMessage()">
+                      <button mat-mini-fab color="primary" aria-label="Example icon button with a plus one icon" (click)="sendMessage()">
                         <mat-icon>mail</mat-icon>
                       </button>
                   </div>
@@ -82,5 +86,5 @@
         </div>
       </div>
     </div>
-  </div>
+ </div>
 </div>

@@ -2,21 +2,21 @@
 
 namespace HouseCommunity.Migrations
 {
-    public partial class Addorderidtopayment : Migration
+    public partial class addavatar : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "OrderId",
-                table: "Payments",
+                name: "AvatarUrl",
+                table: "Users",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "OrderId",
-                table: "Payments");
+                name: "AvatarUrl",
+                table: "Users");
         }
     }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertifyService } from '../_services/alertify.service';
 import { AuthService } from '../_services/auth.service';
@@ -11,22 +11,18 @@ import { AuthService } from '../_services/auth.service';
 })
 export class ChangePasswordComponent implements OnInit {
 
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
+  currentPassword  = new FormControl('', [Validators.required]);
+  newPassword  = new FormControl('', [Validators.required, Validators.minLength(6)]);
+  confirmPassword  = new FormControl('', [Validators.required, Validators.minLength(6)]);
+
+  hideCurrentPassword: boolean = true;
+  hideNewPassword: boolean = true;
+  hideConfirmPassword: boolean = true;
   changePasswordForm: FormGroup;
   successMessage: string;
   constructor(private authService: AuthService, private fb: FormBuilder, private alertifyService: AlertifyService, private router: Router) { }
 
   ngOnInit() {
-    this.changePasswordForm = this.fb.group(
-      {
-        id: [this.authService.decodedToken.nameid],
-        currentPassword: ['', [Validators.required, Validators.minLength(4)]],
-        newPassword: ['', [Validators.required, Validators.minLength(4)]],
-        confirmPassword: ['', [Validators.required, Validators.minLength(4)]],
-      }
-    );
 
   }
 
@@ -38,9 +34,6 @@ export class ChangePasswordComponent implements OnInit {
           this.changePasswordForm.reset();
           this.successMessage = "Zmieniono hasło!";
           this.alertifyService.success(this.successMessage);
-          setTimeout(() => {
-            this.successMessage = null;
-          }, 2000);
         },
         err => {
 
@@ -51,6 +44,13 @@ export class ChangePasswordComponent implements OnInit {
         }
       );
     }
+  }
+
+  onPasswordInput() {
+    if (this.confirmPassword.value !== this.newPassword.value)
+      this.confirmPassword.setErrors([{'passwordMismatch': true}]);
+    else
+      this.confirmPassword.setErrors(null);
   }
 
   Validate(passwordFormGroup: FormGroup):boolean {

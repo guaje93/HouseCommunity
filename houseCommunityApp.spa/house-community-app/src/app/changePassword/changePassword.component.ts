@@ -11,9 +11,7 @@ import { AuthService } from '../_services/auth.service';
 })
 export class ChangePasswordComponent implements OnInit {
 
-  currentPassword  = new FormControl('', [Validators.required]);
-  newPassword  = new FormControl('', [Validators.required, Validators.minLength(6)]);
-  confirmPassword  = new FormControl('', [Validators.required, Validators.minLength(6)]);
+  
 
   hideCurrentPassword: boolean = true;
   hideNewPassword: boolean = true;
@@ -23,23 +21,30 @@ export class ChangePasswordComponent implements OnInit {
   constructor(private authService: AuthService, private fb: FormBuilder, private alertifyService: AlertifyService, private router: Router) { }
 
   ngOnInit() {
-
+    this.changePasswordForm = new FormGroup({
+      currentPassword : new FormControl('', [Validators.required]),
+      newPassword  : new FormControl('', [Validators.required, Validators.minLength(6)]),
+      confirmPassword  : new FormControl('', [Validators.required, Validators.minLength(6)])
+    });
   }
 
   changePassword() {
     if (this.Validate(this.changePasswordForm)) {
 
-      this.authService.changePassword(this.changePasswordForm.value).subscribe(
+      console.log(this.changePasswordForm.value);
+      let model: any = {};
+      model = this.changePasswordForm.value;
+      model.id = this.authService.decodedToken.nameid;
+
+      this.authService.changePassword(model).subscribe(
         data => {
           this.changePasswordForm.reset();
           this.successMessage = "Zmieniono hasło!";
           this.alertifyService.success(this.successMessage);
         },
         err => {
-
-          if (err.error.message) {
-            console.log(err);
-            this.alertifyService.error("Hasło nie zostało zmienione!");
+          if (err.error) {
+            this.alertifyService.error(err.error);
           }
         }
       );
@@ -47,23 +52,28 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   onPasswordInput() {
-    if (this.confirmPassword.value !== this.newPassword.value)
-      this.confirmPassword.setErrors([{'passwordMismatch': true}]);
+    if (this.changePasswordForm.controls.confirmPassword.value !== this.changePasswordForm.controls.newPassword.value)
+      this.changePasswordForm.controls.confirmPassword.setErrors([{'passwordMismatch': true}]);
     else
-      this.confirmPassword.setErrors(null);
+      this.changePasswordForm.controls.confirmPassword.setErrors(null);
   }
 
   Validate(passwordFormGroup: FormGroup):boolean {
     const new_password = passwordFormGroup.controls.newPassword.value;
     const confirm_password = passwordFormGroup.controls.confirmPassword.value;
 
-    if (confirm_password.length <= 0) {
+    if (new_password.length <= 0) {
       this.alertifyService.error("Podaj nowe hasło");
       return false;
     }
 
     if (confirm_password !== new_password) {
-      this.alertifyService.error("Podane hasło się różnią")
+      this.alertifyService.error("Podane hasła się różnią")
+      return false;
+    }
+
+    if (confirm_password.length < 6) {
+      this.alertifyService.error("Hasło jest za krótkie");
       return false;
     }
 

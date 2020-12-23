@@ -9,6 +9,8 @@ import { DatePipe } from '@angular/common';
 import { AnnouncementService } from 'src/app/_services/announcement.service';
 import { FileTypeEnum } from 'src/app/Model/fileTypeEnum';
 import { Announcement } from 'src/app/Model/announcement';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
 
 @Component({
   selector: 'app-AnnouncementsAdministration',
@@ -16,6 +18,7 @@ import { Announcement } from 'src/app/Model/announcement';
   styleUrls: ['./AnnouncementsAdministration.component.less']
 })
 export class AnnouncementsAdministrationComponent implements OnInit {
+  @ViewChild('select') select: MatSelect;
 
   files: Announcement[] = [];
   currentFile: File;
@@ -24,6 +27,7 @@ export class AnnouncementsAdministrationComponent implements OnInit {
   filteredBuildings: any[];
   filteredFlats: any[];
   filteredUsers: any[];
+  allBuildingsSelected: boolean;
 
   houseDevelopmentsFrom = new FormControl();
   buildingsFrom = new FormControl();
@@ -42,6 +46,14 @@ export class AnnouncementsAdministrationComponent implements OnInit {
   }
 
   displayedColumns: string[] = ['Name', 'Email', 'Address'];
+
+  toggleAllSelection(){
+    if (this.allBuildingsSelected) {
+      this.select.options.forEach((item: MatOption) => item.select());
+    } else {
+      this.select.options.forEach((item: MatOption) => item.deselect());
+    }
+  }
 
   filterBuildings($event) {
     this.filteredFlats = [];
@@ -63,7 +75,7 @@ export class AnnouncementsAdministrationComponent implements OnInit {
 
   filterFlats($event) {
     console.log($event);
-
+console.log(this.buildingsFrom);
     this.filteredUsers = [];
     this.filteredFlats = this.users
       .filter(user => $event.value.includes(user.buildingId))

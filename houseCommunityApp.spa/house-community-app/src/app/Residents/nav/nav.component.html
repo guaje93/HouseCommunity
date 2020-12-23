@@ -1,48 +1,66 @@
 <nav class="navbar navbar-expand-md navbar-dark">
-  <a class="navbar-brand" [routerLink]="['/home']">Home community App</a>
 
-  <div class="container">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
-        <a class="nav-link" [routerLink]="['/rent']">Czynsze </a>
-      </li>
-      <li class="nav-item" routerLinkActive="active"  *ngIf="hasAdministrationAccess()">
-        <a class="nav-link" [routerLink]="['/paymentsAdministration']">Czynsze </a>
-      </li>
-      <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
-        <a class="nav-link" [routerLink]="['/media']">Media</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active"  *ngIf="hasAdministrationAccess()">
-        <a class="nav-link" [routerLink]="['/mediaAdministration']">Media</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active"  *ngIf="hasAdministrationAccess()">
-        <a class="nav-link" [routerLink]="['/announcementsAdministration']">Aktualności</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active"  *ngIf="hasUserAccess()">
-        <a class="nav-link" [routerLink]="['/news']">Aktualności</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/chat']">Czat</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
-        <a class="nav-link" [routerLink]="['/damage']">Usterki</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active" *ngIf="hasHouseManagerAccess()">
-        <a class="nav-link" [routerLink]="['/damageManage']">Usterki</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active" *ngIf="hasHouseManagerAccess()">
-        <a class="nav-link" [routerLink]="['/register']">Dodaj użytkownika</a>
-      </li>
-    </ul>
+  <div class="container-fluid">
+    <div class="row" style="width:100%">
+      <div class="col-4">
+        <a class="navbar-brand" [routerLink]="['/home']">Home community App</a>
 
-    <div *ngIf="authService.loggedIn()" class="dropdown" dropdown>
-      <a class="btn dropdown-toggle text-light" dropdownToggle>
-        Witaj {{ authService.decodedToken?.unique_name | titlecase }}!
-      </a>
-      <div class="dropdown-menu" *dropdownMenu>
-        <button class="dropdown-item" href="#" (click)="openEditDataDialog()"><i class="fa fa-user"></i>Edytuj dane</button>
-        <button class="dropdown-item" href="#" (click)="openChangePasswordDialog()"><i class="fa fa-edit"></i>Zmień hasło</button>
-        <a class="dropdown-item" (click)="loggedOut()"><i class="fa fa-sign-out"></i>Wyloguj</a>
+      </div>
+      <div class="col-4" >
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <ul class="navbar-nav" style="margin-right: auto; margin-left: auto; width:fit-content">
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
+            <a class="nav-link" [routerLink]="['/rent']">Czynsze </a>
+          </li>
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasAdministrationAccess()">
+            <a class="nav-link" [routerLink]="['/paymentsAdministration']">Czynsze </a>
+          </li>
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
+            <a class="nav-link" [routerLink]="['/media']">Media</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasAdministrationAccess()">
+            <a class="nav-link" [routerLink]="['/mediaAdministration']">Media</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasAdministrationAccess()">
+            <a class="nav-link" [routerLink]="['/announcementsAdministration']">Aktualności</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
+            <a class="nav-link" [routerLink]="['/news']">Aktualności</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link" [routerLink]="['/chat']">Czat</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
+            <a class="nav-link" [routerLink]="['/damage']">Usterki</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasHouseManagerAccess()">
+            <a class="nav-link" [routerLink]="['/damageManage']">Usterki</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasHouseManagerAccess()">
+            <a class="nav-link" [routerLink]="['/register']">Dodaj użytkownika</a>
+          </li>
+        </ul>
+        </div>
+      </div>
+      <div *ngIf="authService.loggedIn()" class="dropdown col-4" style="margin-right: 0px; position: relative" dropdown>
+        <div style="position: absolute; right: 0px">
+          <a class="btn dropdown-toggle text-light" dropdownToggle>
+            Witaj {{ authService.decodedToken?.unique_name | titlecase }}!
+          </a>
+        <div class="dropdown-menu" *dropdownMenu>
+          <button class="dropdown-item" href="#" (click)="openEditDataDialog()"><i class="fa fa-user"></i>Edytuj
+            dane</button>
+            <button class="dropdown-item" href="#" (click)="openChangePasswordDialog()"><i class="fa fa-edit"></i>Zmień
+              hasło</button>
+              <a class="dropdown-item" (click)="loggedOut()"><i class="fa fa-sign-out"></i>Wyloguj</a>
+            </div>
+          </div>
+
+
       </div>
     </div>
   </div>

@@ -67,7 +67,12 @@
             <div class="col-md-3">
                 <mat-form-field appearance="fill">
                     <mat-label>Budynki</mat-label>
-                    <mat-select [formControl]="buildingsFrom" multiple (selectionChange)="filterFlats($event)">
+                    <mat-select #select [formControl]="buildingsFrom" multiple (selectionChange)="filterFlats($event)"><div class="select-all">
+                        <mat-checkbox [(ngModel)]="allBuildingsSelected"
+                                        [ngModelOptions]="{standalone: true}"
+                                        (change)="toggleAllSelection()">Wszystkie
+                        </mat-checkbox>
+                    </div>
                         <mat-option *ngFor="let user of filteredBuildings" [value]="user.buildingId">{{user.address}}
                         </mat-option>
                     </mat-select>

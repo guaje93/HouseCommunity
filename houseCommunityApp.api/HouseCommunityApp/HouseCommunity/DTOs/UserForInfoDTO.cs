@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HouseCommunity.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace HouseCommunity.DTOs
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public double Area { get; set; }
+        public UserRole UserRole { get; set; }
         public int ResidentsAmount { get; set; }
         public string AvatarUrl{ get; set; }
         public double ColdWaterEstimatedUsage { get; set; }

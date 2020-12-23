@@ -24,16 +24,21 @@ namespace HouseCommunity.Controllers
 
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
+        private readonly IUserRepository _userRepository;
         private readonly NotificationMetadata _notificationMetadata;
 
         #endregion
 
         #region Constructors
 
-        public AuthController(IAuthRepository repo, IConfiguration config, NotificationMetadata notificationMetadata)
+        public AuthController(IAuthRepository repo, 
+                              IConfiguration config, 
+                              IUserRepository userRepository,
+                              NotificationMetadata notificationMetadata)
         {
             this._repo = repo;
             this._config = config;
+            this._userRepository = userRepository;
             this._notificationMetadata = notificationMetadata;
         }
 
@@ -45,11 +50,10 @@ namespace HouseCommunity.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> LogIn(UserForLoginDTO userForLoginDTO)
         {
-
             var userFromRepo = await _repo.LogIn(userForLoginDTO.UserName.ToLower(), userForLoginDTO.Password);
 
             if (userFromRepo == null)
-                return Unauthorized();
+                return Unauthorized("Hasło lub uzytkownik jest niepoprawne!");
 
             SecurityTokenDescriptor tokenDescriptor = GetTokenDescriptor(userFromRepo);
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -70,7 +74,7 @@ namespace HouseCommunity.Controllers
             var userFromRepo = await _repo.RegisterUser(userForRegisterDTO);
 
             if (userFromRepo == null)
-                return Unauthorized();
+                return Unauthorized("Podane hasło jest niepoprawne!");
 
             return Ok(
                 new
@@ -85,6 +89,9 @@ namespace HouseCommunity.Controllers
         {
 
             var userFromRepo = await _repo.GetUserForReset(usernameuserForLoginDTO.Email.ToLower());
+            if (userFromRepo == null)
+                return Unauthorized("Email nie jset powiązany z żadnym z kont!");
+
             SecurityTokenDescriptor tokenDescriptor = GetTokenDescriptor(userFromRepo);
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -99,7 +106,7 @@ namespace HouseCommunity.Controllers
 
             var userFromRepo = await _repo.ChangePassword(passwordChangeRequest);
             if (userFromRepo == null)
-                return BadRequest("Podaj poprawne hasło!");
+                return Unauthorized("Podane hasło jest niepoprawne!");
 
             return Ok();
         }
@@ -107,7 +114,15 @@ namespace HouseCommunity.Controllers
         [HttpPost("valid-password-token")]
         public async Task<IActionResult> ValidPasswordToken(TokenForUserVerify token)
         {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var id = tokenHandler.ReadJwtToken(token.ResetToken).Claims.FirstOrDefault(p => p.Type == "nameid").Value;
+            var intId = 0;
+            Int32.TryParse(id, out intId);
 
+            var user = await _userRepository.GetUser(intId);
+            if (user == null)
+                return Unauthorized("Token niepoprawny");
+                
             return Ok();
         }
 

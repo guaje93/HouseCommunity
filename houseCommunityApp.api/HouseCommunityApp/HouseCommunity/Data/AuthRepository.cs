@@ -103,7 +103,7 @@ namespace HouseCommunity.Data
         {
             var user = await _context.Users.FirstOrDefaultAsync(p => p.Id == passwordChangeRequest.Id);
 
-            if (!VerifyPasswordHash(passwordChangeRequest.CurrentPassword, user.PasswordHash, user.PasswordSalt))
+            if (user == null || !VerifyPasswordHash(passwordChangeRequest.CurrentPassword, user.PasswordHash, user.PasswordSalt))
                 return null;
 
             byte[] passwordHash, passwordSalt;

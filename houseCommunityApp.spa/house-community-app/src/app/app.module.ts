@@ -48,6 +48,7 @@ import {MatCardModule} from '@angular/material/card'
 import { DamageManageComponent } from './BuildingOwners/damageManage/damageManage.component';
 import { DamageInfoComponent } from './BuildingOwners/DamageInfo/DamageInfo.component';
 import {MatRadioModule} from '@angular/material/radio'
+import {MatCheckboxModule} from '@angular/material/checkbox'
 
 @NgModule({
   declarations: [							
@@ -101,7 +102,8 @@ import {MatRadioModule} from '@angular/material/radio'
     MatTooltipModule,
     CommonModule,
     MatCardModule,
-    MatRadioModule
+    MatRadioModule,
+    MatCheckboxModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

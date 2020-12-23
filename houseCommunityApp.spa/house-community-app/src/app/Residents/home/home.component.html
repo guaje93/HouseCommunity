@@ -1,5 +1,6 @@
-<app-nav></app-nav>
-<div style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: auto; padding: 1em;" role="alert" >
+<div style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: 100%; padding: 0em;"
+  role="alert">
+  <app-nav></app-nav>
   <div class="container-fluid">
     <div class="row" style="flex-wrap: wrap;">
       <mat-card class="col-md-6 example-card" *ngIf="hasUserAccess()">
@@ -8,11 +9,11 @@
           <mat-card-subtitle>Wykonaj opłatę</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <div style="width: 100%; ">
-              <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/rent']">
-                <mat-icon style="font-size: 10em; margin-left: 0.4em;">savings</mat-icon>
-              </a>
-            </div>
+          <div>
+            <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/rent']">
+              <mat-icon>savings</mat-icon>
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
       <mat-card class="col-md-6 example-card" *ngIf="hasAdministrationAccess()">
@@ -21,11 +22,11 @@
           <mat-card-subtitle>Wygeneruj opłaty</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <div style="width: 100%; ">
-              <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/paymentsAdministration']">
-                <mat-icon style="font-size: 10em; margin-left: 0.4em;">savings</mat-icon>
-              </a>
-            </div>
+          <div style="width: 100%; ">
+            <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/paymentsAdministration']">
+              <mat-icon>savings</mat-icon>
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
       <mat-card class="col-md-6 example-card" *ngIf="hasAdministrationAccess()">
@@ -34,11 +35,11 @@
           <mat-card-subtitle>Wygeneruj dane zużycia</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <div style="width: 100%; ">
-              <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/mediaAdministration']" >
-                <mat-icon style="font-size: 10em; margin-left: 0.4em;">hot_tub</mat-icon>
-              </a>
-            </div>
+          <div style="width: 100%; ">
+            <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/mediaAdministration']">
+              <mat-icon>hot_tub</mat-icon>
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
       <mat-card class="col-md-6 example-card" *ngIf="hasUserAccess()">
@@ -47,11 +48,11 @@
           <mat-card-subtitle>Zaktualizuj informację o użyciu</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <div style="width: 100%; ">
-              <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/media']">
-                <mat-icon style="font-size: 10em; margin-left: 0.4em;">hot_tub</mat-icon>
-              </a>
-            </div>
+          <div style="width: 100%; ">
+            <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/media']">
+              <mat-icon>hot_tub</mat-icon>
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
       <mat-card class="col-md-6 example-card" *ngIf="hasUserAccess()">
@@ -60,11 +61,11 @@
           <mat-card-subtitle>Sprawdź tablicę ogłoszeń</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <div style="width: 100%; ">
-              <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/news']">
-                <mat-icon style="font-size: 10em; margin-left: 0.4em;">mail</mat-icon>
-              </a>
-            </div>
+          <div style="width: 100%; ">
+            <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/news']">
+              <mat-icon>mail</mat-icon>
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
       <mat-card class="col-md-6 example-card" *ngIf="hasAdministrationAccess()">
@@ -73,11 +74,11 @@
           <mat-card-subtitle>Dodaj ogłoszenie</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <div style="width: 100%; ">
-              <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/announcementsAdministration']" >
-                <mat-icon style="font-size: 10em; margin-left: 0.4em;">mail</mat-icon>
-              </a>
-            </div>
+          <div style="width: 100%; ">
+            <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/announcementsAdministration']">
+              <mat-icon>mail</mat-icon>
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
       <mat-card class="col-md-6 example-card">
@@ -86,11 +87,11 @@
           <mat-card-subtitle>Skontaktuj się z innymi mieszkańcami</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <div style="width: 100%; ">
-              <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/chat']">
-                <mat-icon style="font-size: 10em; margin-left: 0.4em;">chat</mat-icon>
-              </a>
-            </div>
+          <div style="width: 100%; ">
+            <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/chat']">
+              <mat-icon>chat</mat-icon>
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
       <mat-card class="col-md-6 example-card" *ngIf="hasUserAccess()">
@@ -99,40 +100,40 @@
           <mat-card-subtitle>Zgłoś usterkę</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <div style="width: 100%; ">
-              <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/damage']">
-                <mat-icon style="font-size: 10em; margin-left: 0.4em;">broken_image</mat-icon>
-              </a>
-            </div>
+          <div style="width: 100%; ">
+            <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/damage']">
+              <mat-icon>broken_image</mat-icon>
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
-      <mat-card class="col-md-6 example-card"  *ngIf="hasHouseManagerAccess()">
+      <mat-card class="col-md-6 example-card" *ngIf="hasHouseManagerAccess()">
         <mat-card-header>
           <mat-card-title>Uszkodzenia</mat-card-title>
           <mat-card-subtitle>Sprawdź aktywne usterki</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <div style="width: 100%; ">
-              <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/damageManage']">
-                <mat-icon style="font-size: 10em; margin-left: 0.4em;">broken_image</mat-icon>
-              </a>
-            </div>
+          <div style="width: 100%; ">
+            <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/damageManage']">
+              <mat-icon>broken_image</mat-icon>
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
-      <mat-card class="col-md-6 example-card"   *ngIf="hasHouseManagerAccess()">
+      <mat-card class="col-md-6 example-card" *ngIf="hasHouseManagerAccess()">
         <mat-card-header>
           <mat-card-title>Rejestracja</mat-card-title>
           <mat-card-subtitle>Dodaj użytkownika</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <div style="width: 100%; ">
-              <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/register']">
-                <mat-icon style="font-size: 10em; margin-left: 0.4em;">how_to_reg</mat-icon>
-              </a>
-            </div>
+          <div style="width: 100%; ">
+            <a style="text-decoration: none;" class="navbar-brand" [routerLink]="['/register']">
+              <mat-icon>how_to_reg</mat-icon>
+            </a>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>
   </div>
-  
+
 </div>

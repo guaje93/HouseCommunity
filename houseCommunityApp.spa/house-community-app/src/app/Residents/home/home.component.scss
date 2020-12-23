@@ -1,5 +1,5 @@
 .example-card {
-    max-width: 400px;
+    max-width: 30%;
     margin: 1em 1em 1em 1em
   }
   
@@ -41,4 +41,17 @@ color: none;
   button{
     background: none;
 color: none;      
+}
+
+.icon-text {
+  display: flex;
+  align-items: center;
+}
+mat-icon{
+  font-size: 10em; margin-left: -10rem;
+}
+
+mat-card-content div{
+  width: 100%;
+  text-align: center;
 }

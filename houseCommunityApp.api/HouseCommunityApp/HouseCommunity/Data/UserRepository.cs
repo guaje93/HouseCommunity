@@ -48,7 +48,7 @@ namespace HouseCommunity.Data
                                       .ThenInclude(p => p.Address)
                                       .Include(p => p.Flat)
                                       .ThenInclude(p => p.Building)
-                                      .ThenInclude(p => p.HousingDevelopment).ToList();      
+                                      .ThenInclude(p => p.HousingDevelopment).ToList();
             return users;
         }
 
@@ -60,7 +60,7 @@ namespace HouseCommunity.Data
                                       .ThenInclude(p => p.Address)
                                       .Include(p => p.Flat)
                                       .ThenInclude(p => p.Building)
-                                      .ThenInclude( p => p.HousingDevelopment)
+                                      .ThenInclude(p => p.HousingDevelopment)
                                       .Where(p => p.UserRole == userRole)
                                       .ToListAsync();
             return users;
@@ -75,11 +75,14 @@ namespace HouseCommunity.Data
 
             user.PhoneNumber = userContactData.PhoneNumber;
             user.Email = userContactData.Email;
-            user.Flat.ResidentsAmount = userContactData.ResidentsAmount;
-            user.Flat.ColdWaterEstimatedUsage = userContactData.ColdWaterEstimatedUsage;
-            user.Flat.HotWaterEstimatedUsage = userContactData.HotWaterEstimatedUsage;
-            user.Flat.HeatingEstimatedUsage = userContactData.HeatingEstimatedUsage;
-            user.AvatarUrl= userContactData.AvatarUrl;
+            if (user.Flat != null)
+            {
+                user.Flat.ResidentsAmount = userContactData.ResidentsAmount;
+                user.Flat.ColdWaterEstimatedUsage = userContactData.ColdWaterEstimatedUsage;
+                user.Flat.HotWaterEstimatedUsage = userContactData.HotWaterEstimatedUsage;
+                user.Flat.HeatingEstimatedUsage = userContactData.HeatingEstimatedUsage;
+            }
+            user.AvatarUrl = userContactData.AvatarUrl;
 
             _context.Update(user);
             await _context.SaveChangesAsync();

@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { User } from '../Model/user';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Role } from '../Model/Role';
 
 @Injectable({
@@ -39,15 +39,21 @@ hasRole(role: Role) {
           console.log(this.user);
         return user.user;
         }
-      })
-    );
+      }
+    ,catchError(err => {
+      return throwError(err);
+  })));
   }
 
   registerUser(model: any) {
-    return this.http.post(this.baseUrl + 'register', model);
+    return this.http.post(this.baseUrl + 'register', model).pipe(catchError(err => {
+      return throwError(err);
+  }));
   }
   requestReset(body): Observable<any> {
-    return this.http.post(`${this.baseUrl}req-reset-password`, body);
+    return this.http.post(`${this.baseUrl}req-reset-password`, body).pipe(catchError(err => {
+      return throwError(err);
+  }));
   }
 
   loggedIn() {
@@ -56,11 +62,15 @@ hasRole(role: Role) {
   }
 
   newPassword(body): Observable<any> {
-    return this.http.post(`${this.baseUrl}new-password`, body);
+    return this.http.post(`${this.baseUrl}new-password`, body).pipe(catchError(err => {
+      return throwError(err);
+  }));
   }
 
   changePassword(body): Observable<any> {
-    return this.http.post(`${this.baseUrl}change-password`, body).pipe(catchError(this.handleError));
+    return this.http.post(`${this.baseUrl}change-password`, body).pipe(catchError(err => {
+      return throwError(err);
+  }),);
   }
   
   handleError(error: HttpErrorResponse) {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertifyService } from '../_services/alertify.service';
 import { AuthService } from '../_services/auth.service';
@@ -10,12 +10,10 @@ import { AuthService } from '../_services/auth.service';
   styleUrls: ['./resetPassword.component.scss']
 })
 export class ResetPasswordComponent implements OnInit {
-  ResponseResetForm: FormGroup;
-  errorMessage: string;
-  successMessage: string;
   resetToken: null;
   CurrentState: any;
-  IsResetFormValid = true;
+  isPasswordReset= false;
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -30,10 +28,16 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
 
+  hideNewPassword: boolean = true;
+  hideConfirmPassword: boolean = true;
+  changePasswordForm: FormGroup;
 
   ngOnInit() {
-
-    this.Init();
+    this.changePasswordForm = this.fb.group({
+      resettoken: [this.resetToken],
+      newPassword  : new FormControl('', [Validators.required, Validators.minLength(6)]),
+      confirmPassword  : new FormControl('', [Validators.required, Validators.minLength(6)])
+    });
   }
 
   VerifyToken() {
@@ -43,58 +47,60 @@ export class ResetPasswordComponent implements OnInit {
       },
       err => {
         this.CurrentState = 'NotVerified';
+        this.alertifyService.error('Token niepoprawny!');
       }
     );
   }
 
-  Init() {
-    this.ResponseResetForm = this.fb.group(
-      {
-        resettoken: [this.resetToken],
-        newPassword: ['', [Validators.required, Validators.minLength(4)]],
-        confirmPassword: ['', [Validators.required, Validators.minLength(4)]]
-      }
-    );
+  onPasswordInput() {
+    if (this.changePasswordForm.controls.confirmPassword.value !== this.changePasswordForm.controls.newPassword.value)
+      this.changePasswordForm.controls.confirmPassword.setErrors([{'passwordMismatch': true}]);
+    else
+      this.changePasswordForm.controls.confirmPassword.setErrors(null);
   }
 
-  Validate(passwordFormGroup: FormGroup) {
+  Validate(passwordFormGroup: FormGroup):boolean {
     const new_password = passwordFormGroup.controls.newPassword.value;
     const confirm_password = passwordFormGroup.controls.confirmPassword.value;
 
-    if (confirm_password.length <= 0) {
-      return null;
+    if (new_password.length <= 0) {
+      this.alertifyService.error("Podaj nowe hasło");
+      return false;
     }
 
     if (confirm_password !== new_password) {
-      return {
-        doesNotMatch: true
-      };
+      this.alertifyService.error("Podane hasła się różnią")
+      return false;
     }
 
-    return null;
+    if (confirm_password.length < 6) {
+      this.alertifyService.error("Hasło jest za krótkie");
+      return false;
+    }
+
+    return true;
   }
-
-
-  ResetPassword(form) {
-    console.log(form.get('confirmPassword'));
-    if (form.valid) {
-      this.IsResetFormValid = true;
-      this.authService.newPassword(this.ResponseResetForm.value).subscribe(
+  
+  ResetPassword() {
+    if (!this.isPasswordReset && this.Validate(this.changePasswordForm)) {
+      this.isPasswordReset = true;
+      this.authService.newPassword(this.changePasswordForm.value).subscribe(
         data => {
-          this.ResponseResetForm.reset();
-          this.successMessage = data.message;
-          setTimeout(() => {
-            this.successMessage = null;
-            this.router.navigate(['login']);
-            this.alertifyService.success("Ustawiono nowe hasło!");
-          }, 3000);
+          this.changePasswordForm.reset();
+          this.alertifyService.success("Ustawiono nowe hasło!");
+          this.router.navigate(['login']);
         },
         err => {
-          if (err.error.message) {
-            this.errorMessage = err.error.message;
+          if (err.error) {
+            this.alertifyService.error(err.error);
+      this.isPasswordReset = false;
+
           }
         }
       );
-    } else { this.IsResetFormValid = false; }
+    } 
+    else { 
+      this.alertifyService.error('Hasło niepoprawne');  
+    }
   }
 }

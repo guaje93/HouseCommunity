@@ -12,23 +12,22 @@ import { AuthService } from '../_services/auth.service';
 export class ForgetPasswordComponent implements OnInit {
 
   RequestResetForm: FormGroup;
-  forbiddenEmails: any;
   errorMessage: string;
   successMessage: string;
-  IsvalidForm = true;
+  IsMailSending = false;
 
   constructor(private authService: AuthService, private router: Router, private alertifyService: AlertifyService
   ) { }
 
   ngOnInit() {
     this.RequestResetForm = new FormGroup({
-      'email': new FormControl(null, [Validators.required, Validators.email], this.forbiddenEmails),
+      email: new FormControl('', [Validators.required, Validators.email]),
     });
   }
 
-  RequestResetUser(form) {
-    if (form.valid) {
-      this.IsvalidForm = true;
+  RequestResetUser() {
+    if (this.RequestResetForm.valid) {
+      this.IsMailSending = true;
       this.authService.requestReset(this.RequestResetForm.value).subscribe(
         data => {
           this.RequestResetForm.reset();
@@ -40,14 +39,16 @@ export class ForgetPasswordComponent implements OnInit {
           }, 2000);
         },
         err => {
-
-          if (err.error.message) {
-            this.errorMessage = err.error.message;
+          if (err.error) 
+          {
+      this.IsMailSending = false;
+            console.log(err.error);
+            this.alertifyService.error(err.error);
           }
         }
       );
     } else {
-      this.IsvalidForm = false;
+
       this.alertifyService.error("Podaj poprawny email!");
     }
   }

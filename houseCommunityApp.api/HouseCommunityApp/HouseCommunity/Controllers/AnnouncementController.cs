@@ -1,5 +1,7 @@
-﻿using HouseCommunity.Data.Interfaces;
+﻿using HouseCommunity.Data;
+using HouseCommunity.Data.Interfaces;
 using HouseCommunity.DTOs;
+using HouseCommunity.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -12,14 +14,20 @@ namespace HouseCommunity.Controllers
         #region Fields
 
         private readonly IAnnouncementRepository _repo;
+        private readonly IUserRepository _userRepository;
+        private readonly IMailService _mailService;
 
         #endregion
 
         #region Constructors
 
-        public AnnouncementController(IAnnouncementRepository repo)
+        public AnnouncementController(IAnnouncementRepository repo,
+                                      IUserRepository userRepository,
+                                      IMailService mailService)
         {
             this._repo = repo;
+            this._userRepository = userRepository;
+            this._mailService = mailService;
         }
 
         [HttpGet("get-announcements-for-user/{userId}")]
@@ -40,13 +48,19 @@ namespace HouseCommunity.Controllers
         }
 
         [HttpPost("insert-announcements")]
-        public IActionResult InsertAnnouncements(AnnouncementForDatabaseInsertDTO announcement)
+        public async Task<IActionResult> InsertAnnouncements(AnnouncementForDatabaseInsertDTO announcement)
         {
-
-            var announcements = _repo.InsertAnnouncement(announcement);
+            var uploader = await _userRepository.GetUser(announcement.UploaderId);
+            var announcements = await _repo.InsertAnnouncement(announcement);
 
             if (announcements == null)
                 return BadRequest();
+
+            var messageSubject = "Dodano nowe ogłoszenie we wspólnocie mieszkaniowej";
+            var messageContent = $"Nowe ogłoszenie zostało dodane przez użytkownika: {uploader.FirstName} {uploader.LastName}.\n" +
+                                 $"Sprawdź zawartość ogłoszenia na swojej tablicy ogłoszeń. \n\n" +
+                                 $"Treść maila wygenerowano automatycznie. Nie odpowiadaj na tego maila.";
+            _mailService.SendMail(messageSubject, messageContent, "");
 
             return Ok(
                 new

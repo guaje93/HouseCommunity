@@ -3,7 +3,6 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 import { BlobService } from 'src/app/_services/blob.service';
 import { UserService } from 'src/app/_services/user.service';
 import { FormControl } from '@angular/forms';
-import { ChangeDetectorRef } from '@angular/core';
 import { AuthService } from 'src/app/_services/auth.service';
 import { DatePipe } from '@angular/common';
 import { AnnouncementService } from 'src/app/_services/announcement.service';
@@ -18,7 +17,10 @@ import { MatOption } from '@angular/material/core';
   styleUrls: ['./AnnouncementsAdministration.component.less']
 })
 export class AnnouncementsAdministrationComponent implements OnInit {
-  @ViewChild('select') select: MatSelect;
+  @ViewChild('selectBuildings') selectBuildings: MatSelect;
+  @ViewChild('selectFlats') selectFlats: MatSelect;
+  @ViewChild('selectUsers') selectUsers: MatSelect;
+  @ViewChild('fileDropRef', { static: false }) fileDropEl: ElementRef;
 
   files: Announcement[] = [];
   currentFile: File;
@@ -26,8 +28,9 @@ export class AnnouncementsAdministrationComponent implements OnInit {
   filteredHouseDevelopments: any[];
   filteredBuildings: any[];
   filteredFlats: any[];
-  filteredUsers: any[];
   allBuildingsSelected: boolean;
+  allFlatsSelected: boolean;
+  allUsersSelected: boolean;
 
   houseDevelopmentsFrom = new FormControl();
   buildingsFrom = new FormControl();
@@ -47,17 +50,33 @@ export class AnnouncementsAdministrationComponent implements OnInit {
 
   displayedColumns: string[] = ['Name', 'Email', 'Address'];
 
-  toggleAllSelection(){
+  toggleAllBuildingsSelection() {
     if (this.allBuildingsSelected) {
-      this.select.options.forEach((item: MatOption) => item.select());
+      this.selectBuildings.options.forEach((item: MatOption) => item.select());
     } else {
-      this.select.options.forEach((item: MatOption) => item.deselect());
+      this.selectBuildings.options.forEach((item: MatOption) => item.deselect());
+      this.usersToSendData = [];
+      this.filteredFlats = [];
+    }
+    this.flatsFrom.reset();
+
+    this.showUsersList();
+  }
+
+  toggleAllFlatsSelection() {
+    if (this.allFlatsSelected) {
+      this.selectFlats.options.forEach((item: MatOption) => item.select());
+    } else {
+      this.selectFlats.options.forEach((item: MatOption) => item.deselect());
+      this.usersToSendData = [];
+
     }
   }
 
+
+
   filterBuildings($event) {
     this.filteredFlats = [];
-    this.filteredUsers = [];
 
     this.filteredBuildings = this.users
       .filter(user => $event.value.includes(user.housingDevelopmentId))
@@ -71,12 +90,17 @@ export class AnnouncementsAdministrationComponent implements OnInit {
       }).filter((value, index, self) => index === self.findIndex((t) => (
         t.buildingId === value.buildingId && t.address === value.address
       )));
+
+      this.buildingsFrom.reset();
+      this.flatsFrom.reset();
+
+      this.allBuildingsSelected = false;
+      this.allFlatsSelected = false;
   }
 
   filterFlats($event) {
     console.log($event);
-console.log(this.buildingsFrom);
-    this.filteredUsers = [];
+    console.log(this.buildingsFrom);
     this.filteredFlats = this.users
       .filter(user => $event.value.includes(user.buildingId))
       .map(user => {
@@ -88,38 +112,33 @@ console.log(this.buildingsFrom);
         return flat;
       }).filter((value, index, self) => index === self.findIndex((t) => (
         t.flatId === value.flatId && t.localNumber === value.localNumber
-      )));
-    this.showUsersList();
-  }
+      ))).sort((n1, n2) => {
+        if (n1.localNumber > n2.localNumber) {
+          return 1;
+        }
 
-  filterUsers($event) {
-    console.log($event);
-    this.filteredUsers = this.users
-      .filter(user => $event.value.includes(user.flatId))
-      .map(user => {
-        let flat =
-        {
-          userId: user.userId,
-          name: user.name
-        };
-        return flat;
-      }).filter((value, index, self) => index === self.findIndex((t) => (
-        t.userId === value.userId && t.name === value.name
-      )));
+        if (n1.localNumber < n2.localNumber) {
+          return -1;
+        }
+
+        return 0;
+      });;
+    this.flatsFrom.reset();
+    this.allFlatsSelected = false;
     this.showUsersList();
   }
 
   showUsersList() {
-    console.log(this.usersFrom);
+    console.log(this.flatsFrom);
     this.usersToSendData = this.users
-      .filter(user => this.usersFrom.value.includes(user.userId))
+      .filter(user => this.flatsFrom.value.includes(user.flatId))
       .map(user => {
         let flat =
         {
           userId: user.userId,
           name: user.name,
           userEmail: user.userEmail,
-          address: user.address + ', m:' + user.localNumber
+          address: user.address + ', m.' + user.localNumber
         };
         return flat;
       }).filter((value, index, self) => index === self.findIndex((t) => (
@@ -128,7 +147,6 @@ console.log(this.buildingsFrom);
   }
 
 
-  @ViewChild('fileDropRef', { static: false }) fileDropEl: ElementRef;
   ngOnInit() {
     this.getAllusers();
   }
@@ -146,23 +164,23 @@ console.log(this.buildingsFrom);
     for (const item of files) {
       console.log((item as File).type);
       if (item.type === 'application/pdf') {
-let announcement = new Announcement();
-announcement.file = item;
+        let announcement = new Announcement();
+        announcement.file = item;
         this.files.push(announcement);
       }
       else {
-        this.alertifyService.warning('Nieprawidłowy format pliku. \nZapisz zdjęcie w formacie jpg.');
+        this.alertifyService.warning('Nieprawidłowy format pliku. \nZapisz plik w formacie png.');
       }
     }
     this.fileDropEl.nativeElement.value = '';
   }
+
   getAllusers() {
     this.users = [];
     this.filteredHouseDevelopments = [];
 
     this.userService.getAllusers().subscribe(data => {
       this.users = data as any[];
-
       this.filteredHouseDevelopments = this.users.map(user => {
         let houseDev =
         {
@@ -173,16 +191,13 @@ announcement.file = item;
       }).filter((value, index, self) => index === self.findIndex((t) => (
         t.housingDevelopmentId === value.housingDevelopmentId && t.housingDevelopmentName === value.housingDevelopmentName
       )));
-
-
-
-      console.log(this.users);
-      console.log(this.filteredHouseDevelopments);
     });
   }
+
   deleteFile(index: number): void {
     this.files.splice(index, 1);
   }
+
   insertAnnouncements() {
     console.log(this.usersToSendData);
     console.log(this.files);
@@ -199,20 +214,19 @@ announcement.file = item;
 
         if (response._response.status === 201) {
           console.log(response);
-          const fileName = this.currentFile.name;
+          const fileName = element.file.name;
           const id = this.authService.decodedToken.nameid;
-          const req: any = this.blobService.createRequestForAddingAnnouncement(fileName, id, this.usersToSendData.map(p => p.userId),element.description);
+          const req: any = this.blobService.createRequestForAddingAnnouncement(fileName, newName, id, this.usersToSendData.map(p => p.userId), element.description);
           console.log(req);
           this.announcementService.insertAnnouncement(req).subscribe(data => {
             console.log(data);
             this.usersToSendData = [];
             this.filteredHouseDevelopments = [];
-            this.filteredUsers = [];
             this.filteredBuildings = [];
             this.filteredFlats = [];
             this.files = [];
 
-            this.alertifyService.success('Pliki zostały wstawione!');
+            this.alertifyService.success('Plik został wstawiony!');
           }
           );
         }

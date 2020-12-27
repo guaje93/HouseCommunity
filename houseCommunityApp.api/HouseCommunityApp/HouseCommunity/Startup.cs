@@ -3,6 +3,7 @@ using HouseCommunity.Data;
 using HouseCommunity.Data.Interfaces;
 using HouseCommunity.Helpers;
 using HouseCommunity.Hubs;
+using HouseCommunity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -72,6 +73,7 @@ namespace HouseCommunity
             services.AddScoped<IBuildingRepository, BuildingRepository>();
             services.AddScoped<IDamageRepository, DamageRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IMailService, MailService>();
             services.AddSignalR();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
             {

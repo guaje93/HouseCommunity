@@ -64,7 +64,13 @@ namespace HouseCommunity.Data
             var flat = await _context.Flats.Include(p => p.MediaHistory).FirstOrDefaultAsync(p => p.Id == userRequest.FlatId);
             var startDate = GenerateStartDateFromCurrentDate();
             var endDate = GenerateEndDateFromCurrentDate();
-            var lastValue = flat.MediaHistory.OrderByDescending(p => p.EndPeriodDate)?.First().CurrentValue ?? 0;
+
+            var lastValue = 0.0;
+            if (flat.MediaHistory?.Count() > 0)
+            {
+                lastValue = flat.MediaHistory.OrderByDescending(p => p.EndPeriodDate).First().CurrentValue;
+            }
+
             if (!flat.MediaHistory.Select(p => p.EndPeriodDate).Any(p => p >= startDate && p <= endDate))
             {
                 AddMediaTemplate(flat, startDate, endDate, lastValue, MediaEnum.ColdWater);
@@ -154,7 +160,7 @@ namespace HouseCommunity.Data
                                      .FirstOrDefaultAsync(p => p.Id == id);
 
             if (flat != null)
-                return flat.MediaHistory.Where(p=> p.EndPeriodDate > DateTime.Now).Select(p => new MediaForAndministrationDTO()
+                return flat.MediaHistory.Where(p => p.EndPeriodDate > DateTime.Now).Select(p => new MediaForAndministrationDTO()
                 {
                     CreationDate = p.CreationDate,
                     CurrentValue = p.CurrentValue,

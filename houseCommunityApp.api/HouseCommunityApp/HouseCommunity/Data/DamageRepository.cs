@@ -69,7 +69,7 @@ namespace HouseCommunity.Data
 
         public async Task<Damage> ChangeStatus(int id, DamageStatus status)
         {
-            var damage = await _dataContext.Damages.FirstOrDefaultAsync(p => p.Id == id);
+            var damage = await _dataContext.Damages.Include(p => p.Building).ThenInclude(p => p.HouseManager).FirstOrDefaultAsync(p => p.Id == id);
             damage.Status = status;
             await _dataContext.SaveChangesAsync();
             return damage;

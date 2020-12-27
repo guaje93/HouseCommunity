@@ -33,7 +33,6 @@ import { MediaHistoryComponent } from './residents/mediaHistory/MediaHistory.com
 import { PaymentDetailsComponent } from './residents/paymentDetails/paymentDetails.component';
 import { ChatComponent } from './chat/chat.component';
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
-import { HomeAdministrationComponent } from './administration/homeAdministration/homeAdministration.component';
 import { PaymentsAdministrationComponent } from './administration/paymentsAdministration/paymentsAdministration.component';
 import { MediaAdministrationComponent } from './administration/mediaAdministration/mediaAdministration.component';
 import { AnnouncementsAdministrationComponent } from './administration/announcementsAdministration/announcementsAdministration.component';
@@ -69,7 +68,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox'
       MediaHistoryComponent,
       PaymentDetailsComponent,
       ChatComponent,
-      HomeAdministrationComponent,
       PaymentsAdministrationComponent,
       MediaAdministrationComponent,
       AnnouncementsAdministrationComponent,

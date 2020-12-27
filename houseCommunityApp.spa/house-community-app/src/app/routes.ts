@@ -8,7 +8,6 @@ import { NewsComponent } from './residents/News/News.component';
 import { RentComponent } from './residents/rent/rent.component';
 import { ResetPasswordComponent } from './resetPassword/resetPassword.component';
 import { AuthGuard } from './_guards/auth.guard';
-import { HomeAdministrationComponent } from './administration/homeAdministration/homeAdministration.component';
 import { PaymentsAdministrationComponent } from './administration/paymentsAdministration/paymentsAdministration.component';
 import { AnnouncementsAdministrationComponent } from './administration/announcementsAdministration/announcementsAdministration.component';
 import { MediaAdministrationComponent } from './administration/mediaAdministration/mediaAdministration.component';
@@ -29,7 +28,6 @@ export const AppRoutes: Routes = [
         canActivate: [AuthGuard],
         children: [
             { path: 'home', component: HomeComponent },
-            { path: 'homeAdministration', component: HomeAdministrationComponent },
             { path: 'paymentsAdministration', component: PaymentsAdministrationComponent },
             { path: 'announcementsAdministration', component: AnnouncementsAdministrationComponent },
             { path: 'mediaAdministration', component: MediaAdministrationComponent },

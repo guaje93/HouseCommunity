@@ -33,8 +33,11 @@ export class DamageComponent implements OnInit {
 
   prepareFilesList(files: Array<File>): void {
     for (const item of files) {
+      if(item.type === 'image/jpeg')
       this.files.push(item);
-
+else{
+  this.alertifyService.error('Wstaw plik w formacie jpeg');
+}
     }
   }
   addDamage() {

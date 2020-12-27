@@ -2,6 +2,7 @@
 using HouseCommunity.DTOs;
 using HouseCommunity.Helpers;
 using HouseCommunity.Request;
+using HouseCommunity.Services;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -25,20 +26,23 @@ namespace HouseCommunity.Controllers
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
         private readonly IUserRepository _userRepository;
+        private readonly IMailService _mailService;
         private readonly NotificationMetadata _notificationMetadata;
 
         #endregion
 
         #region Constructors
 
-        public AuthController(IAuthRepository repo, 
-                              IConfiguration config, 
+        public AuthController(IAuthRepository repo,
+                              IConfiguration config,
                               IUserRepository userRepository,
+                              IMailService mailService,
                               NotificationMetadata notificationMetadata)
         {
             this._repo = repo;
             this._config = config;
             this._userRepository = userRepository;
+            this._mailService = mailService;
             this._notificationMetadata = notificationMetadata;
         }
 
@@ -62,7 +66,7 @@ namespace HouseCommunity.Controllers
                 new
                 {
                     token = tokenHandler.WriteToken(token),
-                    user = new UserForLogInDueToPermissions() { Id = userFromRepo.Id, UserRole = userFromRepo.UserRole}
+                    user = new UserForLogInDueToPermissions() { Id = userFromRepo.Id, UserRole = userFromRepo.UserRole }
                 });
 
         }
@@ -95,8 +99,16 @@ namespace HouseCommunity.Controllers
             SecurityTokenDescriptor tokenDescriptor = GetTokenDescriptor(userFromRepo);
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenToSend = tokenHandler.WriteToken(token);
 
-            SendMail(usernameuserForLoginDTO.Email, tokenHandler.WriteToken(token));
+            var messageSubject = "Password Reset";
+            var messageContent = "Otrzymałeś tą wiądomość w związku z prośbą o ustawienie nowego hasła do Twojego konta.\n\n" +
+                              "Kliknij w poniższy link lub przeklej go do paska adresu Twojej przeglądarki w celu dokonczenia procesu zmiany hasła:\n\n" +
+                              "http://localhost:4200/response-reset-password/" + tokenToSend + "\n\n" +
+                              "Jeżeli nie wysyłałeś prośby o zmianę hasła lub nie chcesz go zmieniać - nie musisz nic robić. Po prostu pozostaw tę wiadomość bez odpowiedzi.\n";
+
+
+            _mailService.SendMail(messageSubject, messageContent, "");
             return Ok();
         }
 
@@ -122,7 +134,7 @@ namespace HouseCommunity.Controllers
             var user = await _userRepository.GetUser(intId);
             if (user == null)
                 return Unauthorized("Token niepoprawny");
-                
+
             return Ok();
         }
 
@@ -160,40 +172,6 @@ namespace HouseCommunity.Controllers
                 SigningCredentials = creds
             };
             return tokenDescriptor;
-        }
-
-        private string SendMail(string receiver, string token)
-        {
-            EmailMessage message = new EmailMessage();
-            message.Sender = new MailboxAddress("Self", _notificationMetadata.Sender);
-            message.Reciever = new MailboxAddress("Self", _notificationMetadata.Sender);
-            message.Subject = "Password Reset";
-            message.Content = "Otrzymałeś tą wiądomość w związku z prośbą o ustawienie nowego hasła do Twojego konta.\n\n" +
-                              "Kliknij w poniższy link lub przeklej go do paska adresu Twojej przeglądarki w celu dokonczenia procesu zmiany hasła:\n\n" +
-                              "http://localhost:4200/response-reset-password/" + token + "\n\n" +
-                              "Jeżeli nie wysyłałeś prośby o zmianę hasła lub nie chcesz go zmieniać - nie musisz nic robić. Po prostu pozostaw tę wiadomość bez odpowiedzi.\n";
-            var mimeMessage = CreateMimeMessageFromEmailMessage(message);
-            using (SmtpClient smtpClient = new SmtpClient())
-            {
-                smtpClient.Connect(_notificationMetadata.SmtpServer,
-                _notificationMetadata.Port, true);
-                smtpClient.Authenticate(_notificationMetadata.UserName,
-                _notificationMetadata.Password);
-                smtpClient.Send(mimeMessage);
-                smtpClient.Disconnect(true);
-            }
-            return "Email sent successfully";
-        }
-
-        private MimeMessage CreateMimeMessageFromEmailMessage(EmailMessage message)
-        {
-            var mimeMessage = new MimeMessage();
-            mimeMessage.From.Add(message.Sender);
-            mimeMessage.To.Add(message.Reciever);
-            mimeMessage.Subject = message.Subject;
-            mimeMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
-            { Text = message.Content };
-            return mimeMessage;
         }
 
         #endregion //Methods

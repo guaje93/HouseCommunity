@@ -100,13 +100,13 @@ export class BlobService {
     return req;
   }
 
-  createRequestForAddingAnnouncement(fileName: string, uploaderId: any, receiversId: any[], description: string) {
+  createRequestForAddingAnnouncement(fileName: string, newFileName, uploaderId: any, receiversId: any[], description: string) {
     const req: any = {};
     req.UploaderId = uploaderId;
     req.ReceiversId = receiversId;
     req.Description = description;
     req.Name = fileName;
-    req.FileUrl = `https://${this.accountName}.blob.core.windows.net/${this.containerName}/${fileName}`;
+    req.FileUrl = `https://${this.accountName}.blob.core.windows.net/${this.containerName}/${newFileName}`;
     console.log(req);
     return req;
   }

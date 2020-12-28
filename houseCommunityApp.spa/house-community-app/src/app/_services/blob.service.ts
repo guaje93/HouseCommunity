@@ -88,7 +88,7 @@ export class BlobService {
     return response;
   }
 
-  createRequestForAddingFile(description: string, currentValue: number, fileName: string, id: any) {
+  createRequestForAddingFile(description: string, currentValue: number, fileName: string, id: any, userId) {
     const req: any = {};
     req.Id = id;
     if (fileName) {
@@ -96,6 +96,7 @@ export class BlobService {
     }
     req.UserDescription = description;
     req.CurrentValue = currentValue;
+    req.UserId = userId;
     console.log(req);
     return req;
   }

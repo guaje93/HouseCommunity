@@ -37,6 +37,12 @@ namespace HouseCommunity.Data
             return building;
         }
 
+        public async Task<Flat> GetFlat(int flatId)
+        {
+            var flat = await _context.Flats.Include(p => p.Residents).FirstOrDefaultAsync(p=> p.Id == flatId);
+            return flat;
+        }
+
         public async Task<ICollection<FlatsForListDTO>> GetFlats(int userId)
         {
             var building = await GetBuilding(userId);

@@ -74,16 +74,36 @@ namespace HouseCommunity.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> LogIn(UserForRegisterDTO userForRegisterDTO)
         {
-
+            var creator = await _userRepository.GetUser(userForRegisterDTO.UserId);
+            var users = await _userRepository.GetUsersWithRole(Model.UserRole.Resident);
+            if(users.Any(p => p.Email == userForRegisterDTO.Email))
+            {
+                return Unauthorized("Podany email jest już w bazie");
+            }
             var userFromRepo = await _repo.RegisterUser(userForRegisterDTO);
 
             if (userFromRepo == null)
-                return Unauthorized("Podane hasło jest niepoprawne!");
+                return Forbid("Wystąpił błąd. Użytkownik nie został dodany.");
+
+            else
+            {
+                SecurityTokenDescriptor tokenDescriptor = GetTokenDescriptor(userFromRepo);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var tokenToSend = tokenHandler.WriteToken(token);
+
+                var messageSubject = "Home Community App - Konto zostało stworzone";
+                var messageContent = $"Użytkownik {creator.FirstName} {creator.LastName} stworzył konto powiązane z danym adresem mailowym." +
+                                      "Kliknij w poniższy link lub przeklej go do paska adresu Twojej przeglądarki w celu dokonczenia procesu rejestracji:\n\n" +
+                                      "http://localhost:4200/response-reset-password/" + tokenToSend + "\n\n" +
+                                      "Jeżeli nie wysyłałeś prośby o zmianę hasła lub nie chcesz go zmieniać - nie musisz nic robić. Po prostu pozostaw tę wiadomość bez odpowiedzi.\n";
+                _mailService.SendMail(messageSubject, messageContent, "", "Home Community App");
+            }
 
             return Ok(
                 new
                 {
-                    result = "Success"
+                    Result = "Użytkownik został dodany"
                 });
 
         }
@@ -108,7 +128,7 @@ namespace HouseCommunity.Controllers
                               "Jeżeli nie wysyłałeś prośby o zmianę hasła lub nie chcesz go zmieniać - nie musisz nic robić. Po prostu pozostaw tę wiadomość bez odpowiedzi.\n";
 
 
-            _mailService.SendMail(messageSubject, messageContent, "");
+            _mailService.SendMail(messageSubject, messageContent, "", "Home Community App");
             return Ok();
         }
 
@@ -161,7 +181,7 @@ namespace HouseCommunity.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.UserName)            };
+                new Claim(ClaimTypes.Name, userFromRepo.FirstName)            };
 
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:Token").Value));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

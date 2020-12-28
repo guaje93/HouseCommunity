@@ -10,6 +10,7 @@ namespace HouseCommunity.Data.Interfaces
     public interface IBuildingRepository
     {
         Task<ICollection<FlatsForListDTO>> GetFlats(int userId);
+        Task<Flat> GetFlat(int flatId);
         Task <Building> GetBuilding(int userId);
     }
 }

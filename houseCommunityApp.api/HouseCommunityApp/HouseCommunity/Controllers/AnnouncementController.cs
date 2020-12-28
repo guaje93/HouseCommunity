@@ -60,7 +60,7 @@ namespace HouseCommunity.Controllers
             var messageContent = $"Nowe ogłoszenie zostało dodane przez użytkownika: {uploader.FirstName} {uploader.LastName}.\n" +
                                  $"Sprawdź zawartość ogłoszenia na swojej tablicy ogłoszeń. \n\n" +
                                  $"Treść maila wygenerowano automatycznie. Nie odpowiadaj na tego maila.";
-            _mailService.SendMail(messageSubject, messageContent, "");
+            _mailService.SendMail(messageSubject, messageContent, "", "Home Community App");
 
             return Ok(
                 new

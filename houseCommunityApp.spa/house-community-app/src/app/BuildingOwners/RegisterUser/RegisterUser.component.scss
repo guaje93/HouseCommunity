@@ -8,3 +8,8 @@
   .mat-column-Add {
     width: 5% !important;
   }
+
+  button:focus{
+    outline: none;
+    border: none;
+}

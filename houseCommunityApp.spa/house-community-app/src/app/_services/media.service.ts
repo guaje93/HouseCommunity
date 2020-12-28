@@ -14,10 +14,6 @@ export class MediaService {
     return this.http.get(this.baseUrl + id);
   }
 
-  addMediaForUser(model: any){
-    return this.http.post(this.baseUrl + 'add-media', model);
-  }
-
   updateMedia(model: any){
     return this.http.put(this.baseUrl + 'update-media', model);
   }

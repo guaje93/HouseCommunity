@@ -2,6 +2,8 @@
 using HouseCommunity.Model;
 using HouseCommunity.Request;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HouseCommunity.Data
@@ -57,18 +59,6 @@ namespace HouseCommunity.Data
 
         public async Task<bool> UserExists(string username) => await _context.Users.AnyAsync(p => p.UserName == username);
 
-        public async Task<User> Register(User user, string password)
-        {
-            byte[] passwordHash, passwordSalt;
-            CreatePasswordHash(password, out passwordHash, out passwordSalt);
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-
-            return user;
-        }
-
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
@@ -110,30 +100,57 @@ namespace HouseCommunity.Data
             CreatePasswordHash(passwordChangeRequest.ConfirmPassword, out passwordHash, out passwordSalt);
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-            
+
             await _context.SaveChangesAsync();
             return user;
         }
 
         public async Task<User> RegisterUser(UserForRegisterDTO userForRegisterDTO)
         {
+
             byte[] passwordHash, passwordSalt;
-            CreatePasswordHash(userForRegisterDTO.Password, out passwordHash, out passwordSalt);
-            
+            CreatePasswordHash(GenerateRandomPassword(8), out passwordHash, out passwordSalt);
+
             var flat = await _context.Flats.Include(p => p.Residents).FirstOrDefaultAsync(p => p.Id == userForRegisterDTO.FlatId);
             var user = new User()
             {
-                UserName = userForRegisterDTO.UserName,
+                UserName = GenerateUserName(userForRegisterDTO),
                 FirstName = userForRegisterDTO.FirstName,
                 LastName = userForRegisterDTO.LastName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                Email = userForRegisterDTO.Email
+                Email = userForRegisterDTO.Email,
+                UserRole = UserRole.Resident
             };
             flat.Residents.Add(user);
 
             await _context.SaveChangesAsync();
             return user;
+        }
+
+        private string GenerateUserName(UserForRegisterDTO userForRegisterDTO)
+        {
+            var users = _context.Users.Select(p => p.UserName);
+
+            var userName = $"HC{userForRegisterDTO.FirstName.Substring(0, 2).ToUpper()}{userForRegisterDTO.LastName.Substring(0, 3).ToUpper()}";
+            if (!users.Contains(userName))
+                return userName;
+            else
+            {
+                var tempUserName = userName;
+                var index = 1;
+                do
+                {
+                    if (index < 10)
+                        tempUserName = userName + "0" + index;
+                    else
+                        tempUserName = userName + index;
+                    
+                    index++;
+                }
+                while (users.Contains(tempUserName));
+                return tempUserName;
+            }
         }
 
         public async Task<bool> HasAccessToAdministration(int userId)
@@ -142,7 +159,13 @@ namespace HouseCommunity.Data
             return user.UserRole == UserRole.Administrator;
         }
 
-
+        private string GenerateRandomPassword(int length)
+        {
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
 
         #endregion //Methods
     }

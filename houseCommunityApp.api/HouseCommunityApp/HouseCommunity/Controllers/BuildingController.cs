@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using HouseCommunity.Data.Interfaces;
+using HouseCommunity.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +14,13 @@ namespace HouseCommunity.Controllers
     [ApiController]
     public class BuildingController : ControllerBase
     {
-        private IBuildingRepository _repo;
+        private readonly IBuildingRepository _repo;
+        private readonly IMapper _mapper;
 
-        public BuildingController(IBuildingRepository flatRepository)
+        public BuildingController(IBuildingRepository flatRepository, IMapper mapper)
         {
             _repo = flatRepository;
+            this._mapper = mapper;
         }
 
         [HttpGet("get-building-for-manager/{userId}")]
@@ -51,5 +55,21 @@ namespace HouseCommunity.Controllers
             return Ok(
                flatsFromRepo);
         }
+
+        [HttpGet("get-flat-residents/{flatId}")]
+        public async Task<IActionResult> GetFlatResidents(int flatId)
+        {
+
+            var flat = await _repo.GetFlat(flatId);
+
+            if (flat == null)
+                return BadRequest();
+            var users = flat.Residents.Select(p => _mapper.Map<ResidentToContactDTO>(p));
+
+            return Ok(
+               users);
+        }
+
+        
     }
 }

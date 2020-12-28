@@ -103,6 +103,7 @@ export class MediaComponent implements OnInit {
               item.Description = element.description,
               item.FileName = element.fileName;
               item.CreationDate = element.creationDate;
+              item.AcceptanceDate = element.acceptanceDate;
               item.CurrentValue = element.currentValue;
               item.MediaType = this.getMediaTypeFromNumber(element.mediaEnum);
               this.mediaHistory.push(item);
@@ -134,6 +135,7 @@ export class MediaComponent implements OnInit {
       item.Description = mediaItem.description,
         item.FileName = mediaItem.fileName;
       item.CreationDate = mediaItem.creationDate;
+      item.AcceptanceDate = mediaItem.acceptanceDate;
       item.CurrentValue = mediaItem.currentValue;
       item.MediaType = this.getMediaTypeFromNumber(mediaItem.mediaEnum);
       this.mediaHistory.push(item);

@@ -11,8 +11,6 @@ import { AuthService } from 'src/app/_services/auth.service';
 })
 export class RegisterFormComponent implements OnInit {
 
-
-
     constructor(
       public dialogRef: MatDialogRef<RegisterFormComponent>,
       @Inject(MAT_DIALOG_DATA) public data: number, private alertifyService: AlertifyService, private authService: AuthService) {}
@@ -26,12 +24,8 @@ export class RegisterFormComponent implements OnInit {
 
     firstName = new FormControl('', [Validators.required, Validators.minLength(2)]);
     lastName  = new FormControl('', [Validators.required, Validators.minLength(3)]);
-    userName  = new FormControl('', [Validators.required, Validators.minLength(3)]);
-    password  = new FormControl('', [Validators.required, Validators.minLength(6)]);
-    confirmPassword  = new FormControl('', [Validators.required]);
     email = new FormControl('', [Validators.required, Validators.email]);
-    hide = true;
-    hideConfirmedPassword = true;
+    
     getErrorMessage() {
       if (this.email.hasError('required')) {
         return 'You must enter a value';
@@ -41,22 +35,26 @@ export class RegisterFormComponent implements OnInit {
 }
 
 addUser(){
-  if(!this.password.invalid && !this.confirmPassword.invalid && !this.email.invalid && !this.firstName.invalid && !this.lastName.invalid)
+  if(!this.email.invalid && !this.firstName.invalid && !this.lastName.invalid)
   {
 
     let model: any = {};
     model.firstName = this.firstName.value;
     model.lastName = this.lastName.value;
-    model.userName = this.userName.value;
     model.email = this.email.value;
-    model.password= this.password.value;
-    model.confirmPassword = this.confirmPassword.value;
     model.flatId = this.data;
+    model.userId = this.authService.decodedToken.nameid;
     this.authService.registerUser(model).subscribe(data =>
       {
         console.log(data);
         this.alertifyService.success("Dodano użytkownika");
         this.dialogRef.close();
+      },
+      error => {
+        if(error.error)
+        {
+          this.alertifyService.error(error.error);
+        }
       })
     console.log(model); 
   } 
@@ -64,11 +62,4 @@ addUser(){
     this.alertifyService.error('Wprowadź poprawne dane');
   }
 }
-onPasswordInput() {
-  if (this.confirmPassword.value !== this.password.value)
-    this.confirmPassword.setErrors([{'passwordMismatch': true}]);
-  else
-    this.confirmPassword.setErrors(null);
-}
-
 }

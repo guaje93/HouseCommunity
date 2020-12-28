@@ -48,7 +48,7 @@ namespace HouseCommunity.Controllers
                                  $"Status zgłoszenia zmieniono na \'Wymagający naprawy\'. W razie zastrzeżeń skontaktuj się z użytkownikiem. \n\n" +
                                  $"Treść maila wygenerowano automatycznie. Nie odpowiadaj na tego maila.";
 
-            _mailService.SendMail(messageSubject, messageContent, "");
+            _mailService.SendMail(messageSubject, messageContent, "", "Home Community App");
 
             return Ok(new
             {
@@ -94,7 +94,7 @@ namespace HouseCommunity.Controllers
                                  $"Status zgłoszenia zmieniono na \'Naprawiony\'. W razie zastrzeżeń skontaktuj się z zarządcą budynku. \n\n" +
                                  $"Treść maila wygenerowano automatycznie. Nie odpowiadaj na tego maila.";
 
-            _mailService.SendMail(messageSubject, messageContent, "");
+            _mailService.SendMail(messageSubject, messageContent, "", "Home Community App");
             return Ok(_mapper.Map<GetDamageForHouseManagerDTO>(damage)
             );
         }
@@ -110,7 +110,7 @@ namespace HouseCommunity.Controllers
                                  $"Status zgłoszenia zmieniono na \'Wymagający naprawy\'. W razie zastrzeżeń skontaktuj się z zarządcą budynku. \n\n" +
                                  $"Treść maila wygenerowano automatycznie. Nie odpowiadaj na tego maila.";
 
-            _mailService.SendMail(messageSubject, messageContent, "");
+            _mailService.SendMail(messageSubject, messageContent, "", "Home community App");
 
             return Ok(_mapper.Map<GetDamageForHouseManagerDTO>(damage)
             );

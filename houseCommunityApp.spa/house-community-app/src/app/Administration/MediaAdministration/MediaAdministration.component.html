@@ -2,7 +2,8 @@
 <div style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: auto; padding: 3em;" role="alert">
 <div class="container-fluid">
   <div class="row">
-      <div class="col-md-3">
+    
+    <div class="col-md-3">
           <mat-form-field appearance="fill">
               <mat-label>Osiedla</mat-label>
               <mat-select [formControl]="houseDevelopmentsFrom" multiple
@@ -15,27 +16,35 @@
       <div class="col-md-3">
           <mat-form-field appearance="fill">
               <mat-label>Budynki</mat-label>
-              <mat-select [formControl]="buildingsFrom" multiple (selectionChange)="showFlatsList()">
+              <mat-select [formControl]="buildingsFrom" multiple (selectionChange)="filterPeriods($event)">
                   <mat-option *ngFor="let user of filteredBuildings" [value]="user.buildingId">{{user.address}}
                   </mat-option>
               </mat-select>
           </mat-form-field>
       </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="fill">
+            <mat-label>Okres</mat-label>
+            <mat-select [formControl]="periodForm"
+                (selectionChange)="showFlatsList()">
+                <mat-option *ngFor="let period of filteredPeriods" [value]="period">
+                    {{decodePeriod(period)}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
   </div>
 </div>
 <div>
-  <h4 style="margin: 1em;">Liczba nie wygenerowanych formularzy: {{totalNotGeneratedMedia?.length}}</h4>
   <h4 style="margin: 1em;">Liczba czekających na użytkownika: {{totalWaitingForUserMedia?.length}}</h4>
   <h4 style="margin: 1em;">Liczba czekających na zaksięgowanie: {{totalWaitingForBookMedia?.length}}</h4>
-  <h4 style="margin: 1em;">Liczba zaksięgowanych: {{totalBookedMedia?.length}}</h4>
-  <h2 style="margin: 1em;">Liczba wyświetlonych osób: {{usersToSendData?.length}}</h2>
+  <h2 style="margin: 1em;">Liczba wyświetlonych mieszkań: {{usersToSendData?.length}}</h2>
   <table mat-table matSort [dataSource]="usersToSendData" class="mat-elevation-z8" style="width: 100%;">
       <ng-container matColumnDef="Building">
           <th mat-header-cell mat-sort-header *matHeaderCellDef>Mieszkanie </th>
           <td mat-cell *matCellDef="let element" [ngClass]="{
             'is-red': element.mediaList.length === 0,
             'is-green': element.mediaList.length !== 0
-          }"> {{element.building}} m. {{element.local}} </td>
+          }" matTooltip={{getResidentsToContact(element.residentsList)}} matTooltipClass="toolTip"> {{element.building}} m. {{element.local}} </td>
       </ng-container>
       <ng-container matColumnDef="Generate">
         <th mat-header-cell *matHeaderCellDef>  </th>
@@ -54,36 +63,42 @@
                   'is-green': media.status === 2
                 }"> {{media.mediaType}} </td>
             </ng-container>
-            <ng-container matColumnDef="StartDate">
-                <th mat-header-cell *matHeaderCellDef> Początek </th>
+            <ng-container matColumnDef="Period">
+                <th mat-header-cell *matHeaderCellDef> Okres </th>
                 <td mat-cell *matCellDef="let media" [ngClass]="{
                   'is-red': media.status === 0,
                   'is-yellow': media.status === 1,
                   'is-green': media.status === 2
-                }"> {{media.startPeriodDate | date:'yyyy-MM-dd'}} </td>
+                }"> {{decodePeriod(media.period)}} </td>
             </ng-container>
-            <ng-container matColumnDef="EndDate">
-              <th mat-header-cell *matHeaderCellDef> Koniec </th>
+            <ng-container matColumnDef="LastValue" >
+              <th mat-header-cell *matHeaderCellDef > Ostatni odczyt </th>
               <td mat-cell *matCellDef="let media" [ngClass]="{
                 'is-red': media.status === 0,
                 'is-yellow': media.status === 1,
                 'is-green': media.status === 2
-              }"> {{media.endPeriodDate | date:'yyyy-MM-dd'}} </td>
+              }"> 
+                <mat-form-field  appearance="fill">
+                  <mat-label>Ostatni odczyt</mat-label>
+                  <input  matInput [(ngModel)]="media.lastValue" disabled />
+              </mat-form-field>
+              </td>
           </ng-container>
-          <ng-container matColumnDef="Value">
+          <ng-container matColumnDef="Value" >
             <th mat-header-cell *matHeaderCellDef > Odczyt </th>
             <td mat-cell *matCellDef="let media" [ngClass]="{
               'is-red': media.status === 0,
               'is-yellow': media.status === 1,
               'is-green': media.status === 2
             }"> 
-              <mat-form-field  appearance="fill">
+              <mat-form-field  appearance="fill"  matTooltip={{media.userDescription}}>
                 <mat-label>Aktualny odczyt</mat-label>
-                <input matInput [(ngModel)]="media.currentValue" [disabled]='media.status == 2' />
+                <input  matInput [(ngModel)]="media.currentValue" [disabled]='media.status == 2' />
             </mat-form-field>
             <img *ngIf="media.imageUrl" [src]="media.imageUrl" style="width: 25%; cursor: pointer; margin-left: 2em;" (click)="openDialog(media.imageUrl)">
             </td>
         </ng-container>
+        
       
       <ng-container matColumnDef="Accept">
         <th mat-header-cell *matHeaderCellDef > Zaksięguj </th>

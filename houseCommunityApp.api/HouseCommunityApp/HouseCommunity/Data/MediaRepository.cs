@@ -65,17 +65,21 @@ namespace HouseCommunity.Data
             var startDate = GenerateStartDateFromCurrentDate();
             var endDate = GenerateEndDateFromCurrentDate();
 
-            var lastValue = 0.0;
+            var coldWaterLastValue = 0.0;
+            var hotWaterLastValue = 0.0;
+            var heatingLastValue = 0.0;
             if (flat.MediaHistory?.Count() > 0)
             {
-                lastValue = flat.MediaHistory.OrderByDescending(p => p.EndPeriodDate).First().CurrentValue;
+                coldWaterLastValue = flat.MediaHistory.Where(p => p.MediaType == MediaEnum.ColdWater).OrderByDescending(p => p.EndPeriodDate).First().CurrentValue;
+                hotWaterLastValue = flat.MediaHistory.Where(p => p.MediaType == MediaEnum.HotWater).OrderByDescending(p => p.EndPeriodDate).First().CurrentValue;
+                heatingLastValue = flat.MediaHistory.Where(p => p.MediaType == MediaEnum.Heat).OrderByDescending(p => p.EndPeriodDate).First().CurrentValue;
             }
 
             if (!flat.MediaHistory.Select(p => p.EndPeriodDate).Any(p => p >= startDate && p <= endDate))
             {
-                AddMediaTemplate(flat, startDate, endDate, lastValue, MediaEnum.ColdWater);
-                AddMediaTemplate(flat, startDate, endDate, lastValue, MediaEnum.HotWater);
-                AddMediaTemplate(flat, startDate, endDate, lastValue, MediaEnum.Heat);
+                AddMediaTemplate(flat, startDate, endDate, coldWaterLastValue, MediaEnum.ColdWater);
+                AddMediaTemplate(flat, startDate, endDate, hotWaterLastValue, MediaEnum.HotWater);
+                AddMediaTemplate(flat, startDate, endDate, heatingLastValue, MediaEnum.Heat);
                 _context.SaveChanges();
                 return flat;
             }
@@ -139,7 +143,6 @@ namespace HouseCommunity.Data
                 {
                     Id = p.Id,
                     ImageUrl = p.ImageUrl,
-                    FileName = p.FileName,
                     CreationDate = p.CreationDate,
                     Description = p.UserDescription,
                     CurrentValue = p.CurrentValue,
@@ -160,16 +163,16 @@ namespace HouseCommunity.Data
                                      .FirstOrDefaultAsync(p => p.Id == id);
 
             if (flat != null)
-                return flat.MediaHistory.Where(p => p.EndPeriodDate > DateTime.Now).Select(p => new MediaForAndministrationDTO()
+                return flat.MediaHistory.Select(p => new MediaForAndministrationDTO()
                 {
                     CreationDate = p.CreationDate,
+                    AcceptanceDate = p.AcceptanceDate,
                     CurrentValue = p.CurrentValue,
-                    EndPeriodDate = p.EndPeriodDate,
-                    FileName = p.FileName,
+                    LastValue = p.LastValue,
+                    Period = p.StartPeriodDate.Month > 6 ? $"H02{p.EndPeriodDate.Year}" : $"H01{p.EndPeriodDate.Year}",
                     Id = p.Id,
                     ImageUrl = p.ImageUrl,
                     MediaType = p.MediaType,
-                    StartPeriodDate = p.StartPeriodDate,
                     UserDescription = p.UserDescription,
                     Status = p.Status
                 });

@@ -16,13 +16,13 @@ namespace HouseCommunity.Services
         {
             this._notificationMetadata = notificationMetadata;
         }
-        public string SendMail(string subject, string content, string reciever)
+        public string SendMail(string subject, string content, string reciever, string senderName)
         {
             try
             {
 
                 EmailMessage message = new EmailMessage();
-                message.Sender = new MailboxAddress("Self", _notificationMetadata.Sender);
+                message.Sender = new MailboxAddress(senderName, _notificationMetadata.Sender);
                 //Test mail
                 message.Reciever = new MailboxAddress("Self", _notificationMetadata.Sender);
                 message.Subject = subject;
@@ -60,7 +60,7 @@ namespace HouseCommunity.Services
 
     public interface IMailService
     {
-        string SendMail(string subject, string content, string reciever);
+        string SendMail(string subject, string content, string reciever, string nameSender);
 
     }
 }

@@ -7,7 +7,7 @@
     width: 100%;
   }
   .mat-column-Building {
-    width: 30% !important;
+    width: 20% !important;
   }
   
   td.is-red {
@@ -27,13 +27,25 @@ td tr.mat-header-row{
 
 }
 
-.mat-column-Accept {
+.mat-column-Accept{
   width: 10% !important;
-}
-.mat-column-Type, .mat-column-StartDate, .mat-column-EndDate {
+} 
+.mat-column-Type {
   width: 15% !important;
+}
+.mat-column-Period 
+{
+  width: 20% !important;
+}
+
+.mat-column-LastValue {
+  width: 10% !important;
 }
 
 .mat-column-Value {
-  width: 45% !important;
+  width: 40% !important;
+}
+
+::ng-deep .mat-tooltip {
+  white-space: pre-line;
 }

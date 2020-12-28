@@ -61,7 +61,7 @@ export class AddMediaFormComponent implements OnInit {
       if (response._response.status === 201) {
         const fileName = currentFile.name;
 
-        const req: any = this.blobService.createRequestForAddingFile(this.media.Description, this.media.CurrentValue, fileName, this.media.Id);
+        const req: any = this.blobService.createRequestForAddingFile(this.media.Description, this.media.CurrentValue, fileName, this.media.Id, this.authService.decodedToken.nameid);
 
         this.mediaService.updateMedia(req).subscribe(data => {
           console.log(data);
@@ -75,7 +75,7 @@ export class AddMediaFormComponent implements OnInit {
         this.alertifyService.error('Formularz nie zostła wysłany! Błąd!');
     }
     else {
-      const req: any = this.blobService.createRequestForAddingFile(this.media.Description, this.media.CurrentValue, '', this.media.Id);
+      const req: any = this.blobService.createRequestForAddingFile(this.media.Description, this.media.CurrentValue, '', this.media.Id, this.authService.decodedToken.nameid);
 
       this.mediaService.updateMedia(req).subscribe(data => {
         console.log(data);

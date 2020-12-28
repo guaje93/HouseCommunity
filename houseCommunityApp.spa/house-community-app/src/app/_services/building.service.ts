@@ -14,4 +14,8 @@ getAllflats(id: number){
   return this.http.get(this.baseUrl + 'get-flats/' + id).pipe(retry(3));
 }
 
+getFlatResidents(id: number){
+  return this.http.get(this.baseUrl + 'get-flat-residents/' + id).pipe(retry(3));
+}
+
 }

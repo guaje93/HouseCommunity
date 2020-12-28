@@ -93,6 +93,7 @@ this.showFlatsList();
     });
 
     dialogRef.afterClosed().subscribe(() => {
+      this.getAllusers();
       console.log('The dialog was closed');
     });
   }

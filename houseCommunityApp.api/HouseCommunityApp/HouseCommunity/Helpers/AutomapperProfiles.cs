@@ -12,6 +12,7 @@ namespace HouseCommunity.Helpers
             CreateMap<Payment, PaymentForBookDTO>();
             CreateMap<PaymentForBookDTO, Payment>();
 
+            CreateMap<User, ResidentToContactDTO>();
             CreateMap<User, UserForInfoDTO>().ForMember(dest => dest.Area, opt => opt.MapFrom(source => source.Flat.Area))
                                              .ForMember(dest => dest.ColdWaterEstimatedUsage, opt => opt.MapFrom(source => source.Flat.ColdWaterEstimatedUsage))
                                              .ForMember(dest => dest.ColdWaterUnitCost, opt => opt.MapFrom(source => source.Flat.Building.Cost.ColdWaterUnitCost))
@@ -38,21 +39,6 @@ namespace HouseCommunity.Helpers
 
             CreateMap<Message, MessageDTO>();
 
-
-            //FirstName = user.FirstName,
-            //    LastName = user.LastName,
-            //    Birthdate = user.Birthdate,
-            //    Id = user.Id,
-            //    Email = user.Email,
-            //    PhoneNumber = user.PhoneNumber,
-            //    Area = user.Flat.Area,
-            //    ResidentsAmount = user.Flat.ResidentsAmount,
-            //    ColdWaterEstimatedUsage = user.Flat.ColdWaterEstimatedUsage,
-            //    HotWaterEstimatedUsage = user.Flat.HotWaterEstimatedUsage,
-            //    HeatingEstimatedUsage = user.Flat.HeatingEstimatedUsage,
-            //    ColdWaterUnitCost = user.Flat.Building.Cost.ColdWaterUnitCost,
-            //    HotWaterUnitCost = user.Flat.Building.Cost.HotWaterUnitCost,
-            //    HeatingUnitCost = user.Flat.Building.Cost.HeatingUnitCost,
         }
 
     }

@@ -1,5 +1,6 @@
+<div style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: 100%; padding: 0em;"
+role="alert">
 <app-nav></app-nav>
-<div mat-dialog-content>
   <div>
     <table mat-table matSort [dataSource]="usersToSendData" class="mat-elevation-z8" style="width: 100%;">
       <ng-container matColumnDef="Building">
@@ -9,7 +10,9 @@
       <ng-container matColumnDef="Add">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>Dodaj </th>
         <td mat-cell *matCellDef="let element"> 
-          <button style="border-radius: 25%;" class='btn-success' (click)="openDialog(element.id)">+</button>
+          <button mat-fab color="primary" (click)="openDialog(element.id)">
+            <mat-icon>add</mat-icon>
+          </button>
         </td>
       </ng-container>
       <ng-container matColumnDef="Generate">

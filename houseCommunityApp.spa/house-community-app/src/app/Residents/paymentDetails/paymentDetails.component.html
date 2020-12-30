@@ -1,42 +1,48 @@
-<div mat-dialog-content>
+<div mat-dialog-content *ngIf="data.type===1">
     <div>
-        <p>Woda ciepła: <span>{{data.hotWaterValue}}</span> zł
-            <i class="fa fa-question-circle" matTooltip={{data.hotWaterDescription}}></i>
+        <p>Woda ciepła: <span>{{data.details.hotWaterValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.details.hotWaterDescription}}></i>
         </p>
     </div>
     <div>
-        <p>Woda zimna: <span>{{data.coldWaterValue}}</span> zł
-            <i class="fa fa-question-circle" matTooltip={{data.coldWaterDescription}}></i>
+        <p>Woda zimna: <span>{{data.details.coldWaterValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.details.coldWaterDescription}}></i>
         </p>
     </div>
     <div>
-        <p>Ogrzewanie: <span>{{data.heatingValue}}</span> zł
-            <i class="fa fa-question-circle" matTooltip={{data.heatingDescription}}></i>
+        <p>Ogrzewanie: <span>{{data.details.heatingValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.details.heatingDescription}}></i>
         </p>
     </div>
     <div>
-        <p>Wywóz śmieci: <span>{{data.garbageValue}}</span> zł
-            <i class="fa fa-question-circle" matTooltip={{data.garbageDescription}}></i>
+        <p>Wywóz śmieci: <span>{{data.details.garbageValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.details.garbageDescription}}></i>
         </p>
     </div>
     <div>
-        <p>Administracja: <span>{{data.administrationValue}}</span> zł
-            <i class="fa fa-question-circle" matTooltip={{data.administrationDescription}}></i>
+        <p>Administracja: <span>{{data.details.administrationValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.details.administrationDescription}}></i>
         </p>
     </div>
     <div>
-        <p>Koszty eksploatacji: <span>{{data.operatingCostValue}}</span> zł
-            <i class="fa fa-question-circle" matTooltip={{data.operatingCostDescription}}></i>
+        <p>Wyrównanie opłaty za wodę: <span>{{data.details.waterRefundValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.details.waterRefundDescription}}></i>
         </p>
     </div>
     <div>
-        <p>Wyrównanie opłaty za wodę: <span>{{data.waterRefundValue}}</span> zł
-            <i class="fa fa-question-circle" matTooltip={{data.waterRefundDescription}}></i>
+        <p>Wyrównanie opłaty za ciepło: <span>{{data.details.heatingRefundValue}}</span> zł
+            <i class="fa fa-question-circle" matTooltip={{data.details.heatingRefundDescription}}></i>
         </p>
     </div>
-    <div>
-        <p>Wyrównanie opłaty za ciepło: <span>{{data.heatingRefundValue}}</span> zł
-            <i class="fa fa-question-circle" matTooltip={{data.heatingRefundDescription}}></i>
-        </p>
-    </div>
+</div>
+<div *ngIf="data.type===0">
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Opis</mat-label>
+        <textarea name="description" [(ngModel)]="data.description" matInput disabled
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        cdkAutosizeMinRows="5"
+        cdkAutosizeMaxRows="200"></textarea>            
+      </mat-form-field>
+      
 </div>

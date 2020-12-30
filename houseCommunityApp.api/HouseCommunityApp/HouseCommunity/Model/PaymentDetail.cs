@@ -7,7 +7,6 @@
         public double ColdWaterValue { get; set; }
         public double HeatingValue { get; set; }
         public double AdministrationValue { get; set; }
-        public double OperatingCostValue { get; set; }
         public double HeatingRefundValue { get; set; }
         public double GarbageValue { get; set; }
         public double WaterRefundValue { get; set; }
@@ -16,7 +15,6 @@
         public string GarbageDescription { get; set; }
         public string HotWaterDescription { get; set; }
         public string AdministrationDescription { get; set; }
-        public string OperatingCostDescription { get; set; }
         public string HeatingRefundDescription { get; set; }
         public string WaterRefundDescription { get; set; }
     }

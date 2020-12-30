@@ -1,0 +1,12 @@
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Status</mat-label>
+    <mat-select [formControl]="statusForm">
+      <mat-option [value]="1">Płatność nie opłacona</mat-option>
+      <mat-option [value]="4">Płatność opłacona</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-mini-fab color="primary" (click)="openLink()">
+    <mat-icon matSuffix>store</mat-icon>
+  </button>
+</div>

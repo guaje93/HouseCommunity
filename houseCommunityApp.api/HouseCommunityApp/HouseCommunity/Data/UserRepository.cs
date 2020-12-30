@@ -32,6 +32,13 @@ namespace HouseCommunity.Data
             var user = await _context.Users.Include(p => p.Flat)
                                            .ThenInclude(p => p.Building)
                                            .ThenInclude(p => p.Cost)
+                                           .Include(p => p.UserConversations)
+                                           .ThenInclude(p => p.Conversation)
+                                           .ThenInclude(p => p.Users)
+                                           .Include(p => p.UserConversations)
+                                           .ThenInclude(p => p.Conversation)
+                                           .ThenInclude(p => p.Messages)
+                                           .ThenInclude(p => p.Sender)
                                            .FirstOrDefaultAsync(p => p.Id == id);
 
             if (user == null)

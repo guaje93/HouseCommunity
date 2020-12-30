@@ -27,19 +27,35 @@ export class PaymentFormComponent implements OnInit {
     this.paymentService.getPaymentDetails(new Date(), this.data.flatId).subscribe(
       data => 
       {console.log(data);
-        this.paymentData.userId = this.authService
-this.paymentData = this.authService.decodedToken.nameid;
+        this.paymentData = data;
+        this.paymentData.userId = this.authService.decodedToken.nameid;
 this.paymentData.flatId = this.data.flatId;
-this.paymentData.period = new Date();
+this.paymentData.period = this.GetDate(this.data.period);
       }
       );
   }
 
   addPayment(){
-    this.paymentService.createNewPayment(this.paymentData).subscribe(data => {
-      this.alertifyService.success('Payment added');
+    
+    if(this.paymentData.deadline){
+      this.paymentService.createNewPayment(this.paymentData).subscribe(data => {
+      this.alertifyService.success('Płatność dodana');
     this.dialogRef.close();
+      });
+    }
+    else{
+      this.alertifyService.error('Podaj wszystkie dane');
+    }
+  }
 
-    })
+  GetDate(period: string): Date{
+    let year = +period.substring(period.indexOf('Y')+1) ;
+    let month = +period.substring(1, period.indexOf('Y')) ;
+    console.log(year);
+    console.log(month);
+
+    let date = new Date(year, month-1, 15);
+    console.log(date);
+    return date;
   }
 }

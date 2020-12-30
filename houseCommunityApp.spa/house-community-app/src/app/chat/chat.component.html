@@ -1,5 +1,5 @@
  <app-nav></app-nav>
-<div style="position:relative; width: 100%; opacity: 0.9; background-color: white; min-height: 100%;  height: auto; padding: 3em;">
+<div style="position:relative; width: 100%; opacity: 0.9; background-color: white; min-height: 100%;  height: auto; padding: 3em 3em 0em 3em;">
  
 
   <div class="container-fluid" style="height:auto; min-height: 100%;">
@@ -7,17 +7,17 @@
 
       <div class="col-md-5" style="background-color: white; min-height: 100%;">
         <mat-radio-group aria-labelledby="example-radio-group-label" [(ngModel)]="option" (change)="optionChange()"  class="example-radio-group">
-          <mat-radio-button class="example-radio-button" value="0">
+          <mat-radio-button class="example-radio-button" value="0" *ngIf="role === 1 || role === 3">
             Budynek
-          </mat-radio-button>
-          <mat-radio-button class="example-radio-button" value="1">
-            Osiedle
           </mat-radio-button>
           <mat-radio-button class="example-radio-button" value="2">
             Zarządcy
           </mat-radio-button>
           <mat-radio-button class="example-radio-button" value="3">
             Administracja
+          </mat-radio-button>
+          <mat-radio-button class="example-radio-button" value="1" >
+            Osiedle
           </mat-radio-button>
           <!-- <mat-radio-button class="example-radio-button" value="4">
             Grupy
@@ -30,9 +30,9 @@
             <mat-card-title>{{conversation.firstName}} {{conversation.lastName}} 
               <span *ngIf="conversation.notReadMessages" style="color: red;">( +{{conversation.notReadMessages}} )</span>
             </mat-card-title>
-            <mat-card-subtitle>{{conversation.type}}</mat-card-subtitle>
+            <mat-card-subtitle>{{this.MapType(conversation.type)}}</mat-card-subtitle>
             <div class="example-button-container" style="text-align: right;">
-              <button mat-mini-fab color="warn" style="right: 0px;" aria-label="Example icon button with a plus one icon" (click)="loadPrivateChat(conversation)">
+              <button mat-mini-fab color="warn" style="right: 0px;" aria-label="Example icon button with a plus one icon" (click)="readPrivateChat(conversation)">
                 <mat-icon>launch</mat-icon>
               </button>
             </div>
@@ -40,8 +40,8 @@
                 </mat-card>
       </div>
 
-      <div class="col-md-7" *ngIf="senderId"  
-        style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: auto; padding: 3em;">
+      <div class="col-md-7" *ngIf="senderId" style="max-height: 100vw;"  
+        style="position:relative; width: 100%; opacity: 0.9; background-color: white;  height: 80vh; overflow: scroll; padding: 0em;">
         <h2 style="margin-bottom: 2em;">Rozmowa z {{sender}}</h2>
         <div class="container">
           <div class="messaging">
@@ -72,7 +72,7 @@
                 </div>
                 <div class="type_msg">
                   <div class="input_msg_write">
-                    <input type="text" class="write_msg" [value]="txtMessage" (input)="txtMessage=$event.target.value"
+                    <input type="text" class="write_msg" [value]="txtMessage" (input)="txtMessage=$event.target.value" 
                       (keydown.enter)="sendMessage()" placeholder="Wyślij wiadomość" />
                       <button mat-mini-fab color="primary" aria-label="Example icon button with a plus one icon" (click)="sendMessage()">
                         <mat-icon>mail</mat-icon>

@@ -37,8 +37,10 @@ namespace HouseCommunity
             var dotPayMetadata = Configuration.GetSection("PayUMetadata").
                                  Get<PayUMetadata>();
 
+            var messageHub = new MessageHub();
             services.AddSingleton(notificationMetadata);
             services.AddSingleton(dotPayMetadata);
+            services.AddSingleton(messageHub);
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers().AddNewtonsoftJson();
 

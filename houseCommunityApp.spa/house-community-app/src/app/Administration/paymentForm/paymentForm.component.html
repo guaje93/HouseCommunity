@@ -3,92 +3,91 @@
         <div style="display: flex;">
           <mat-form-field appearance="fill">
             <mat-label>Woda zimna (zł):</mat-label>
-            <input matInput type="number" name="coldWater"  [(value)]="paymentData.coldWaterValue" />
+            <input matInput type="number" name="coldWater"  [(ngModel)]="paymentData.coldWaterValue" />
           </mat-form-field>
           <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Opis:</mat-label>
-            <input matInput type="text" name="coldWaterDescription" [(value)]="paymentData.coldWaterDescription" />
+            <input matInput type="text" name="coldWaterDescription" [(ngModel)]="paymentData.coldWaterDescription" />
           </mat-form-field>
         </div>
         <div style="display: flex;">
           <mat-form-field appearance="fill">
             <mat-label>Woda ciepła (zł):</mat-label>
-            <input matInput type="number" name="hotWater"  [(value)]="paymentData.hotWaterValue" />
+            <input matInput type="number" name="hotWater"  [(ngModel)]="paymentData.hotWaterValue" />
           </mat-form-field>
           <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Opis:</mat-label>
-            <input matInput type="text" name="hotWaterDescription" [(value)]="paymentData.hotWaterDescription"  />
+            <input matInput type="text" name="hotWaterDescription" [(ngModel)]="paymentData.hotWaterDescription"  />
           </mat-form-field>
         </div>
         <div style="display: flex;">
           <mat-form-field appearance="fill">
             <mat-label>Ogrzewanie (zł):</mat-label>
-            <input matInput type="text" name="heating" [(value)]="paymentData.heatingValue"  />
+            <input matInput type="number" name="heating" [(ngModel)]="paymentData.heatingValue"  />
           </mat-form-field>
           <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Opis:</mat-label>
-            <input matInput type="text" name="heatingDescription" [(value)]="paymentData.heatingDescription"  />
+            <input matInput type="text" name="heatingDescription" [(ngModel)]="paymentData.heatingDescription"  />
           </mat-form-field>
         </div>
         <div style="display: flex;">
           <mat-form-field appearance="fill">
             <mat-label>Wywóz śmieci (zł):</mat-label>
-            <input matInput type="text" name="garbage" [(value)]="paymentData.garbageValue"  />
+            <input matInput type="number" name="garbage" [(ngModel)]="paymentData.garbageValue"  />
           </mat-form-field>
           <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Opis:</mat-label>
-            <input matInput type="text" name="heatingDescription" [(value)]="paymentData.garbageDescription"  />
+            <input matInput type="text" name="garbageDescription" [(ngModel)]="paymentData.garbageDescription"  />
           </mat-form-field>
         </div>
        
         <div style="display: flex;">
 
           <mat-form-field appearance="fill">
-            <mat-label>Administracja (zł):</mat-label>
-            <input matInput name="administration" [(value)]="paymentData.administrationValue" />
+            <mat-label>Koszty administracyjne (zł):</mat-label>
+            <input matInput type="number" name="administration" [(ngModel)]="paymentData.administrationValue" />
           </mat-form-field>
           <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Opis:</mat-label>
-            <input matInput name="administrationDescription" [(value)]="paymentData.administrationDescription"/>
+            <input matInput name="administrationDescription" [(ngModel)]="paymentData.administrationDescription"/>
           </mat-form-field>
         </div>
-        <div style="display: flex;">
-
-          <mat-form-field appearance="fill">
-            <mat-label>Koszty eksploatacyjne (zł):</mat-label>
-            <input matInput name="operatingCosts" [(value)]="paymentData.operatingCostValue" />
-          </mat-form-field>
-          <mat-form-field appearance="fill" style="width: 100%;">
-            <mat-label>Opis:</mat-label>
-            <input matInput name="operatingCosts" [(value)]="paymentData.operatingCostDescription" />
-          </mat-form-field>
-        </div>
-
-        <div style="display: flex;">
+      
+        <div style="display: flex;"  *ngIf="paymentData.waterRefundValue">
 
           <mat-form-field appearance="fill">
             <mat-label>Wyrównanie za wodę (zł):</mat-label>
-            <input matInput name="waterRefund" [(value)]="paymentData.waterRefundValue" />
+            <input matInput type="number" name="waterRefund" [(ngModel)]="paymentData.waterRefundValue" />
           </mat-form-field>
           <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Opis:</mat-label>
-            <input matInput name="waterRefundDescription" [(value)]="paymentData.waterRefundDescription" />
+            <input matInput name="waterRefundDescription" [(ngModel)]="paymentData.waterRefundDescription" />
           </mat-form-field>
         </div>
 
-        <div style="display: flex;">
+        <div style="display: flex;" *ngIf="paymentData.heatingRefundValue">
 
-          <mat-form-field appearance="fill">
+          <mat-form-field appearance="fill" >
             <mat-label>Wyrównanie za ogrzewanie (zł):</mat-label>
-            <input matInput name="heatingRefund" [(value)]="paymentData.heatingRefundValue" />
+            <input matInput type="number" name="heatingRefund" [(ngModel)]="paymentData.heatingRefundValue" />
           </mat-form-field>
           <mat-form-field appearance="fill" style="width: 100%;">
             <mat-label>Opis:</mat-label>
-            <input matInput name="heatingRefundDescription" [(value)]="paymentData.heatingRefundDescription" />
+            <input matInput name="heatingRefundDescription" [(ngModel)]="paymentData.heatingRefundDescription" />
           </mat-form-field>
+        </div>
+        <div style="display: flex;">
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Termin:</mat-label>
+            <input matInput type="date" name="deadline" [(ngModel)]="paymentData.deadline"  />
+          </mat-form-field>
+        </div>
+        <div style="display: flex;">
+         
+          <p><b>Razem: </b>{{paymentData.coldWaterValue + paymentData.hotWaterValue + paymentData.heatingValue + paymentData.garbageValue + paymentData.administrationValue + paymentData.waterRefundValue + paymentData.heatingRefundValue}}zł</p>
         </div>
         <button class="btn-primary"
-        (click)="addPayment()">Upload plików</button>
+        (click)="addPayment()">Generuj płatność</button>
       </form>
 
     </div>

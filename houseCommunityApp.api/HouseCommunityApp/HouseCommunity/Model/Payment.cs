@@ -16,6 +16,13 @@ namespace HouseCommunity.Model
         public Flat Flat { get; set; }
         public int UserId { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
+        public PaymentType PaymentType { get; set; }
         public string OrderId { get; set; }
+        public string Description { get; internal set; }
+    }
+
+    public enum PaymentType
+    {
+        CUSTOM, RENT
     }
 }

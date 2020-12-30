@@ -4,14 +4,16 @@ using HouseCommunity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HouseCommunity.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201229093356_small-fixes")]
+    partial class smallfixes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -354,9 +356,6 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("DetailsId")
                         .HasColumnType("int");
 
@@ -379,9 +378,6 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PaymentStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PaymentType")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -443,6 +439,12 @@ namespace HouseCommunity.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("HotWaterValue")
+                        .HasColumnType("float");
+
+                    b.Property<string>("OperatingCostDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("OperatingCostValue")
                         .HasColumnType("float");
 
                     b.Property<string>("WaterRefundDescription")

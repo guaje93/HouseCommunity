@@ -23,48 +23,68 @@ namespace HouseCommunity.Data
             _context = dataContext;
         }
 
-        public async Task<Payment> CreateNewPayment(int flatId, PaymentDetailsToCreateEmptyDTO p)
+        public async Task<Payment> CreateNewPayment(PaymentDetailsToCreateEmptyDTO paymentDTO)
         {
-            var flat = await _context.Flats.Include(p => p.Payments).FirstOrDefaultAsync(p => p.Id == flatId);
+            var flat = await _context.Flats.Include(p => p.Payments).Include(p => p.Residents).FirstOrDefaultAsync(p => p.Id == paymentDTO.FlatId);
 
             var payment = new Payment()
             {
-                Month = p.Period.Month,
-                Year = p.Period.Year,
-                PaymentDeadline = p.Period.AddMonths(1),
+                Month = paymentDTO.Period.Month,
+                Year = paymentDTO.Period.Year,
+                PaymentDeadline = paymentDTO.Deadline,
+                PaymentType = PaymentType.RENT,
+                
                 Details = new PaymentDetail()
                 {
-                    AdministrationDescription = p.AdministrationDescription,
-                    AdministrationValue = p.AdministrationValue,
-                    ColdWaterDescription = p.ColdWaterDescription,
-                    ColdWaterValue = p.ColdWaterValue,
-                    GarbageDescription = p.GarbageDescription,
-                    GarbageValue = p.GarbageValue,
-                    HeatingDescription = p.HeatingDescription,
-                    HeatingRefundDescription = p.HeatingRefundDescription,
-                    HeatingRefundValue = p.HeatingRefundValue,
-                    HeatingValue = p.HeatingValue,
-                    HotWaterDescription = p.HotWaterDescription,
-                    HotWaterValue = p.HotWaterValue,
-                    OperatingCostDescription = p.OperatingCostDescription,
-                    OperatingCostValue = p.OperatingCostValue,
-                    WaterRefundDescription = p.WaterRefundDescription,
-                    WaterRefundValue = p.WaterRefundValue
+                    AdministrationDescription = paymentDTO.AdministrationDescription,
+                    AdministrationValue = paymentDTO.AdministrationValue,
+                    ColdWaterDescription = paymentDTO.ColdWaterDescription,
+                    ColdWaterValue = paymentDTO.ColdWaterValue,
+                    GarbageDescription = paymentDTO.GarbageDescription,
+                    GarbageValue = paymentDTO.GarbageValue,
+                    HeatingDescription = paymentDTO.HeatingDescription,
+                    HeatingRefundDescription = paymentDTO.HeatingRefundDescription,
+                    HeatingRefundValue = paymentDTO.HeatingRefundValue,
+                    HeatingValue = paymentDTO.HeatingValue,
+                    HotWaterDescription = paymentDTO.HotWaterDescription,
+                    HotWaterValue = paymentDTO.HotWaterValue,
+                    WaterRefundDescription = paymentDTO.WaterRefundDescription,
+                    WaterRefundValue = paymentDTO.WaterRefundValue
                 },
                 Name = "Czynsz",
                 PaymentStatus = PaymentStatus.WaitingForUser,
-                Value = Math.Round(p.AdministrationValue +
-                        p.GarbageValue +
-                        p.OperatingCostValue +
-                        p.ColdWaterValue +
-                        p.HotWaterValue +
-                        p.HeatingValue +
-                        p.HeatingRefundValue +
-                        p.WaterRefundValue, 2)
+                Value = Math.Round(paymentDTO.AdministrationValue +
+                        paymentDTO.GarbageValue +
+                        paymentDTO.OperatingCostValue +
+                        paymentDTO.ColdWaterValue +
+                        paymentDTO.HotWaterValue +
+                        paymentDTO.HeatingValue +
+                        paymentDTO.HeatingRefundValue +
+                        paymentDTO.WaterRefundValue, 2)
             };
             flat.Payments.Add(payment);
             await _context.SaveChangesAsync();
             return payment;
+        }
+
+        public async Task<Payment> CreateNewPayment(CustomPaymentDetailsDTO customPaymentDetails)
+        {
+            var flat = await _context.Flats.Include(p => p.Payments).Include(p => p.Residents).FirstOrDefaultAsync(p => p.Id == customPaymentDetails.FlatId);
+            var payment = new Payment()
+            {
+                Month = customPaymentDetails.Period.Month,
+                Year = customPaymentDetails.Period.Year,
+                Name = customPaymentDetails.Name,
+                PaymentStatus = PaymentStatus.WaitingForUser,
+                PaymentType = PaymentType.CUSTOM,
+                PaymentDeadline = customPaymentDetails.Deadline,
+                Value = customPaymentDetails.Value,
+                Description = customPaymentDetails.Description
+            };
+            flat.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+            return payment;
+
         }
 
         public async Task<double> GetEstimatedMediaUsage(int flatId, MediaEnum media)
@@ -123,13 +143,17 @@ namespace HouseCommunity.Data
                                            .ThenInclude(p => p.Payments)
                                            .ThenInclude(p => p.Details)
                                            .FirstOrDefaultAsync(p => p.Id == id);
-            return user.Flat.Payments.Select(p => new PaymentForPerformDTO()
+            return user.Flat?.Payments.Select(p => new PaymentForPerformDTO()
             {
                 Id = p.Id,
                 Name = p.Name,
+                Description = p.Description,
                 Details = p.Details,
                 PaymentDeadline = p.PaymentDeadline,
+                PaymentBookDate = p.PaymentBookDate,
                 Value = p.Value,
+                Period = $"M{p.Month}Y{p.Year}",
+                Type = p.PaymentType,
                 PaymentStatus = p.PaymentStatus,
                 Month = p.Month,
                 Year = p.Year
@@ -157,6 +181,13 @@ namespace HouseCommunity.Data
             return flat.Building.Flats.Sum(p => p.Area);
         }
 
+        public async Task RemovePayment(int paymentId)
+        {
+            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.Id == paymentId);
+            _context.Payments.Remove(payment);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<Payment> UpdateOrderStatus(string orderid, string status)
         {
             var payment = await _context.Payments.FirstOrDefaultAsync(p => p.OrderId == orderid);
@@ -176,6 +207,16 @@ namespace HouseCommunity.Data
 
             }
 
+            await _context.SaveChangesAsync();
+            return payment;
+        }
+
+        public async Task<Payment> UpdatePaymentStatus(int paymentId, PaymentStatus paymentStatus)
+        {
+            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.Id == paymentId);
+            payment.PaymentStatus = paymentStatus;
+            if (payment.PaymentStatus == PaymentStatus.PaymentBooked)
+                payment.PaymentBookDate = DateTime.Now;
             await _context.SaveChangesAsync();
             return payment;
         }

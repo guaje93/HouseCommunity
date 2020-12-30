@@ -14,5 +14,6 @@ namespace HouseCommunity.DTOs
         public string AvatarUrl { get; internal set; }
         public int? NotReadMessages { get; internal set; }
         public DateTime? ModificationDate { get; internal set; }
+        public int ? ConversationId { get; internal set; }
     }
 }

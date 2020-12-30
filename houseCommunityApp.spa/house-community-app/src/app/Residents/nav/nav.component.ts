@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditUserComponent } from '../../editUser/editUser.component';
 import { ChangePasswordComponent } from '../../changePassword/changePassword.component';
 import { Role } from 'src/app/Model/Role';
+import { ChatService } from 'src/app/_services/chat.service';
 
 @Component({
   selector: 'app-nav',
@@ -14,17 +15,30 @@ import { Role } from 'src/app/Model/Role';
 })
 export class NavComponent implements OnInit {
 
+  notReadMessages: number;
   model: any = {};
   Role: Role;
   constructor(
     public authService: AuthService,
     private alertifyService: AlertifyService,
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private chatService: ChatService
   ) { }
   ngOnInit() {
+    this.GetNotReadMessages();
+
+    this.chatService.subject.subscribe(
+      data => this.GetNotReadMessages()
+    )
   }
 
+
+  private GetNotReadMessages() {
+    this.chatService.getNotReadMessages(this.authService.decodedToken.nameid).subscribe(
+      data => this.notReadMessages = (data as any).amount
+    );
+  }
 
   loggedOut() {
     localStorage.removeItem("token");

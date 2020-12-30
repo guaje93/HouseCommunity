@@ -18,6 +18,9 @@ namespace HouseCommunity.Data
         Task <double> GetFlatArea(int flatId);
         Task <double> GetEstimatedMediaUsage(int flatId, MediaEnum media);
         Task<ICollection<Media>> GetMediaFromLastPeriod(int flatId, DateTime date);
-        Task<Payment> CreateNewPayment(int flatId, PaymentDetailsToCreateEmptyDTO paymentDetailsToCreateEmptyDTO);
+        Task<Payment> CreateNewPayment(PaymentDetailsToCreateEmptyDTO paymentDetailsToCreateEmptyDTO);
+        Task<Payment> CreateNewPayment(CustomPaymentDetailsDTO customPaymentDetails);
+        Task<Payment> UpdatePaymentStatus(int paymentId, PaymentStatus paymentCompleted);
+        Task RemovePayment(int paymentId);
     }
 }

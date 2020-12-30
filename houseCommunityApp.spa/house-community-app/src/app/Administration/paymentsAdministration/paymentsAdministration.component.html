@@ -17,9 +17,18 @@
             <div class="col-md-3">
                 <mat-form-field appearance="fill">
                     <mat-label>Budynki</mat-label>
-                    <mat-select [formControl]="buildingsFrom" multiple (selectionChange)="showFlatsList()">
+                    <mat-select [formControl]="buildingsFrom" multiple (selectionChange)="filterPeriods($event)">
                         <mat-option *ngFor="let user of filteredBuildings" [value]="user.buildingId">{{user.address}}
                         </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field appearance="fill">
+                    <mat-label>Okres</mat-label>
+                    <mat-select [formControl]="periodForm" (selectionChange)="showFlatsList()">
+                        <mat-option *ngFor="let period of filteredPeriods" [value]="period">
+                            {{decodePeriod(period)}}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -27,10 +36,20 @@
         <table mat-table matSort [dataSource]="usersToSendData" class="mat-elevation-z8" style="width: 100%;">
             <ng-container matColumnDef="Building">
                 <th mat-header-cell mat-sort-header *matHeaderCellDef>Mieszkanie </th>
-                <td mat-cell *matCellDef="let element"  [ngClass]="{
-                    'is-red': element.paymentList.length === 0,
-                    'is-green': element.paymentList.length !== 0
-                  }"> {{element.building}} m. {{element.local}} </td>
+                <td mat-cell *matCellDef="let element" [ngClass]="{
+                    'is-red':filterRentItems(element.paymentList).length === 0,
+                    'is-green': filterRentItems(element.paymentList).length !== 0
+                  }"> {{element.building}} m. {{element.local}}
+
+                    <button style="margin-right: 1em; margin-left: 1em;" matTooltip="Generuj opłatę" mat-mini-fab
+                        color="primary" (click)="openCustomPaymentForm(element.flatId)">
+                        <mat-icon matSuffix>receipt</mat-icon>
+                    </button>
+                    <button matTooltip="Generuj opłatę za czynsz" mat-mini-fab color="primary"
+                        (click)="openDialog(element)" *ngIf="filterRentItems(element.paymentList).length === 0">
+                        <mat-icon matSuffix>store</mat-icon>
+                    </button>
+                </td>
             </ng-container>
             <ng-container matColumnDef="Payment">
                 <th mat-header-cell *matHeaderCellDef> </th>
@@ -38,8 +57,7 @@
       'is-red': element.paymentList.length === 0,
       'is-green': element.paymentList.length !== 0
     }">
-                    <button class="btn-primary" (click)="openDialog(element)"
-                        *ngIf="element.paymentList.length == 0"> Generuj! </button>
+
                     <div *ngIf="element.paymentList.length != 0">
                         <table mat-table matSort [dataSource]="element.paymentList" class="mat-elevation-z8"
                             style="width: 100%;">
@@ -48,7 +66,7 @@
                                 <td mat-cell *matCellDef="let payment" [ngClass]="{
               'is-red': payment.paymentStatus === 0,
               'is-yellow': payment.paymentStatus === 1,
-              'is-green': payment.paymentStatus === 2
+              'is-green': payment.paymentStatus === 5
             }"> {{payment.name}} </td>
                             </ng-container>
                             <ng-container matColumnDef="Status">
@@ -56,15 +74,15 @@
                                 <td mat-cell *matCellDef="let payment" [ngClass]="{
               'is-red': payment.paymentStatus === 0,
               'is-yellow': payment.paymentStatus === 1,
-              'is-green': payment.paymentStatus === 2
-            }"> {{payment.paymentStatus}} </td>
+              'is-green': payment.paymentStatus === 5
+            }"> {{decodePaymentStatus(payment.paymentStatus)}} </td>
                             </ng-container>
                             <ng-container matColumnDef="Value">
                                 <th mat-header-cell *matHeaderCellDef> Wartość </th>
                                 <td mat-cell *matCellDef="let payment" [ngClass]="{
             'is-red': payment.paymentStatus === 0,
             'is-yellow': payment.paymentStatus === 1,
-            'is-green': payment.paymentStatus === 2
+            'is-green': payment.paymentStatus === 5
           }"> {{payment.value}}zł </td>
                             </ng-container>
                             <ng-container matColumnDef="Action">
@@ -72,15 +90,24 @@
                                 <td mat-cell *matCellDef="let payment" [ngClass]="{
           'is-red': payment.paymentStatus === 0,
           'is-yellow': payment.paymentStatus === 1,
-          'is-green': payment.paymentStatus === 2
+          'is-green': payment.paymentStatus === 5
         }">
-                                   
-                             
-                                    <button *ngIf="payment.paymentStatus!==5" class="btn-primary" (click)="bookMedia(payment)">
-                                        Zaksięguj </button>
-                                    <button *ngIf="payment.paymentStatus===5" class="btn-primary"
+
+
+                                    <button matTooltip="Zaksięguj opłatę" mat-mini-fab color="primary"
+                                        *ngIf="payment.paymentStatus!==5" class="btn-primary"
+                                        (click)="bookPayment(payment)">
+                                        <mat-icon matSuffix>save</mat-icon>
+                                    </button>
+                                    <button matTooltip="Odblokuj opłatę" mat-mini-fab color="success"
+                                        *ngIf="payment.paymentStatus===5" class="btn-primary"
                                         (click)="unlockPayment(payment)">
-                                        Odblokuj </button>
+                                        <mat-icon matSuffix>lock_open</mat-icon>
+                                    </button>
+                                    <button matTooltip="Usuń opłatę" mat-mini-fab color="warn" class="btn-primary"
+                                        *ngIf="payment.paymentStatus!==5" (click)="removePayment(payment)">
+                                        <mat-icon matSuffix>delete</mat-icon>
+                                    </button>
                                 </td>
                             </ng-container>
 

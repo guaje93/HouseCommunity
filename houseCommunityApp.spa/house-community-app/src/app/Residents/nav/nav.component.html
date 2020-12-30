@@ -32,7 +32,7 @@
             <a class="nav-link" [routerLink]="['/news']">Aktualności</a>
           </li>
           <li class="nav-item" routerLinkActive="active">
-            <a class="nav-link" [routerLink]="['/chat']">Czat</a>
+            <a class="nav-link" [routerLink]="['/chat']">Czat <span *ngIf="notReadMessages">( +{{notReadMessages}} )</span></a>
           </li>
           <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
             <a class="nav-link" [routerLink]="['/damage']">Usterki</a>

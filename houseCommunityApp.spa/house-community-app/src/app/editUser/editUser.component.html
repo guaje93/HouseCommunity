@@ -17,7 +17,7 @@
       <mat-label>Telefon</mat-label>
       <div>
         <input matInput [disabled]="phoneDisabled" [(ngModel)]="phoneNumber" style="display: inline-block;"> 
-        <button mat-fab color="primary"(click)="this.phoneDisabled = !this.phoneDisabled">
+        <button mat-mini-fab color="primary"(click)="this.phoneDisabled = !this.phoneDisabled">
           <mat-icon matSuffix >create</mat-icon>
         </button>
       </div>
@@ -26,7 +26,7 @@
       <mat-label>Email</mat-label>
       <div>
         <input matInput [disabled]="emailDisabled" [(ngModel)]="email" style="display: inline-block;"> 
-        <button mat-fab color="primary" (click)="this.emailDisabled = !this.emailDisabled">
+        <button mat-mini-fab color="primary" (click)="this.emailDisabled = !this.emailDisabled">
           <mat-icon matSuffix >create</mat-icon>
         </button>
       </div>
@@ -38,7 +38,7 @@
       <mat-label>Liczba mieszkańców</mat-label>
       <div>
         <input matInput [disabled]="residentsAmountDisabled" [(ngModel)]="residentsAmount" style="display: inline-block;"> 
-        <button mat-fab color="primary"(click)="this.residentsAmountDisabled = !this.residentsAmountDisabled">
+        <button mat-mini-fab color="primary"(click)="this.residentsAmountDisabled = !this.residentsAmountDisabled">
           <mat-icon matSuffix>create</mat-icon>
         </button>
       </div>
@@ -53,7 +53,7 @@
       <mat-label>Szacunkowe zużycie wody ciepłej w m3/msc</mat-label>
       <div matTooltip={{hotWaterDescription}}>
         <input matInput [disabled]="hotWaterUsageDisabled" [(ngModel)]="hotWaterEstimatedUsage" style="display: inline-block;"> 
-        <button mat-fab color="primary"(click)="this.hotWaterUsageDisabled = !this.hotWaterUsageDisabled">
+        <button mat-mini-fab color="primary"(click)="this.hotWaterUsageDisabled = !this.hotWaterUsageDisabled">
           <mat-icon matSuffix>create</mat-icon>
         </button>
       </div>
@@ -62,7 +62,7 @@
       <mat-label>Szacunkowe zużycie wody zimnej/msc</mat-label>
       <div matTooltip={{coldWaterDescription}}>
         <input matInput [disabled]="coldWaterUsageDisabled" [(ngModel)]="coldWaterEstimatedUsage" style="display: inline-block;"> 
-        <button mat-fab color="primary"(click)="this.coldWaterUsageDisabled = !this.coldWaterUsageDisabled">
+        <button mat-mini-fab color="primary"(click)="this.coldWaterUsageDisabled = !this.coldWaterUsageDisabled">
           <mat-icon matSuffix>create</mat-icon>
         </button>
       </div>
@@ -71,7 +71,7 @@
       <mat-label>Szacunkowe zużycie energii na ogrzewanie/msc</mat-label>
       <div matTooltip={{heatingDescription}}>
         <input matInput [disabled]="heatingUsageDisabled" [(ngModel)]="heatingEstimatedUsage" style="display: inline-block;"> 
-        <button mat-fab color="primary"(click)="this.heatingUsageDisabled = !this.heatingUsageDisabled">
+        <button mat-mini-fab color="primary"(click)="this.heatingUsageDisabled = !this.heatingUsageDisabled">
           <mat-icon matSuffix>create</mat-icon>
         </button>
       </div>

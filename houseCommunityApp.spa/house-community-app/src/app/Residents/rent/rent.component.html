@@ -58,7 +58,7 @@
        
         <ng-container matColumnDef="PaymentStatus">
             <th mat-header-cell *matHeaderCellDef> Status płatności</th>
-            <td mat-cell *matCellDef="let element"> {{element.paymentStatus}}</td>
+            <td mat-cell *matCellDef="let element"> {{decodePaymentStatus(element.paymentStatus)}}</td>
         </ng-container>
         <ng-container matColumnDef="BookStatus">
             <th mat-header-cell *matHeaderCellDef> Status księgowania</th>

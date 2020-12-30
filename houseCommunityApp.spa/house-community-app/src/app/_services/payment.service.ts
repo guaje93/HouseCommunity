@@ -21,7 +21,22 @@ createNewPayment(paymentData: any) {
   return this.http.post(this.baseUrl + 'create-new-payment/', paymentData);
 }
 
+createNewCustomPayment(paymentData: any) {
+  return this.http.post(this.baseUrl + 'create-new-custom-payment/', paymentData);
+}
+
 getPaymentDetails(element: Date, id: number) {
   return this.http.post(this.baseUrl + 'calculate-costs/' + id, element);
 }
+bookPayment(model: any) {
+  return this.http.post(this.baseUrl + 'book-payment/', model);
+}
+unlockPayment(model: any) {
+  return this.http.post(this.baseUrl + 'unlock-payment/', model);
+}
+removePayment(model: any) {
+  return this.http.post(this.baseUrl + 'remove-payment/', model);
+}
+
+
 }

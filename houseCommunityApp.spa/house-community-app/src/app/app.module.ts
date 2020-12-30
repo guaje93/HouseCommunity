@@ -48,6 +48,10 @@ import { DamageManageComponent } from './BuildingOwners/damageManage/damageManag
 import { DamageInfoComponent } from './BuildingOwners/DamageInfo/DamageInfo.component';
 import {MatRadioModule} from '@angular/material/radio'
 import {MatCheckboxModule} from '@angular/material/checkbox'
+import { CustomPaymentComponent } from './administration/customPayment/customPayment.component';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import { UnlockPaymentFormComponent } from './administration/UnlockPaymentForm/UnlockPaymentForm.component';
+
 
 @NgModule({
   declarations: [							
@@ -78,7 +82,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox'
     RegisterUserComponent,
     RegisterFormComponent,
     DamageManageComponent,
-    DamageInfoComponent
+    DamageInfoComponent,
+    CustomPaymentComponent,
+    UnlockPaymentFormComponent
    ],
   imports: [
     RouterModule.forRoot(AppRoutes),
@@ -101,7 +107,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox'
     CommonModule,
     MatCardModule,
     MatRadioModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatBottomSheetModule,
+    MatDialogModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

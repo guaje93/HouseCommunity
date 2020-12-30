@@ -1,0 +1,31 @@
+<div style="display: block;">
+  <form style="display: block;">
+    <div style="display: flex; ">
+      <mat-form-field appearance="fill">
+        <mat-label>Nazwa:</mat-label>
+        <input matInput type="text" name="name"  [(ngModel)]="paymentData.name" />
+      </mat-form-field>
+    </div>
+    <div style="display: flex;">
+      <mat-form-field appearance="fill">
+        <mat-label>Opis:</mat-label>
+        <input matInput type="text" name="description"  [(ngModel)]="paymentData.description" />
+      </mat-form-field>
+    </div>
+    <div style="display: flex;">
+      <mat-form-field appearance="fill">
+        <mat-label>Wartość:</mat-label>
+        <input matInput type="text" name="value" [(ngModel)]="paymentData.value"  />
+      </mat-form-field>
+    </div>
+    <div style="display: flex;">
+      <mat-form-field appearance="fill">
+        <mat-label>Termin:</mat-label>
+        <input matInput type="date" name="deadline" [(ngModel)]="paymentData.deadline"  />
+      </mat-form-field>
+    </div>
+    <button class="btn-primary"
+    (click)="addPayment()">Generuj płatność</button>
+  </form>
+
+</div>

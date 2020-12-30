@@ -10,6 +10,7 @@ namespace HouseCommunity.DTOs
         public int UserId { get; set; }
         public int FlatId { get; set; }
         public DateTime Period { get; set; }
+        public DateTime Deadline { get; set; }
         public double HotWaterValue { get; set; }
         public double ColdWaterValue { get; set; }
         public double HeatingValue { get; set; }

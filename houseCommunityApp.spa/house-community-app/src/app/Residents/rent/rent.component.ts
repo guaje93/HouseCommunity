@@ -25,8 +25,8 @@ export class RentComponent implements OnInit {
       data => {
         console.log(data);
         let payments = data as any[];
-        this.completedPayments = payments.filter(p => p.paymentStatus =="COMPLETED");
-        this.notCompletedPayments = payments.filter(p => p.paymentStatus !="COMPLETED");
+        this.completedPayments = payments.filter(p => p.paymentStatus >= 4);
+        this.notCompletedPayments = payments.filter(p => p.paymentStatus < 4);
       }
     );
   }
@@ -49,14 +49,22 @@ export class RentComponent implements OnInit {
       return true;
   }
 
-showDetails(payment: any){
-  const dialogRef = this.dialog.open(PaymentDetailsComponent, {
-    width: '40%',
-    data: payment.details
-  });
+  decodePaymentStatus(status: number){
+    if(status === 4)
+      return "Opłacono";
+      else if (status === 5)
+      return "Zaksięgowano";
+  }
 
-  dialogRef.afterClosed().subscribe(() => {
-    console.log('The dialog was closed');
-  });
-}
+
+  showDetails(payment: any) {
+    const dialogRef = this.dialog.open(PaymentDetailsComponent, {
+      width: '40%',
+      data: payment
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      console.log('The dialog was closed');
+    });
+  }
 }

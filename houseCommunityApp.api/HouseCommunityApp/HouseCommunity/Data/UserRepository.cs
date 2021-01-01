@@ -29,9 +29,14 @@ namespace HouseCommunity.Data
 
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(p => p.Flat)
+            var user = await _context.Users.Include(p => p.UserFlats)
+                                           .ThenInclude(p => p.Flat)
                                            .ThenInclude(p => p.Building)
                                            .ThenInclude(p => p.Cost)
+                                           .Include(p => p.UserFlats)
+                                           .ThenInclude(p => p.Flat)
+                                           .ThenInclude(p => p.Building)
+                                           .ThenInclude(p => p.Address)
                                            .Include(p => p.UserConversations)
                                            .ThenInclude(p => p.Conversation)
                                            .ThenInclude(p => p.Users)
@@ -50,10 +55,12 @@ namespace HouseCommunity.Data
         public ICollection<User> GetUsers()
         {
             var users = _context.Users
-                                      .Include(p => p.Flat)
+                                      .Include(p => p.UserFlats)
+                                      .ThenInclude(p => p.Flat)
                                       .ThenInclude(p => p.Building)
                                       .ThenInclude(p => p.Address)
-                                      .Include(p => p.Flat)
+                                      .Include(p => p.UserFlats)
+                                      .ThenInclude(p => p.Flat)
                                       .ThenInclude(p => p.Building)
                                       .ThenInclude(p => p.HousingDevelopment).ToList();
             return users;
@@ -62,10 +69,12 @@ namespace HouseCommunity.Data
         public async Task<ICollection<User>> GetUsersWithRole(UserRole userRole)
         {
             var users = await _context.Users
-                                      .Include(p => p.Flat)
+                                      .Include(p => p.UserFlats)
+                                      .ThenInclude(p => p.Flat)
                                       .ThenInclude(p => p.Building)
                                       .ThenInclude(p => p.Address)
-                                      .Include(p => p.Flat)
+                                      .Include(p => p.UserFlats)
+                                      .ThenInclude(p => p.Flat)
                                       .ThenInclude(p => p.Building)
                                       .ThenInclude(p => p.HousingDevelopment)
                                       .Where(p => p.UserRole == userRole)
@@ -75,19 +84,26 @@ namespace HouseCommunity.Data
 
         public async Task<User> UpdateUserDefinedData(UserDefinedData userContactData)
         {
-            var user = await _context.Users.Include(p => p.Flat)
+            var user = await _context.Users.Include(p => p.UserFlats)
+                                           .ThenInclude(p => p.Flat)
                                            .FirstOrDefaultAsync(p => p.Id == userContactData.Id);
             if (user == null)
                 return null;
 
             user.PhoneNumber = userContactData.PhoneNumber;
             user.Email = userContactData.Email;
-            if (user.Flat != null)
+
+            foreach (var flatInfo in userContactData.UserFlats)
             {
-                user.Flat.ResidentsAmount = userContactData.ResidentsAmount;
-                user.Flat.ColdWaterEstimatedUsage = userContactData.ColdWaterEstimatedUsage;
-                user.Flat.HotWaterEstimatedUsage = userContactData.HotWaterEstimatedUsage;
-                user.Flat.HeatingEstimatedUsage = userContactData.HeatingEstimatedUsage;
+                var flat = await _context.Flats.FirstOrDefaultAsync(p => p.Id == flatInfo.Id);
+
+                if (flat != null)
+                {
+                    flat.ResidentsAmount = flatInfo.ResidentsAmount;
+                    flat.ColdWaterEstimatedUsage = flatInfo.ColdWaterEstimatedUsage;
+                    flat.HotWaterEstimatedUsage = flatInfo.HotWaterEstimatedUsage;
+                    flat.HeatingEstimatedUsage = flatInfo.HeatingEstimatedUsage;
+                }
             }
             user.AvatarUrl = userContactData.AvatarUrl;
 

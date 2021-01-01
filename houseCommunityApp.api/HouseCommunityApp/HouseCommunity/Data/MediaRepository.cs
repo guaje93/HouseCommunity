@@ -30,9 +30,10 @@ namespace HouseCommunity.Data
 
         public async Task<User> AddMediaForUser(AddMediaToDbRequest userRequest)
         {
-            var user = await _context.Users.Include(p => p.Flat).ThenInclude(p => p.MediaHistory).FirstOrDefaultAsync(p => p.Id == userRequest.UserId);
-            if (user.Flat.MediaHistory is null)
-                user.Flat.MediaHistory = new List<Model.Media>();
+            var flat = await _context.Flats.Include(p => p.MediaHistory).FirstOrDefaultAsync(p => p.Id == userRequest.FlatId);
+            var user = await _context.Users.Include(p => p.UserFlats).ThenInclude(p => p.Flat).ThenInclude(p => p.MediaHistory).FirstOrDefaultAsync(p => p.Id == userRequest.UserId);
+            if (flat.MediaHistory is null)
+                flat.MediaHistory = new List<Model.Media>();
             MediaEnum mediaType = MediaEnum.Undefined;
             switch (userRequest.MediaType.ToLower())
             {
@@ -46,7 +47,7 @@ namespace HouseCommunity.Data
                     }
             }
 
-            user.Flat.MediaHistory.Add(new Model.Media()
+            flat.MediaHistory.Add(new Model.Media()
             {
                 ImageUrl = userRequest.ImageUrl,
                 CreationDate = DateTime.Now,
@@ -62,8 +63,8 @@ namespace HouseCommunity.Data
         public async Task<Flat> CreateEmptyMediaForUser(AddEmptyMediaRequest userRequest)
         {
             var flat = await _context.Flats.Include(p => p.MediaHistory).FirstOrDefaultAsync(p => p.Id == userRequest.FlatId);
-            var startDate = GenerateStartDateFromCurrentDate();
-            var endDate = GenerateEndDateFromCurrentDate();
+            var startDate = GenerateStartDateFromCurrentDate(userRequest.Period);
+            var endDate = GenerateEndDateFromCurrentDate(userRequest.Period);
 
             var coldWaterLastValue = 0.0;
             var hotWaterLastValue = 0.0;
@@ -103,21 +104,23 @@ namespace HouseCommunity.Data
                             );
         }
 
-        private DateTime GenerateEndDateFromCurrentDate()
+        private DateTime GenerateEndDateFromCurrentDate(string period)
         {
-            var currentYear = DateTime.Now.Year;
-            var currentMonth = DateTime.Now.Month;
-            if (currentMonth < 7)
+            bool isFirstHalf = period.Substring(0, 3) == "H01";
+            var currentYear = Convert.ToInt32(period.Substring(3));
+
+            if (isFirstHalf)
                 return new DateTime(currentYear, 6, 30);
             else
                 return new DateTime(currentYear, 12, 31);
         }
 
-        private DateTime GenerateStartDateFromCurrentDate()
+        private DateTime GenerateStartDateFromCurrentDate(string period)
         {
-            var currentYear = DateTime.Now.Year;
-            var currentMonth = DateTime.Now.Month;
-            if (currentMonth < 7)
+            bool isFirstHalf = period.Substring(0, 3) == "H01";
+            var currentYear = Convert.ToInt32(period.Substring(3));
+
+            if (isFirstHalf)
                 return new DateTime(currentYear, 1, 1);
             else
                 return new DateTime(currentYear, 7, 1);
@@ -136,13 +139,21 @@ namespace HouseCommunity.Data
 
         public async Task<MediaForUsrDisplayDTO> GetAllMediaForUser(int id)
         {
-            var user = await _context.Users.Include(p => p.Flat.MediaHistory).FirstOrDefaultAsync(p => p.Id == id);
+            var user = await _context.Users.Include(p => p.UserFlats)
+                                           .ThenInclude(p=> p.Flat)
+                                           .ThenInclude(p => p.MediaHistory)
+                                           .Include(p => p.UserFlats)
+                                           .ThenInclude(p => p.Flat)
+                                           .ThenInclude(p => p.Building)
+                                           .ThenInclude(p => p.Address)
+                                           .FirstOrDefaultAsync(p => p.Id == id);
             return new MediaForUsrDisplayDTO()
             {
-                SingleMediaItems = user.Flat.MediaHistory.Select(p => new SingleMediaItem()
+                SingleMediaItems = user.UserFlats.SelectMany(p => p.Flat.MediaHistory).Select(p => new SingleMediaItem()
                 {
                     Id = p.Id,
                     ImageUrl = p.ImageUrl,
+                    FlatAddress = p.Flat.Building.Address.ToString() + " m. " + p.Flat.FlatNumber,
                     CreationDate = p.CreationDate,
                     Description = p.UserDescription,
                     CurrentValue = p.CurrentValue,

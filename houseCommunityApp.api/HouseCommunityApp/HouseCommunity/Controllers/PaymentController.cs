@@ -182,7 +182,7 @@ namespace HouseCommunity.Controllers
             if (!access)
                 return BadRequest("User has no proper priviliges");
 
-            var payments = await _repo.GetPayments(paymentDetailsToCreateEmptyDTO.UserId);
+            var payments = await _repo.GetPayments(paymentDetailsToCreateEmptyDTO.FlatId);
             if (payments != null && payments.Where(p => p.Type == PaymentType.RENT).Any(p => p.Month == paymentDetailsToCreateEmptyDTO.Period.Month && p.Year == paymentDetailsToCreateEmptyDTO.Period.Year))
                 return BadRequest("Czynsz za ten miesiąc został już wygenerowany");
 

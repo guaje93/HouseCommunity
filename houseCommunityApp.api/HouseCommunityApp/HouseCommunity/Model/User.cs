@@ -20,6 +20,13 @@ namespace HouseCommunity.Model
         public UserRole UserRole { get; set; }
         public ICollection<UserAnnouncement> UserAnnouncements { get; set; }
         public ICollection<UserConversation> UserConversations { get; set; }
+        public ICollection<UserFlat> UserFlats { get; set; }
+    }
+
+    public class UserFlat
+    {
+        public int Id { get; set; }
+        public User User { get; set; }
         public Flat Flat { get; set; }
     }
 }

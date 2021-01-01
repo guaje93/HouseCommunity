@@ -1,4 +1,5 @@
 ﻿using HouseCommunity.Data;
+using HouseCommunity.Data.Interfaces;
 using HouseCommunity.DTOs;
 using HouseCommunity.Helpers;
 using HouseCommunity.Request;
@@ -26,6 +27,7 @@ namespace HouseCommunity.Controllers
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
         private readonly IUserRepository _userRepository;
+        private readonly IBuildingRepository _buildingRepository;
         private readonly IMailService _mailService;
         private readonly NotificationMetadata _notificationMetadata;
 
@@ -36,12 +38,14 @@ namespace HouseCommunity.Controllers
         public AuthController(IAuthRepository repo,
                               IConfiguration config,
                               IUserRepository userRepository,
+                              IBuildingRepository buildingRepository,
                               IMailService mailService,
                               NotificationMetadata notificationMetadata)
         {
             this._repo = repo;
             this._config = config;
             this._userRepository = userRepository;
+            this._buildingRepository = buildingRepository;
             this._mailService = mailService;
             this._notificationMetadata = notificationMetadata;
         }
@@ -71,8 +75,8 @@ namespace HouseCommunity.Controllers
 
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> LogIn(UserForRegisterDTO userForRegisterDTO)
+        [HttpPost("register-new")]
+        public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
         {
             var creator = await _userRepository.GetUser(userForRegisterDTO.UserId);
             var users = await _userRepository.GetUsersWithRole(Model.UserRole.Resident);
@@ -97,6 +101,35 @@ namespace HouseCommunity.Controllers
                                       "Kliknij w poniższy link lub przeklej go do paska adresu Twojej przeglądarki w celu dokonczenia procesu rejestracji:\n\n" +
                                       "http://localhost:4200/response-reset-password/" + tokenToSend + "\n\n" +
                                       "Jeżeli nie wysyłałeś prośby o zmianę hasła lub nie chcesz go zmieniać - nie musisz nic robić. Po prostu pozostaw tę wiadomość bez odpowiedzi.\n";
+                _mailService.SendMail(messageSubject, messageContent, "", "Home Community App");
+            }
+
+            return Ok(
+                new
+                {
+                    Result = "Użytkownik został dodany"
+                });
+
+        }
+
+        [HttpPost("register-existing")]
+        public async Task<IActionResult> RegisterAddExistig(UserForRegisterExistingDTO userForRegisterDTO)
+        {
+            var creator = await _userRepository.GetUser(userForRegisterDTO.UserId);
+            var users = await _userRepository.GetUsersWithRole(Model.UserRole.Resident);
+            if (!users.Any(p => p.Email == userForRegisterDTO.Email))
+            {
+                return Unauthorized("Nie znaleziono użytkownika");
+            }
+            var userFromRepo = await _buildingRepository.RegisterFlat(userForRegisterDTO);
+
+            if (userFromRepo == null)
+                return Forbid("Wystąpił błąd. Użytkownik nie został dodany.");
+
+            else
+            {
+                var messageSubject = "Home Community App - Mieszkanie zostało dodane do konta";
+                var messageContent = $"Użytkownik {creator.FirstName} {creator.LastName} dodał mieszkanie do danego konta.";
                 _mailService.SendMail(messageSubject, messageContent, "", "Home Community App");
             }
 

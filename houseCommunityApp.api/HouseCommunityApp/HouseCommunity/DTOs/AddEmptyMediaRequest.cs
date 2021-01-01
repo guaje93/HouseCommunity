@@ -4,5 +4,6 @@
     {
         public int FlatId { get; set; }
         public int AdministratorId { get; set; }
+        public string Period { get; set; }
     }
 }

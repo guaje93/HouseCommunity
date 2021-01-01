@@ -45,11 +45,18 @@ hasRole(role: Role) {
   })));
   }
 
-  registerUser(model: any) {
-    return this.http.post(this.baseUrl + 'register', model).pipe(catchError(err => {
+  registerNewUser(model: any) {
+    return this.http.post(this.baseUrl + 'register-new', model).pipe(catchError(err => {
       return throwError(err);
   }));
   }
+
+  registerExistingUser(model: any) {
+    return this.http.post(this.baseUrl + 'register-existing', model).pipe(catchError(err => {
+      return throwError(err);
+  }));
+  }
+
   requestReset(body): Observable<any> {
     return this.http.post(`${this.baseUrl}req-reset-password`, body).pipe(catchError(err => {
       return throwError(err);

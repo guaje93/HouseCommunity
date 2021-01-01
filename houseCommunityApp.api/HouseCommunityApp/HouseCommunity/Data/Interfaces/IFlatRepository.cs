@@ -9,8 +9,10 @@ namespace HouseCommunity.Data.Interfaces
 {
     public interface IBuildingRepository
     {
-        Task<ICollection<FlatsForListDTO>> GetFlats(int userId);
+        Task<ICollection<Flat>> GetFlats();
         Task<Flat> GetFlat(int flatId);
         Task <Building> GetBuilding(int userId);
+        Task <Flat> RegisterFlat(UserForRegisterExistingDTO userForRegisterDTO);
+        Task <ICollection<Building>> GetBuildings();
     }
 }

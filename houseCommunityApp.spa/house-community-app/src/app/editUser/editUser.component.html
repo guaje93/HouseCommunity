@@ -32,55 +32,57 @@
       </div>
     </mat-form-field>
   </div>
-  <div style="margin: 2em;" *ngIf="userRole===1"   >
-    <p>Mieszkanie:</p>
-    <mat-form-field appearance="standard">
-      <mat-label>Liczba mieszkańców</mat-label>
-      <div>
-        <input matInput [disabled]="residentsAmountDisabled" [(ngModel)]="residentsAmount" style="display: inline-block;"> 
-        <button mat-mini-fab color="primary"(click)="this.residentsAmountDisabled = !this.residentsAmountDisabled">
-          <mat-icon matSuffix>create</mat-icon>
+  <div *ngFor="let flat of flats" > 
+    <div style="margin: 2em;" *ngIf="userRole===1">
+      <p>Mieszkanie - {{flat.name}}:</p>
+      <mat-form-field appearance="standard">
+        <mat-label>Liczba mieszkańców</mat-label>
+        <div>
+          <input matInput [disabled]="flat.residentsAmountDisabled" [(ngModel)]="flat.residentsAmount" style="display: inline-block;"> 
+          <button mat-mini-fab color="primary"(click)="flat.residentsAmountDisabled = !flat.residentsAmountDisabled">
+            <mat-icon matSuffix>create</mat-icon>
         </button>
       </div>
     </mat-form-field>
     <mat-form-field appearance="standard">
       <mat-label>Powierzchnia</mat-label>
       <div>
-        <input matInput [disabled]="true" [(ngModel)]="area" style="display: inline-block;"> 
+        <input matInput [disabled]="true" [(ngModel)]="flat.area" style="display: inline-block;"> 
       </div>
     </mat-form-field>
     <mat-form-field appearance="standard">
       <mat-label>Szacunkowe zużycie wody ciepłej w m3/msc</mat-label>
-      <div matTooltip={{hotWaterDescription}}>
-        <input matInput [disabled]="hotWaterUsageDisabled" [(ngModel)]="hotWaterEstimatedUsage" style="display: inline-block;"> 
-        <button mat-mini-fab color="primary"(click)="this.hotWaterUsageDisabled = !this.hotWaterUsageDisabled">
+      <div matTooltip={{flat.hotWaterDescription}}>
+        <input matInput [disabled]="flat.hotWaterUsageDisabled" [(ngModel)]="flat.hotWaterEstimatedUsage" style="display: inline-block;"> 
+        <button mat-mini-fab color="primary"(click)="flat.hotWaterUsageDisabled = !flat.hotWaterUsageDisabled">
           <mat-icon matSuffix>create</mat-icon>
         </button>
       </div>
     </mat-form-field>
     <mat-form-field appearance="standard">
       <mat-label>Szacunkowe zużycie wody zimnej/msc</mat-label>
-      <div matTooltip={{coldWaterDescription}}>
-        <input matInput [disabled]="coldWaterUsageDisabled" [(ngModel)]="coldWaterEstimatedUsage" style="display: inline-block;"> 
-        <button mat-mini-fab color="primary"(click)="this.coldWaterUsageDisabled = !this.coldWaterUsageDisabled">
+      <div matTooltip={{flat.coldWaterDescription}}>
+        <input matInput [disabled]="flat.coldWaterUsageDisabled" [(ngModel)]="flat.coldWaterEstimatedUsage" style="display: inline-block;"> 
+        <button mat-mini-fab color="primary"(click)="flat.coldWaterUsageDisabled = !flat.coldWaterUsageDisabled">
           <mat-icon matSuffix>create</mat-icon>
         </button>
       </div>
     </mat-form-field>
     <mat-form-field appearance="standard">
       <mat-label>Szacunkowe zużycie energii na ogrzewanie/msc</mat-label>
-      <div matTooltip={{heatingDescription}}>
-        <input matInput [disabled]="heatingUsageDisabled" [(ngModel)]="heatingEstimatedUsage" style="display: inline-block;"> 
-        <button mat-mini-fab color="primary"(click)="this.heatingUsageDisabled = !this.heatingUsageDisabled">
+      <div matTooltip={{flat.heatingDescription}}>
+        <input matInput [disabled]="flat.heatingUsageDisabled" [(ngModel)]="flat.heatingEstimatedUsage" style="display: inline-block;"> 
+        <button mat-mini-fab color="primary"(click)="flat.heatingUsageDisabled = !flat.heatingUsageDisabled">
           <mat-icon matSuffix>create</mat-icon>
         </button>
       </div>
     </mat-form-field>
   </div>
+  </div>
   <div style="margin: 2em;">
     <p>Avatar:</p>
     <div class="col-md-6" *ngIf="!(fileUrl || base64File) ">
-
+      
       <div class="container" appDragAndDrop (fileDropped)="onFileDropped($event)">
         <input type="file" #fileDropRef id="fileDropRef" (change)="fileBrowseHandler($event.target.files)" />
         <img src="../../assets/ic-upload-files.svg" alt="">

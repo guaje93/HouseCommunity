@@ -64,7 +64,8 @@ export class MediaAdministrationComponent implements OnInit {
     let model: any = {};
     model.flatId = flat.flatId;
     model.administratorId = this.authService.decodedToken.nameid;
-
+    model.period = this.periodForm.value;
+    console.log(this.periodForm.value);
     this.mediaService.createEmptyMedia(model).subscribe(
       data => {
         this.getAllusers();

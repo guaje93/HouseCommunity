@@ -59,7 +59,10 @@ namespace HouseCommunity.Controllers
                     LastName = user.LastName,
                     UserName = user.UserName,
                     UserRole = user.UserRole,
-                    IsBuildingSame = user.Flat?.BuildingId == userFromRepo.Flat?.BuildingId,
+                    IsBuildingSame = user.UserFlats.Any(p =>
+                    {
+                        return userFromRepo.UserFlats.Select(p => p.Flat.BuildingId).Any(b => b == p.Flat?.BuildingId);
+                    }),
                     AvatarUrl = user.AvatarUrl ?? @"https://housecommunitystorage.blob.core.windows.net/avatarcontainer/user_avatar.png",
                     NotReadMessages = conversation?.Messages.Where(p => p.Sender.Id == user.Id && p.Date > (lastReadMessage?.Date ?? DateTime.MinValue)).Count(),
                     ModificationDate = conversation?.ModificationDate
@@ -139,10 +142,13 @@ namespace HouseCommunity.Controllers
                 UserName = user.UserName,
                 UserRole = user.UserRole,
                 AvatarUrl = user.AvatarUrl ?? @"https://housecommunitystorage.blob.core.windows.net/avatarcontainer/user_avatar.png",
-                IsBuildingSame = user.Flat?.BuildingId == userFromRepo.Flat?.BuildingId
+                IsBuildingSame = user.UserFlats.Any(p =>
+                {
+                    return userFromRepo.UserFlats.Select(p => p.Flat.BuildingId).Any( b => b == p.Flat?.BuildingId);
+                })
 
             }).ToList()
-            );
+            ) ;
         }
 
         [HttpGet("join-groups/{id}")]

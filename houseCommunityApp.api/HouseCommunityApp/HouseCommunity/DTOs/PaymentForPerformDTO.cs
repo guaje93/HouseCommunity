@@ -10,6 +10,7 @@ namespace HouseCommunity.DTOs
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string FlatAddress { get; set; }
         public double Value { get; set; }
         public PaymentDetail Details { get; set; }
         public string Period { get; set; }

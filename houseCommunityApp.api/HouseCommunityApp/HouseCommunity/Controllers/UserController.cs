@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HouseCommunity.Data;
+using HouseCommunity.Data.Interfaces;
 using HouseCommunity.DTOs;
 using HouseCommunity.Model;
 using HouseCommunity.Request;
@@ -15,11 +16,13 @@ namespace HouseCommunity.Controllers
     {
         private readonly IUserRepository _repo;
         private readonly IMapper _mapper;
+        private readonly IBuildingRepository _buildingRepository;
 
-        public UserController(IUserRepository userRepository, IMapper mapper)
+        public UserController(IUserRepository userRepository, IMapper mapper, IBuildingRepository buildingRepository)
         {
             _repo = userRepository;
             _mapper = mapper;
+            _buildingRepository = buildingRepository;
         }
 
 
@@ -40,6 +43,20 @@ namespace HouseCommunity.Controllers
         [HttpGet("get-all-residents")]
         public async Task<IActionResult> GetAllUsers()
         {
+            var flatsFromRepo = await _buildingRepository.GetFlats();
+            var users = flatsFromRepo.SelectMany(prop => prop.Residents);
+
+            if (flatsFromRepo == null)
+                return BadRequest();
+
+            return Ok(users.Select(p =>
+               _mapper.Map<FlatForFilteringDTO>(p)));
+
+        }
+
+        [HttpGet("get-residents-list")]
+        public async Task<IActionResult> GetAllResidentsForREgister()
+        {
 
             var usersFromRepo = await _repo.GetUsersWithRole(UserRole.Resident);
 
@@ -47,10 +64,9 @@ namespace HouseCommunity.Controllers
                 return BadRequest();
 
             return Ok(
-               usersFromRepo.Select(p => _mapper.Map<ResidentsForListDTO>(p))
+               usersFromRepo.Select(p => _mapper.Map<ResidentsForRegisterDTO>(p))
                );
         }
-
 
         [HttpPut("update-contact-data")]
         public async Task<IActionResult> UpdateUserContactData(UserDefinedData userContactData)

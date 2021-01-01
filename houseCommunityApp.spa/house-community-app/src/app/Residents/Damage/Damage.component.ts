@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { FileTypeEnum } from 'src/app/Model/fileTypeEnum';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { AuthService } from 'src/app/_services/auth.service';
 import { BlobService } from 'src/app/_services/blob.service';
+import { BuildingService } from 'src/app/_services/building.service';
 import { DamageService } from 'src/app/_services/damage.service';
 
 @Component({
@@ -14,9 +16,19 @@ export class DamageComponent implements OnInit {
 
   files = [];
   data: any = {};
-  constructor(private blobService: BlobService, private alertifyService: AlertifyService, private authService: AuthService, private damageService: DamageService) { }
+  buildingForm: FormControl = new FormControl('', [Validators.required]);
+  buildings: any[];
+  constructor(private blobService: BlobService, 
+              private alertifyService: AlertifyService, 
+              private authService: AuthService, 
+              private damageService: DamageService, 
+              private buildingService: BuildingService) { }
 
   ngOnInit() {
+    this.buildingService.getBuildings().subscribe(data => {
+      console.log(data);
+    this.buildings = data as any[];
+    })
   }
   onFileDropped($event): void {
     console.log($event);
@@ -33,16 +45,16 @@ export class DamageComponent implements OnInit {
 
   prepareFilesList(files: Array<File>): void {
     for (const item of files) {
-      if(item.type === 'image/jpeg')
-      this.files.push(item);
-else{
-  this.alertifyService.error('Wstaw plik w formacie jpeg');
-}
+      if (item.type === 'image/jpeg')
+        this.files.push(item);
+      else {
+        this.alertifyService.error('Wstaw plik w formacie jpeg');
+      }
     }
   }
   addDamage() {
 
-    if (!this.data.title || !this.data.description) {
+    if (!this.data.title || !this.data.description || this.buildingForm.invalid) {
       this.alertifyService.error('Wypełnij wymagane pola!')
       return;
     }
@@ -52,6 +64,7 @@ else{
     req.title = this.data.title;
     req.description = this.data.description;
     req.userId = this.authService.decodedToken.nameid;
+    req.buildingId = this.buildingForm.value;
 
     this.damageService.addDamage(req).subscribe(data => {
       console.log(data);

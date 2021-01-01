@@ -35,18 +35,19 @@ namespace HouseCommunity.Data
         public async Task<IEnumerable<Announcement>> InsertAnnouncement(AnnouncementForDatabaseInsertDTO announcement)
         {
             var announcements = new List<Announcement>();
-            foreach (var receiverId in announcement.ReceiversId)
+            var uploader = _context.Users.FirstOrDefault(p => p.Id == announcement.UploaderId);
+            var newAnnouncement = new Announcement()
             {
-                var uploader = _context.Users.FirstOrDefault(p => p.Id == announcement.UploaderId);
+                Author = uploader.FirstName + " " + uploader.LastName,
+                Name = announcement.Name,
+                CreationDate = DateTime.Now,
+                Description = announcement.Description,
+                FileUrl = announcement.FileUrl
+            };
+
+            foreach (var receiverId in announcement.ReceiverIds.Distinct())
+            {
                 var receiver = _context.Users.FirstOrDefault(p => p.Id == receiverId);
-                var newAnnouncement = new Announcement()
-                {
-                    Author = uploader.FirstName + " " + uploader.LastName,
-                    Name = announcement.Name,
-                    CreationDate = DateTime.Now,
-                    Description = announcement.Description,
-                    FileUrl = announcement.FileUrl
-                };
 
                 announcements.Add(newAnnouncement);
 

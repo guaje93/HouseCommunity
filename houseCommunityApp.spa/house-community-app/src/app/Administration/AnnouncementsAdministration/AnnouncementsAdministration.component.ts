@@ -10,6 +10,7 @@ import { FileTypeEnum } from 'src/app/Model/fileTypeEnum';
 import { Announcement } from 'src/app/Model/announcement';
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
+import { BuildingService } from 'src/app/_services/building.service';
 
 @Component({
   selector: 'app-AnnouncementsAdministration',
@@ -41,7 +42,7 @@ export class AnnouncementsAdministrationComponent implements OnInit {
 
   constructor(public blobService: BlobService,
     private alertifyService: AlertifyService,
-    private userService: UserService,
+    private buildingService: BuildingService,
     private authService: AuthService,
     private datePipe: DatePipe,
     private announcementService: AnnouncementService
@@ -179,8 +180,9 @@ export class AnnouncementsAdministrationComponent implements OnInit {
     this.users = [];
     this.filteredHouseDevelopments = [];
 
-    this.userService.getAllusers().subscribe(data => {
+    this.buildingService.getFlatsForFilter(this.authService.decodedToken.nameid).subscribe(data => {
       this.users = data as any[];
+      console.log(data);
       this.filteredHouseDevelopments = this.users.map(user => {
         let houseDev =
         {

@@ -8,10 +8,13 @@ export class SingleMediaItem {
     public AcceptanceDate: Date;
     public CurrentValue: number;
     public MediaType: string;
+    public flatAddress: string;
+
 }
 
 export class MediaToUpdate {
     public Id: number;
+    public flatAddress: string;
     public StartPeriodDate: Date;
     public EndPeriodDate: Date;
     public LastValue: number;

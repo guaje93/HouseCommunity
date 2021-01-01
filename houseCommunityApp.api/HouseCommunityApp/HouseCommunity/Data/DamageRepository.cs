@@ -20,11 +20,17 @@ namespace HouseCommunity.Data
 
         public async Task<Damage> AddDamage(AddDamageDTO addDamageDTO)
         {
-            var user = await _dataContext.Users.Include(p => p.Flat).ThenInclude(p => p.Building).FirstOrDefaultAsync(p => p.Id == addDamageDTO.UserId);
+            var user = await _dataContext.Users.Include(p => p.UserFlats)
+                                               .ThenInclude(p => p.Flat) 
+                                               .ThenInclude(p => p.Building)
+                                               .FirstOrDefaultAsync(p => p.Id == addDamageDTO.UserId);
 
+            var building = await _dataContext.Buildings.FirstOrDefaultAsync(p => p.Id == addDamageDTO.BuildingId);
+
+            
             var damage = new Damage()
             {
-                Building = user.Flat.Building,
+                Building = building,
                 RequestCreator = user,
                 CreationDate = DateTime.Now,
                 Description = addDamageDTO.Description,

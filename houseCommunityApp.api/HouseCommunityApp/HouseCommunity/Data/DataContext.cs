@@ -20,6 +20,7 @@ namespace HouseCommunity.Data
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<UserConversation> UserConversations{ get; set; }
+        public DbSet<UserFlat> UserFlats { get; set; }
 
     }
 }

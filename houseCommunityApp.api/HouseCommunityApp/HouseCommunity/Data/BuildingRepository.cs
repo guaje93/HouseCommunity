@@ -33,32 +33,48 @@ namespace HouseCommunity.Data
                                                    .Include(p => p.Address)
                                                    .Include(p => p.Flats)
                                                    .ThenInclude(p=> p.Residents)
+                                                   .ThenInclude(p => p.Flat)
+                                                   .Include(p => p.Flats)
+                                                   .ThenInclude(p => p.Residents)
+                                                   .ThenInclude(p => p.User)
                                                    .FirstOrDefaultAsync(p => p.HouseManager.Id == userId);
             return building;
         }
 
+        public async Task<ICollection<Building>> GetBuildings()
+        {
+           var buildings = await _context.Buildings.Include(p => p.Address).ToListAsync();
+            return buildings;
+        }
+
         public async Task<Flat> GetFlat(int flatId)
         {
-            var flat = await _context.Flats.Include(p => p.Residents).FirstOrDefaultAsync(p=> p.Id == flatId);
+            var flat = await _context.Flats.Include(p => p.Residents).ThenInclude(p => p.User).FirstOrDefaultAsync(p=> p.Id == flatId);
             return flat;
         }
 
-        public async Task<ICollection<FlatsForListDTO>> GetFlats(int userId)
+        public async Task<ICollection<Flat>> GetFlats()
         {
-            var building = await GetBuilding(userId);
-            return building.Flats.Select(p => new FlatsForListDTO()
+            var flats = await _context.Flats.Include(p => p.Residents)
+                                            .ThenInclude(p => p.User)
+                                            .Include(p=>p.Building)
+                                            .ThenInclude(p => p.HousingDevelopment)
+                                            .Include(p => p.Building)
+                                            .ThenInclude(p => p.Address)
+                                            .ToListAsync();
+            return flats;
+        }
+
+        public async Task<Flat> RegisterFlat(UserForRegisterExistingDTO userForRegisterDTO)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(p => p.Email == userForRegisterDTO.Email);
+            var flat = await _context.Flats.FirstOrDefaultAsync(p => p.Id == userForRegisterDTO.FlatId);
+            user.UserFlats.Add(new UserFlat()
             {
-                Id = p.Id,
-                Address = p.Building.Address.ToString() + " m." + p.FlatNumber,
-                Residents = p.Residents.Select(r => new UserNamesListDTO()
-                {
-                    Id = r.Id,
-                    Email = r.Email,
-                    FirstName = r.FirstName,
-                    LastName = r.LastName,
-                    PhoneNumber = r.PhoneNumber
-                }).ToList()
-            }).ToList();
+                Flat = flat
+            });
+            await _context.SaveChangesAsync();
+            return flat;
         }
     }
 }

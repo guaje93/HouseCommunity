@@ -63,7 +63,7 @@ export class MediaComponent implements OnInit {
             let media = new MediaToUpdate();
             media.Id = element.id;
             media.MediaType = this.getMediaTypeFromNumber(element.mediaEnum);
-
+          media.flatAddress = element.flatAddress;
             media.StartPeriodDate = element.startPeriodDate;
             media.EndPeriodDate = element.endPeriodDate;
             media.LastValue = element.lastValue;
@@ -106,6 +106,7 @@ export class MediaComponent implements OnInit {
               item.AcceptanceDate = element.acceptanceDate;
               item.CurrentValue = element.currentValue;
               item.MediaType = this.getMediaTypeFromNumber(element.mediaEnum);
+              item.flatAddress = element.flatAddress,
               this.mediaHistory.push(item);
               this.imageToShow.data = this.mediaHistory;
               
@@ -139,6 +140,7 @@ export class MediaComponent implements OnInit {
       item.CurrentValue = mediaItem.currentValue;
       item.MediaType = this.getMediaTypeFromNumber(mediaItem.mediaEnum);
       this.mediaHistory.push(item);
+      item.flatAddress = mediaItem.flatAddress,
       this.imageToShow.data = this.mediaHistory;
       console.log(this.imageToShow);
     }, false);

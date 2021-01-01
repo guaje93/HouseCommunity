@@ -122,7 +122,9 @@ namespace HouseCommunity.Data
                 Email = userForRegisterDTO.Email,
                 UserRole = UserRole.Resident
             };
-            flat.Residents.Add(user);
+            flat.Residents.Add(new UserFlat() { 
+            User = user
+            });
 
             await _context.SaveChangesAsync();
             return user;

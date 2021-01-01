@@ -50,11 +50,13 @@ namespace HouseCommunity.Data
             var conversation = await _dataContext.Conversations
                                                   .Include(p => p.Users)
                                                   .ThenInclude(p => p.User)
+                                                  .ThenInclude(p => p.UserFlats)
                                                   .ThenInclude(p => p.Flat)
                                                   .Include(p => p.Users)
                                                   .ThenInclude(p => p.Conversation)
                                                   .ThenInclude(p => p.Users)
                                                   .ThenInclude(p => p.User)
+                                                  .ThenInclude(p => p.UserFlats)
                                                   .ThenInclude(p => p.Flat)
                                                   .Include(p => p.Users)
                                                   .ThenInclude(p => p.Conversation)
@@ -68,10 +70,12 @@ namespace HouseCommunity.Data
         {
             var conversations = _dataContext.UserConversations
                                             .Include(p => p.User)
+                                            .ThenInclude(p => p.UserFlats)
                                             .ThenInclude(p => p.Flat)
                                             .Include(p => p.Conversation)
                                             .ThenInclude(p => p.Users)
                                             .ThenInclude(p => p.User)
+                                            .ThenInclude(p => p.UserFlats)
                                             .ThenInclude(p => p.Flat)
                                             .Include(p => p.Conversation)
                                             .ThenInclude(p => p.Messages)

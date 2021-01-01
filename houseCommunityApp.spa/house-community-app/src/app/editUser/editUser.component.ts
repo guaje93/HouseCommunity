@@ -34,6 +34,7 @@ export class EditUserComponent implements OnInit {
   coldWaterDescription: string;
   heatingDescription: string;
   file: File;
+  flats: any[] = [];
   fileUrl: string;
   userRole: number;
   private fileReader = new FileReader();
@@ -59,21 +60,28 @@ export class EditUserComponent implements OnInit {
       this.lastName = user.lastName;
       this.phoneNumber = user.phoneNumber;
       this.email = user.email;
-      this.area = user.area;
       this.userRole = user.userRole;
 
       if (user.userRole === 1) {
-        this.residentsAmountDisabled = true;
-        this.heatingUsageDisabled = true;
-        this.hotWaterUsageDisabled = true;
-        this.coldWaterUsageDisabled = true;
-        this.residentsAmount = user.residentsAmount;
-        this.hotWaterEstimatedUsage = user.hotWaterEstimatedUsage;
-        this.coldWaterEstimatedUsage = user.coldWaterEstimatedUsage;
-        this.heatingEstimatedUsage = user.heatingEstimatedUsage;
-        this.hotWaterDescription = "Cena jednostkowa za 1m3 wody ciepłej: " + user.hotWaterUnitCost + "zł";
-        this.coldWaterDescription = "Cena jednostkowa za 1m3 wody zimnej: " + user.coldWaterUnitCost + "zł";
-        this.heatingDescription = "Cena jednostkowa za 1GJ energii na ogrzewanie: " + user.heatingUnitCost + "zł";
+        user.userFlats.forEach(flat => {
+
+          let model: any = {};
+          model.residentsAmountDisabled = true;
+          model.heatingUsageDisabled = true;
+          model.hotWaterUsageDisabled = true;
+          model.coldWaterUsageDisabled = true;
+          model.area = flat.area;
+          model.residentsAmount = flat.residentsAmount;
+          model.hotWaterEstimatedUsage = flat.hotWaterEstimatedUsage;
+          model.coldWaterEstimatedUsage = flat.coldWaterEstimatedUsage;
+          model.heatingEstimatedUsage = flat.heatingEstimatedUsage;
+          model.hotWaterDescription = "Cena jednostkowa za 1m3 wody ciepłej: " + flat.hotWaterUnitCost + "zł";
+          model.coldWaterDescription = "Cena jednostkowa za 1m3 wody zimnej: " + flat.coldWaterUnitCost + "zł";
+          model.heatingDescription = "Cena jednostkowa za 1GJ energii na ogrzewanie: " + flat.heatingUnitCost + "zł";
+          model.name = flat.flatName;
+          model.id = flat.id;
+          this.flats.push(model);
+        });
       }
       this.fileUrl = user.avatarUrl;
     });
@@ -133,18 +141,15 @@ export class EditUserComponent implements OnInit {
     model.id = this.authService.decodedToken.nameid;
     model.email = this.email;
     model.phoneNumber = this.phoneNumber;
-    model.residentsAmount = this.residentsAmount;
-    model.hotWaterEstimatedUsage = this.hotWaterEstimatedUsage;
-    model.coldWaterEstimatedUsage = this.coldWaterEstimatedUsage;
-    model.heatingEstimatedUsage = this.heatingEstimatedUsage;
-    await this.addFile();
+    model.userFlats = this.flats;
     if (this.file)
-      model.avatarUrl = this.fileUrl;
+      await this.addFile();
+    model.avatarUrl = this.fileUrl;
     this.userService.updateUserContactData(model).subscribe(
       data => {
         this.alertifyService.success("Zapisano zmienione dane")
         this.residentsAmountDisabled = this.phoneDisabled = this.emailDisabled = this.coldWaterUsageDisabled = this.hotWaterUsageDisabled = this.heatingUsageDisabled = true;
-      this.dialogRef.close();
+        this.dialogRef.close();
       }),
       error => {
         this.alertifyService.error("Wystąpił bląd. Dane nie zostały zapisane.")

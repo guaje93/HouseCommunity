@@ -11,13 +11,20 @@
                     <input matInput type="text" [(ngModel)]="data.title" name="type" />
                   </mat-form-field>
                   <mat-form-field appearance="fill">
-                    <mat-label>Opis</mat-label>
+                    <mat-label>Opis: (co, gdzie, kiedy?)</mat-label>
                     <textarea name="description" [(ngModel)]="data.description" matInput 
                     cdkTextareaAutosize
                     #autosize="cdkTextareaAutosize"
                     cdkAutosizeMinRows="10"
                     cdkAutosizeMaxRows="200"></textarea>
                   </mat-form-field>
+                  <mat-form-field appearance="fill">
+                    <mat-label>Budynki</mat-label>
+                    <mat-select [formControl]="buildingForm">
+                        <mat-option *ngFor="let building of buildings" [value]="building.id">
+                            {{building.address}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
                 </form>
       
               </div>

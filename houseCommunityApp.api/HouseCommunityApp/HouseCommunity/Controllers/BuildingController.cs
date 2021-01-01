@@ -43,17 +43,51 @@ namespace HouseCommunity.Controllers
                });
         }
 
+        [HttpGet("get-buildings")]
+        public async Task<IActionResult> GetBuildings()
+        {
+
+            var buildingsFromRepo = await _repo.GetBuildings();
+
+            if (buildingsFromRepo == null)
+                return BadRequest();
+
+            return Ok(
+                buildingsFromRepo.Select(p =>
+               new
+               {
+                   Id = p.Id,
+                   Address = p.Address.ToString()
+               }));
+        }
+
         [HttpGet("get-flats/{userId}")]
         public async Task<IActionResult> GetAllFlatsForBuildingManager(int userId)
         {
 
-            var flatsFromRepo = await _repo.GetFlats(userId);
-
+            var flatsFromRepo = await _repo.GetFlats();
+            var building = await _repo.GetBuilding(userId);
+            flatsFromRepo = flatsFromRepo.Where(prop => prop.Building == building).ToList();
             if (flatsFromRepo == null)
                 return BadRequest();
 
             return Ok(
-               flatsFromRepo);
+               flatsFromRepo.Select(p =>
+               _mapper.Map<FlatsForListDTO>(p)));
+        }
+
+        [HttpGet("get-flats-for-filtering/{userId}")]
+        public async Task<IActionResult> GetFlatsForFiltering(int userId)
+        {
+
+            var flatsFromRepo = await _repo.GetFlats();
+            var users = flatsFromRepo.SelectMany(prop => prop.Residents);
+
+            if (flatsFromRepo == null)
+                return BadRequest();
+
+            return Ok(users.Select(p =>
+               _mapper.Map<FlatForFilteringDTO>(p)));
         }
 
         [HttpGet("get-flat-residents/{flatId}")]
@@ -70,6 +104,6 @@ namespace HouseCommunity.Controllers
                users);
         }
 
-        
+
     }
 }

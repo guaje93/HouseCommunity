@@ -10,5 +10,6 @@ namespace HouseCommunity.DTOs
     {
         public int Id { get; set; }
         public UserRole UserRole { get; set; }
+        IEnumerable<int> Flats { get; set; }
     }
 }

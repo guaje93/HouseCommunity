@@ -41,7 +41,7 @@ namespace HouseCommunity.Controllers
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetConversations(int userId)
         {
-            var userFromRepo = await _userRepository.GetUser(userId);
+            var userFromRepo = await _userRepository.GetUserById(userId);
             var users = (_userRepository.GetUsers()).Where(p => p.Id != userId);
 
             var conversations = (await _chatRepository.GetConversations(userId)).Select(p => p.Conversation);
@@ -74,7 +74,7 @@ namespace HouseCommunity.Controllers
         [HttpPost("read-message")]
         public async Task<IActionResult> ReadMessage(ReadMessageDTO readMessageDTO)
         {
-            var userFromRepo = await _userRepository.GetUser(readMessageDTO.UserId);
+            var userFromRepo = await _userRepository.GetUserById(readMessageDTO.UserId);
             var conversation = await _chatRepository.GetConversation(readMessageDTO.ConversationId);
 
             var userConservation = await _chatRepository.UpdateLastReadMessage(conversation, userFromRepo, conversation.Messages.Where(p => p.Sender.Id != readMessageDTO.UserId).OrderByDescending(p => p.Date).FirstOrDefault());
@@ -84,7 +84,7 @@ namespace HouseCommunity.Controllers
         [HttpGet("not-read-messages/{userId}")]
         public async Task<IActionResult> GetNotReadMessage(int userId)
         {
-            var userFromRepo = await _userRepository.GetUser(userId);
+            var userFromRepo = await _userRepository.GetUserById(userId);
             var lastReadMessages = userFromRepo.UserConversations.Select(p => p.LastMessageRead);
             var conversations = userFromRepo.UserConversations.Select(p => p.Conversation);
             var amount = 0;
@@ -110,7 +110,7 @@ namespace HouseCommunity.Controllers
         public async Task<IActionResult> SaveMessage(SaveMessageDTO message)
         {
 
-            var userFromRepo = await _userRepository.GetUser(message.UserId);
+            var userFromRepo = await _userRepository.GetUserById(message.UserId);
             var conversation = await _chatRepository.GetConversation(message.ConversationId);
             if (conversation != null)
             {
@@ -176,8 +176,8 @@ namespace HouseCommunity.Controllers
         [HttpGet("get-messages/{id}/{userId}")]
         public async Task<IActionResult> GetMessages(int id, int userId)
         {
-            var receiver = await _userRepository.GetUser(id);
-            var userFromRepo = await _userRepository.GetUser(userId);
+            var receiver = await _userRepository.GetUserById(id);
+            var userFromRepo = await _userRepository.GetUserById(userId);
 
             //check if any conversation is pending
             var userConversations = await _chatRepository.GetConversations(userId);

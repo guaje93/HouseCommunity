@@ -49,15 +49,7 @@ namespace HouseCommunity.Helpers
                                              .ForMember(dest => dest.ResidentsAmount, opt => opt.MapFrom(source => source.Flat.ResidentsAmount))
                                              .ForMember(dest => dest.Id, opt => opt.MapFrom(source => source.Flat.Id));
 
-            //CreateMap<User, ResidentsForListDTO>().ForMember(dest => dest.Address, opt => opt.MapFrom(source => source.Flat.Building.Address.ToString()))
-            //                                      .ForMember(dest => dest.BuildingId, opt => opt.MapFrom(source => source.Flat.Building.Id))
-            //                                      .ForMember(dest => dest.FlatId, opt => opt.MapFrom(source => source.Flat.Id))
-            //                                      .ForMember(dest => dest.HousingDevelopmentId, opt => opt.MapFrom(source => source.Flat.Building.HousingDevelopmentId))
-            //                                      .ForMember(dest => dest.HousingDevelopmentName, opt => opt.MapFrom(source => source.Flat.Building.HousingDevelopment.Name))
-            //                                      .ForMember(dest => dest.LocalNumber, opt => opt.MapFrom(source => source.Flat.FlatNumber))
-            //                                      .ForMember(dest => dest.Name, opt => opt.MapFrom(source => $"{source.FirstName} {source.LastName}"))
-            //                                      .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(source => source.Email))
-            //                                      .ForMember(dest => dest.UserId, opt => opt.MapFrom(source => source.Id));
+
 
             CreateMap<PaymentForBookDTO, Payment>();
             CreateMap<ResidentsForRegisterDTO, User>();

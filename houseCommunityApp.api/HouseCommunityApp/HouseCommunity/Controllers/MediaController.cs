@@ -40,7 +40,7 @@ namespace HouseCommunity.Controllers
         [HttpPut("update-media")]
         public async Task<IActionResult> UpdateMedia(MediaUpdatedByUserDTO addMediaToDbRequest)
         {
-            var user = await _userRepository.GetUser(addMediaToDbRequest.UserId);
+            var user = await _userRepository.GetUserById(addMediaToDbRequest.UserId);
             var media = await _repo.UpdateMedia(addMediaToDbRequest);
 
             if (media == null)
@@ -61,7 +61,7 @@ namespace HouseCommunity.Controllers
         [HttpPut("book-media")]
         public async Task<IActionResult> BookMedia(MediaUpdatedByAdministrationDTO addMediaToDbRequest)
         {
-            var user = await _userRepository.GetUser(addMediaToDbRequest.UserId);
+            var user = await _userRepository.GetUserById(addMediaToDbRequest.UserId);
             var media = await _repo.UpdateMedia(addMediaToDbRequest);
 
             if (media == null)
@@ -83,7 +83,7 @@ namespace HouseCommunity.Controllers
         [HttpPut("unlock")]
         public async Task<IActionResult> UnlockMedia(MediaUpdatedByAdministrationDTO addMediaToDbRequest)
         {
-            var user = await _userRepository.GetUser(addMediaToDbRequest.UserId);
+            var user = await _userRepository.GetUserById(addMediaToDbRequest.UserId);
             var media = await _repo.UnlockMedia(addMediaToDbRequest);
 
             if (media == null)
@@ -119,7 +119,7 @@ namespace HouseCommunity.Controllers
         [HttpPost("create-empty-media-entry")]
         public async Task<IActionResult> AddEmptyMediaEntryForUser(AddEmptyMediaRequest addMediaToDbRequest)
         {
-            var user = await _userRepository.GetUser(addMediaToDbRequest.AdministratorId);
+            var user = await _userRepository.GetUserById(addMediaToDbRequest.AdministratorId);
             var flat = await _repo.CreateEmptyMediaForUser(addMediaToDbRequest);
 
             if (flat == null)

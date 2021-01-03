@@ -11,8 +11,10 @@ namespace HouseCommunity.Data.Interfaces
     {
         Task<ICollection<Flat>> GetFlats();
         Task<Flat> GetFlat(int flatId);
+        Task<Building> GetBuildingByManager(User manager);
         Task <Building> GetBuilding(int userId);
         Task <Flat> RegisterFlat(UserForRegisterExistingDTO userForRegisterDTO);
         Task <ICollection<Building>> GetBuildings();
+        Task <Flat> UpdateFlat(Flat flat);
     }
 }

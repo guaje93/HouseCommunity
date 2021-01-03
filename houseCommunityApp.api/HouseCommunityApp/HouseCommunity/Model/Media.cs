@@ -2,7 +2,7 @@
 
 namespace HouseCommunity.Model
 {
-    public class Media
+    public class Media : IEntity
     {
         public int Id { get; set; }
         public string ImageUrl { get; set; }

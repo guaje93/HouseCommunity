@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace HouseCommunity.Model
 {
-    public class Message
+    public class Message : IEntity
     {
         public int Id { get; set; }
         public User Sender { get; set; }

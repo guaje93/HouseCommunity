@@ -78,8 +78,8 @@ namespace HouseCommunity.Controllers
         [HttpPost("register-new")]
         public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
         {
-            var creator = await _userRepository.GetUser(userForRegisterDTO.UserId);
-            var users = await _userRepository.GetUsersWithRole(Model.UserRole.Resident);
+            var creator = await _userRepository.GetUserById(userForRegisterDTO.UserId);
+            var users = await _userRepository.GetUsersByRole(Model.UserRole.Resident);
             if(users.Any(p => p.Email == userForRegisterDTO.Email))
             {
                 return Unauthorized("Podany email jest już w bazie");
@@ -115,8 +115,8 @@ namespace HouseCommunity.Controllers
         [HttpPost("register-existing")]
         public async Task<IActionResult> RegisterAddExistig(UserForRegisterExistingDTO userForRegisterDTO)
         {
-            var creator = await _userRepository.GetUser(userForRegisterDTO.UserId);
-            var users = await _userRepository.GetUsersWithRole(Model.UserRole.Resident);
+            var creator = await _userRepository.GetUserById(userForRegisterDTO.UserId);
+            var users = await _userRepository.GetUsersByRole(Model.UserRole.Resident);
             if (!users.Any(p => p.Email == userForRegisterDTO.Email))
             {
                 return Unauthorized("Nie znaleziono użytkownika");
@@ -145,7 +145,7 @@ namespace HouseCommunity.Controllers
         public async Task<IActionResult> ResetPasswordRequest(UserForPasswordResetRequest usernameuserForLoginDTO)
         {
 
-            var userFromRepo = await _repo.GetUserForReset(usernameuserForLoginDTO.Email.ToLower());
+            var userFromRepo = await _userRepository.GetUserByEmail(usernameuserForLoginDTO.Email.ToLower());
             if (userFromRepo == null)
                 return Unauthorized("Email nie jset powiązany z żadnym z kont!");
 
@@ -184,7 +184,7 @@ namespace HouseCommunity.Controllers
             var intId = 0;
             Int32.TryParse(id, out intId);
 
-            var user = await _userRepository.GetUser(intId);
+            var user = await _userRepository.GetUserById(intId);
             if (user == null)
                 return Unauthorized("Token niepoprawny");
 
@@ -198,9 +198,9 @@ namespace HouseCommunity.Controllers
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var id = tokenHandler.ReadJwtToken(token.ResetToken).Claims.FirstOrDefault(p => p.Type == "nameid").Value;
-                var username = await _repo.GetUserNameById(Convert.ToInt32(id));
-                var user = await _repo.ResetPassword(username, token.NewPassword);
-                return Ok(user);
+                var user = await _userRepository.GetUserById(Convert.ToInt32(id));
+                var savedUser = await _repo.ResetPassword(user.UserName, token.NewPassword);
+                return Ok(savedUser);
             }
             else
             {

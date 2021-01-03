@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace HouseCommunity.Data.Interfaces
 {
-    public interface IAnnouncementRepository
+    public interface IAnnouncementRepository : IBaseRepository<Announcement>
     {
         ICollection<Announcement> GetAnnouncementsForUser(int userId);
-        Task<IEnumerable<Announcement>> InsertAnnouncement(AnnouncementForDatabaseInsertDTO announcement);
+        Task<Announcement> InsertAnnouncement(Announcement announcement, IEnumerable<User> receiver);
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace HouseCommunity.Model
 {
-    public class Flat
+    public class Flat : IEntity
     {
         public int Id { get; set; }
         public string FlatNumber { get; set; }

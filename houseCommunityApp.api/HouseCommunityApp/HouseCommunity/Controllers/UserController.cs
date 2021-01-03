@@ -14,9 +14,15 @@ namespace HouseCommunity.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        #region Fields
+
         private readonly IUserRepository _repo;
         private readonly IMapper _mapper;
         private readonly IBuildingRepository _buildingRepository;
+
+        #endregion
+
+        #region Constructor
 
         public UserController(IUserRepository userRepository, IMapper mapper, IBuildingRepository buildingRepository)
         {
@@ -25,40 +31,39 @@ namespace HouseCommunity.Controllers
             _buildingRepository = buildingRepository;
         }
 
+        #endregion //Constructor
+
+        #region Methods
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
-
-            var userFromRepo = await _repo.GetUser(id);
+            var userFromRepo = await _repo.GetUserById(id);
 
             if (userFromRepo == null)
                 return Unauthorized();
 
-            return Ok(
-               _mapper.Map<UserForInfoDTO>(userFromRepo)
-               );
+            return Ok(_mapper.Map<UserForInfoDTO>(userFromRepo));
         }
 
         [HttpGet("get-all-residents")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllResidents()
         {
-            var flatsFromRepo = await _buildingRepository.GetFlats();
-            var users = flatsFromRepo.SelectMany(prop => prop.Residents);
+            var users = await _repo.GetUsersByRole(UserRole.Resident);
 
-            if (flatsFromRepo == null)
+            if (users == null)
                 return BadRequest();
 
-            return Ok(users.Select(p =>
-               _mapper.Map<FlatForFilteringDTO>(p)));
+            return Ok(
+                users.SelectMany(p => p.UserFlats).Distinct().Select(p =>_mapper.Map<FlatForFilteringDTO>(p))
+                );
 
         }
 
-        [HttpGet("get-residents-list")]
-        public async Task<IActionResult> GetAllResidentsForREgister()
+        [HttpGet("get-residents-for-register")]
+        public async Task<IActionResult> GetAllResidentsForRegister()
         {
-
-            var usersFromRepo = await _repo.GetUsersWithRole(UserRole.Resident);
+            var usersFromRepo = await _repo.GetUsersByRole(UserRole.Resident);
 
             if (usersFromRepo == null)
                 return BadRequest();
@@ -71,14 +76,37 @@ namespace HouseCommunity.Controllers
         [HttpPut("update-contact-data")]
         public async Task<IActionResult> UpdateUserContactData(UserDefinedData userContactData)
         {
-            var userFromRepo = await _repo.UpdateUserDefinedData(userContactData);
+            var user = await _repo.GetUserById(userContactData.Id);
 
-            if (userFromRepo == null)
+            if(user== null)
                 return BadRequest();
+
+            user.PhoneNumber = userContactData.PhoneNumber;
+            user.Email = userContactData.Email;
+            user.AvatarUrl = userContactData.AvatarUrl;
+
+            foreach (var flatInfo in userContactData.UserFlats)
+            {
+                var flat = await _buildingRepository.GetFlat(flatInfo.Id);
+
+                if (flat != null)
+                {
+                    flat.ResidentsAmount = flatInfo.ResidentsAmount;
+                    flat.ColdWaterEstimatedUsage = flatInfo.ColdWaterEstimatedUsage;
+                    flat.HotWaterEstimatedUsage = flatInfo.HotWaterEstimatedUsage;
+                    flat.HeatingEstimatedUsage = flatInfo.HeatingEstimatedUsage;
+                }
+    
+                var flatFromRepo = await _buildingRepository.UpdateFlat(flat);
+            }
+
+            var userFromRepo = await _repo.UpdateUser(user);
 
             return Ok(
                _mapper.Map<UserForInfoDTO>(userFromRepo)
                );
         }
+
+        #endregion //Methods
     }
 }

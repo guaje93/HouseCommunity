@@ -1,6 +1,6 @@
 ﻿namespace HouseCommunity.Model
 {
-    public class PaymentDetail
+    public class PaymentDetail : IEntity
     {
         public int Id { get; set; }
         public double HotWaterValue { get; set; }

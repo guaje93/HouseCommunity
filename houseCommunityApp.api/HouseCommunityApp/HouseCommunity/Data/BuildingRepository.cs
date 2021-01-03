@@ -27,7 +27,7 @@ namespace HouseCommunity.Data
         #endregion //Constructors
 
 
-        public async Task<Building> GetBuilding(int userId)
+        public async Task<Building> GetBuildingByManager(User manager)
         {
             var building = await _context.Buildings.Include(p => p.HouseManager)
                                                    .Include(p => p.Address)
@@ -37,7 +37,21 @@ namespace HouseCommunity.Data
                                                    .Include(p => p.Flats)
                                                    .ThenInclude(p => p.Residents)
                                                    .ThenInclude(p => p.User)
-                                                   .FirstOrDefaultAsync(p => p.HouseManager.Id == userId);
+                                                   .FirstOrDefaultAsync(p => p.HouseManager == manager);
+            return building;
+        }
+
+        public async Task<Building> GetBuilding(int id)
+        {
+            var building = await _context.Buildings.Include(p => p.HouseManager)
+                                                   .Include(p => p.Address)
+                                                   .Include(p => p.Flats)
+                                                   .ThenInclude(p => p.Residents)
+                                                   .ThenInclude(p => p.Flat)
+                                                   .Include(p => p.Flats)
+                                                   .ThenInclude(p => p.Residents)
+                                                   .ThenInclude(p => p.User)
+                                                   .FirstOrDefaultAsync(p => p.Id == id);
             return building;
         }
 
@@ -49,7 +63,15 @@ namespace HouseCommunity.Data
 
         public async Task<Flat> GetFlat(int flatId)
         {
-            var flat = await _context.Flats.Include(p => p.Residents).ThenInclude(p => p.User).FirstOrDefaultAsync(p=> p.Id == flatId);
+            var flat = await _context.Flats.Include(p => p.Residents)
+                                            .ThenInclude(p => p.User)
+                                            .Include(p => p.Building)
+                                            .ThenInclude(p => p.HousingDevelopment)
+                                            .Include(p => p.Building)
+                                            .ThenInclude(p => p.Address)
+                                            .Include(p => p.Building)
+                                            .ThenInclude(p => p.Cost)
+                                            .FirstOrDefaultAsync(p=> p.Id == flatId);
             return flat;
         }
 
@@ -61,6 +83,8 @@ namespace HouseCommunity.Data
                                             .ThenInclude(p => p.HousingDevelopment)
                                             .Include(p => p.Building)
                                             .ThenInclude(p => p.Address)
+                                            .Include(p => p.Building)
+                                            .ThenInclude(p => p.HouseManager)
                                             .ToListAsync();
             return flats;
         }
@@ -73,6 +97,13 @@ namespace HouseCommunity.Data
             {
                 Flat = flat
             });
+            await _context.SaveChangesAsync();
+            return flat;
+        }
+
+        public async Task<Flat> UpdateFlat(Flat flat)
+        {
+            _context.Update(flat);
             await _context.SaveChangesAsync();
             return flat;
         }

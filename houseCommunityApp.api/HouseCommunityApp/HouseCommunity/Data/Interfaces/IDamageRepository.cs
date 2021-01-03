@@ -7,11 +7,11 @@ using HouseCommunity.Model;
 
 namespace HouseCommunity.Data.Interfaces
 {
-    public interface IDamageRepository
+    public interface IDamageRepository : IBaseRepository<Damage>
     {
-        Task<Damage> AddDamage(AddDamageDTO addDamageDTO);
-        Task<Damage> AddImage(AddImageDTO addDamageDTO);
-        IEnumerable<Damage> GetDamagesForHouseManager(int id, DamageStatus status);
-        Task<Damage> ChangeStatus(int id, DamageStatus status);
+        Task<Damage> GetDamage(int id);
+        Task<Damage> AddDamage(Damage damage);
+        Task<Damage> UpdateDamage(Damage damage);
+        IEnumerable<Damage> GetDamagesByUserAndStatus(User user, DamageStatus status);
     }
 }

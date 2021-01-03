@@ -14,18 +14,18 @@
 
         <ul class="navbar-nav" style="margin-right: auto; margin-left: auto; width:fit-content">
           <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
-            <a class="nav-link" [routerLink]="['/rent']">Czynsze </a>
+            <a class="nav-link" [routerLink]="['/rent']">Opłaty </a>
           </li>
           <li class="nav-item" routerLinkActive="active" *ngIf="hasAdministrationAccess()">
-            <a class="nav-link" [routerLink]="['/paymentsAdministration']">Czynsze </a>
+            <a class="nav-link" [routerLink]="['/paymentsAdministration']">Opłaty </a>
           </li>
           <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">
             <a class="nav-link" [routerLink]="['/media']">Media</a>
           </li>
-          <li class="nav-item" routerLinkActive="active" *ngIf="hasAdministrationAccess()">
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasAdministrationAccess()|| hasHouseManagerAccess()">
             <a class="nav-link" [routerLink]="['/mediaAdministration']">Media</a>
           </li>
-          <li class="nav-item" routerLinkActive="active" *ngIf="hasAdministrationAccess()">
+          <li class="nav-item" routerLinkActive="active" *ngIf="hasAdministrationAccess() || hasHouseManagerAccess()">
             <a class="nav-link" [routerLink]="['/announcementsAdministration']">Aktualności</a>
           </li>
           <li class="nav-item" routerLinkActive="active" *ngIf="hasUserAccess()">

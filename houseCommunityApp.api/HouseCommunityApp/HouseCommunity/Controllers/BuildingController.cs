@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using HouseCommunity.Data;
 using HouseCommunity.Data.Interfaces;
 using HouseCommunity.DTOs;
 using Microsoft.AspNetCore.Http;
@@ -15,11 +16,13 @@ namespace HouseCommunity.Controllers
     public class BuildingController : ControllerBase
     {
         private readonly IBuildingRepository _repo;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public BuildingController(IBuildingRepository flatRepository, IMapper mapper)
+        public BuildingController(IBuildingRepository flatRepository, IUserRepository userRepository, IMapper mapper)
         {
             _repo = flatRepository;
+            this._userRepository = userRepository;
             this._mapper = mapper;
         }
 
@@ -79,8 +82,12 @@ namespace HouseCommunity.Controllers
         [HttpGet("get-flats-for-filtering/{userId}")]
         public async Task<IActionResult> GetFlatsForFiltering(int userId)
         {
-
+            var user = await _userRepository.GetUserById(userId);
             var flatsFromRepo = await _repo.GetFlats();
+
+            if (user.UserRole == Model.UserRole.HouseManager)
+                flatsFromRepo = flatsFromRepo.Where(p => p.Building.HouseManager == user).ToList();
+
             var users = flatsFromRepo.SelectMany(prop => prop.Residents);
 
             if (flatsFromRepo == null)

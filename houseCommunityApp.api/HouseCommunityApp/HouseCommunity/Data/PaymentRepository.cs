@@ -119,12 +119,6 @@ namespace HouseCommunity.Data
             }
         }
 
-        public async Task<double> GetFlatArea(int flatId)
-        {
-            var flat = await _context.Flats.FirstOrDefaultAsync(p => p.Id == flatId);
-            return flat.Area;
-        }
-
         public async Task<ICollection<Media>> GetMediaFromLastPeriod(int flatId, DateTime date)
         {
             var flat = await _context.Flats.Include(p => p.MediaHistory).FirstOrDefaultAsync(p => p.Id == flatId);
@@ -139,16 +133,19 @@ namespace HouseCommunity.Data
 
         public async Task<List<PaymentForPerformDTO>> GetPayments(int id)
         {
-            var flat = await _context.Flats.Include(p => p.Residents)
-                                           .ThenInclude(p => p.Flat)
-                                           .ThenInclude(p => p.Payments)
-                                           .ThenInclude(p => p.Details)
-                                           .Include(p => p.Residents)
-                                           .ThenInclude(p => p.Flat)
-                                           .ThenInclude(p => p.Building)
-                                           .ThenInclude(p => p.Address)
-                                           .FirstOrDefaultAsync(p => p.Id == id);
-            return flat.Residents?.SelectMany(p => p.Flat.Payments).Select(p => new PaymentForPerformDTO()
+            var users = await _context.UserFlats.Include(p => p.User)
+                                               .Include(p => p.Flat)
+                                               .ThenInclude(p => p.Residents)
+                                               .Include(p => p.Flat)
+                                               .ThenInclude(p => p.Payments)
+                                               .ThenInclude(p => p.Details)
+                                               .Include(p => p.Flat)
+                                               .ThenInclude(p => p.Building)
+                                               .ThenInclude(p => p.Address)
+                                               .Where(p => p.User.Id == id).ToListAsync();
+            
+            
+            return users.SelectMany(p => p.Flat.Payments).Select(p => new PaymentForPerformDTO()
             {
                 Id = p.Id,
                 Name = p.Name,
@@ -166,26 +163,7 @@ namespace HouseCommunity.Data
             }).ToList();
         }
 
-        public async Task<int> GetResidentsAmount(int flatId)
-        {
-            var flat = await _context.Flats.FirstOrDefaultAsync(p => p.Id == flatId);
-            return flat.ResidentsAmount;
-        }
-
-        public async Task<Cost> GetUnitCostsForFlat(int flatId)
-        {
-            var flat = await _context.Flats.Include(p => p.Building).ThenInclude(p => p.Cost).FirstOrDefaultAsync(p => p.Id == flatId);
-            return flat.Building.Cost;
-        }
-
-        public async Task<double> GetWholeBuildingArea(int flatId)
-        {
-            var flat = await _context.Flats.Include(p => p.Building)
-                                           .ThenInclude(p => p.Flats)
-                                           .FirstOrDefaultAsync(p => p.Id == flatId);
-
-            return flat.Building.Flats.Sum(p => p.Area);
-        }
+        
 
         public async Task RemovePayment(int paymentId)
         {
@@ -194,28 +172,7 @@ namespace HouseCommunity.Data
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Payment> UpdateOrderStatus(string orderid, string status)
-        {
-            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.OrderId == orderid);
-            switch (status)
-            {
-                case "PENDING":
-                case "WAITING_FOR_CONFIRMATION":
-                    payment.PaymentStatus = PaymentStatus.PaymentStarted;
-                    break;
-                case "CANCELED":
-                    payment.PaymentStatus = PaymentStatus.PaymentCancelled;
-                    break;
-
-                case "COMPLETED":
-                    payment.PaymentStatus = PaymentStatus.PaymentCompleted;
-                    break;
-
-            }
-
-            await _context.SaveChangesAsync();
-            return payment;
-        }
+        
 
         public async Task<Payment> UpdatePaymentStatus(int paymentId, PaymentStatus paymentStatus)
         {
@@ -227,14 +184,7 @@ namespace HouseCommunity.Data
             return payment;
         }
 
-        public async Task<Payment> UpdatePayUOrderId(int id, string orderId)
-        {
-            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.Id == id);
-            payment.OrderId = orderId;
-            await _context.SaveChangesAsync();
-            return payment;
-
-        }
+        
     }
 
     #endregion

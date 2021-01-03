@@ -8,13 +8,11 @@ namespace HouseCommunity.Data
     public interface IAuthRepository
     {
         Task<User> LogIn(string userName, string password);
-        Task<bool> UserExists(string username);
-        Task<User> GetUserForReset(string v);
-        Task<User> ResetPassword(string username, string password);
-        Task<string> GetUserNameById(int id);
-        Task<User> ChangePassword(PasswordChangeRequest passwordChangeRequest);
         Task<User> RegisterUser(UserForRegisterDTO userForRegisterDTO);
-        Task<bool> HasAccessToAdministration(int userId);
+        Task<User> ResetPassword(string username, string password);
+        Task<User> ChangePassword(PasswordChangeRequest passwordChangeRequest);
+        Task<bool> HasAdministrationRights(int userId);
+        Task<bool> HasHouseManagerRights(int userId);
 
     }
 }

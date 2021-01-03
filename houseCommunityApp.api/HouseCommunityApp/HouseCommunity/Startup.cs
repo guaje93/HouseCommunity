@@ -66,7 +66,9 @@ namespace HouseCommunity
                     .AllowCredentials());
             }); 
             services.AddTransient<Seed>();
+            services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMediaRepository, MediaRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
@@ -75,6 +77,8 @@ namespace HouseCommunity
             services.AddScoped<IBuildingRepository, BuildingRepository>();
             services.AddScoped<IDamageRepository, DamageRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IMailService, MailService>();
+            services.AddScoped<IRentCostsBuilder, RentCostsBuilder>();
             services.AddScoped<IMailService, MailService>();
             services.AddSignalR();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters

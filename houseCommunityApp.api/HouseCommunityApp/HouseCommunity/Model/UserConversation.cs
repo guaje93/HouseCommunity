@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace HouseCommunity.Model
 {
-    public class UserConversation
+    public class UserConversation : IEntity
     {
         public int Id { get; set; }
         public User User { get; set; }

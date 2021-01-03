@@ -9,76 +9,63 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HouseCommunity.Data
 {
-    public class DamageRepository : IDamageRepository
+    public class DamageRepository : BaseRepository<Damage>, IDamageRepository
     {
-        private readonly DataContext _dataContext;
 
-        public DamageRepository(DataContext dataContext)
+        #region Constructor
+
+        public DamageRepository(DataContext dataContext) : base(dataContext)
         {
-            this._dataContext = dataContext;
         }
 
-        public async Task<Damage> AddDamage(AddDamageDTO addDamageDTO)
+        #endregion //Constructor
+
+
+        public async Task<Damage> AddDamage(Damage damage)
         {
-            var user = await _dataContext.Users.Include(p => p.UserFlats)
-                                               .ThenInclude(p => p.Flat) 
-                                               .ThenInclude(p => p.Building)
-                                               .FirstOrDefaultAsync(p => p.Id == addDamageDTO.UserId);
-
-            var building = await _dataContext.Buildings.FirstOrDefaultAsync(p => p.Id == addDamageDTO.BuildingId);
-
-            
-            var damage = new Damage()
-            {
-                Building = building,
-                RequestCreator = user,
-                CreationDate = DateTime.Now,
-                Description = addDamageDTO.Description,
-                Status = DamageStatus.WaitingForFix,
-                Title = addDamageDTO.Title,
-            };
-            _dataContext.Add(damage);
-            await _dataContext.SaveChangesAsync();
-            return damage;
-
-        }
-
-        public async Task<Damage> AddImage(AddImageDTO addDamageDTO)
-        {
-            var damage = await _dataContext.Damages.FirstOrDefaultAsync(p => p.Id == addDamageDTO.Id);
-            if (damage.BlobFiles == null)
-                damage.BlobFiles = new List<BlobFile>();
-
-            damage.BlobFiles.Add(new BlobFile()
-            {
-                FileName = addDamageDTO.FileName,
-                FileUrl = addDamageDTO.FileUrl,
-            });
-            await _dataContext.SaveChangesAsync();
+            await AddAsync(damage);
             return damage;
         }
 
-        public IEnumerable<Damage> GetDamagesForHouseManager(int id, DamageStatus status)
+        public async Task<Damage> UpdateDamage(Damage damage)
         {
-            var buildingId = _dataContext.Buildings.Include(prop => prop.HouseManager).Where(p => p.HouseManager.Id == id).Select(p => p.Id);
-            var damages = _dataContext.Damages.Include(p => p.Building)
+            await UpdateAsync(damage);
+            return damage;
+        }
+
+        public IEnumerable<Damage> GetDamagesByUserAndStatus(User user, DamageStatus status)
+        {
+            var buildingId = _context.Buildings
+                                     .Include(prop => prop.HouseManager)
+                                     .Where(p => p.HouseManager == user)
+                                     .Select(p => p.Id);
+
+            var damages =  GetAll(x => x.Include(p => p.Building)
                                               .ThenInclude(p => p.Flats)
                                               .ThenInclude(p => p)
                                               .Include(p => p.Building)
                                               .ThenInclude(p => p.Address)
                                               .Include(p => p.BlobFiles)
-                                              .Include(p => p.RequestCreator)
-                                              .Where(p => buildingId.Contains(p.Building.Id))
-                                              .Where(p => p.Status == status);
+                                              .Include(p => p.RequestCreator));
+            damages = damages.Where(p => buildingId.Contains(p.Building.Id))
+                             .Where(p => p.Status == status);
             return damages;
         }
 
-        public async Task<Damage> ChangeStatus(int id, DamageStatus status)
+        public async Task<Damage> GetDamage(int id)
         {
-            var damage = await _dataContext.Damages.Include(p => p.Building).ThenInclude(p => p.HouseManager).FirstOrDefaultAsync(p => p.Id == id);
-            damage.Status = status;
-            await _dataContext.SaveChangesAsync();
+            var damage = await GetById(id, x => x.Include(p => p.Building)
+                                            .ThenInclude(p => p.Flats)
+                                            .ThenInclude(p => p)
+                                            .Include(p => p.Building)
+                                            .ThenInclude(p => p.Address)
+                                            .Include(p => p.BlobFiles)
+                                            .Include(p => p.RequestCreator)
+                                            .Include(p => p.Building)
+                                            .ThenInclude(p => p.HouseManager));
             return damage;
         }
+
+        
     }
 }

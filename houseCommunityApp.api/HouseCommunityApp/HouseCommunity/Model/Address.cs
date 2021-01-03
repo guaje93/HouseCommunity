@@ -1,6 +1,6 @@
 ﻿namespace HouseCommunity.Model
 {
-    public class Address
+    public class Address : IEntity
     {
         public int Id { get; set; }
         public string Country { get; set; }

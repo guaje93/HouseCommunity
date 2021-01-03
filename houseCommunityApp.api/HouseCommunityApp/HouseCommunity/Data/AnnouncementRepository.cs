@@ -9,58 +9,44 @@ using System.Threading.Tasks;
 
 namespace HouseCommunity.Data
 {
-    public class AnnouncementRepository : IAnnouncementRepository
+    public class AnnouncementRepository : BaseRepository<Announcement>, IAnnouncementRepository
     {
-        #region Fields
-
-        private readonly DataContext _context;
-
-        #endregion //Fields
 
         #region Constructors
 
-        public AnnouncementRepository(DataContext dataContext)
+        public AnnouncementRepository(DataContext dataContext) : base(dataContext)
         {
-            _context = dataContext;
         }
 
         #endregion //Constructors
 
         public ICollection<Announcement> GetAnnouncementsForUser(int userId)
         {
-            var announcements = _context.UserAnnouncements.Include(p => p.Announcement).Include(p => p.User).Where(p => p.UserId == userId).Select(p => p.Announcement).ToList();
-            return announcements;
+            var announcements = GetAll(x => x.Include(p => p.UserAnnouncements)
+                                             .ThenInclude(p => p.User)
+                                             .Include(p => p.UserAnnouncements)
+                                             .ThenInclude(p => p.Announcement));
+
+            announcements = announcements.SelectMany(p => p.UserAnnouncements)
+                                         .Where(p => p.UserId == userId)
+                                         .Select(p => p.Announcement);
+            return announcements.ToList();
         }
 
-        public async Task<IEnumerable<Announcement>> InsertAnnouncement(AnnouncementForDatabaseInsertDTO announcement)
+        public async Task<Announcement> InsertAnnouncement(Announcement announcement, IEnumerable<User> users)
         {
-            var announcements = new List<Announcement>();
-            var uploader = _context.Users.FirstOrDefault(p => p.Id == announcement.UploaderId);
-            var newAnnouncement = new Announcement()
+            var userAnnouncements = users.Select(user => new UserAnnouncement()
             {
-                Author = uploader.FirstName + " " + uploader.LastName,
-                Name = announcement.Name,
-                CreationDate = DateTime.Now,
-                Description = announcement.Description,
-                FileUrl = announcement.FileUrl
-            };
+                User = user,
+                Announcement = announcement
+            });
 
-            foreach (var receiverId in announcement.ReceiverIds.Distinct())
-            {
-                var receiver = _context.Users.FirstOrDefault(p => p.Id == receiverId);
+                announcement.UserAnnouncements = userAnnouncements.ToList();
 
-                announcements.Add(newAnnouncement);
+            await AddAsync(announcement);
 
-                _context.UserAnnouncements.Add(new UserAnnouncement()
-                {
-                    User = receiver,
-                    Announcement = newAnnouncement
-                }
-                );
-
-                await _context.SaveChangesAsync();
-            }
-            return announcements;
+            return announcement;
         }
+
     }
 }

@@ -21,7 +21,7 @@ export class UserService {
   }
 
   getResidents(){
-    return this.http.get(this.baseUrl + 'get-residents-list').pipe(retry(3));
+    return this.http.get(this.baseUrl + 'get-residents-for-register').pipe(retry(3));
   }
 
   updateUserContactData(model: any){

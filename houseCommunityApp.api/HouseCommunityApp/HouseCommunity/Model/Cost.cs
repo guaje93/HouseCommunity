@@ -1,6 +1,6 @@
 ﻿namespace HouseCommunity.Model
 {
-    public class Cost
+    public class Cost : IEntity
     {
         public int Id { get; set; }
         public double ColdWaterUnitCost { get; set; }

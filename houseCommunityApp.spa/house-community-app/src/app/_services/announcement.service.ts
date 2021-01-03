@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class AnnouncementService {
-  baseUrl = "http://localhost:5000/api/announcement/";
+  baseUrl = "https://housecommunityapp.azurewebsites.net/api/announcement/";
 
   constructor(private http: HttpClient) {}
 

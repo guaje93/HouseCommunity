@@ -7,7 +7,7 @@ import { retry } from 'rxjs/operators';
 })
 export class MediaService {
 
-  baseUrl = 'http://localhost:5000/api/media/';
+  baseUrl = 'https://housecommunityapp.azurewebsites.net/api/media/';
   constructor(private http: HttpClient) {}
 
   getMediaForUser(id: number) {

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class DamageService {
 
-  baseUrl = 'http://localhost:5000/api/damage/';
+  baseUrl = 'https://housecommunityapp.azurewebsites.net/api/damage/';
   constructor(private http: HttpClient) {}
 
   addDamage(model: any){

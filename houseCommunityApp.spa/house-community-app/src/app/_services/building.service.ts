@@ -6,7 +6,7 @@ import { retry } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class BuildingService {
-  baseUrl = "http://localhost:5000/api/building/";
+  baseUrl = "https://housecommunityapp.azurewebsites.net/api/building/";
 
   constructor(private http: HttpClient) {}
 

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class PaymentService {
 
-baseUrl = 'http://localhost:5000/api/payment/';
+baseUrl = 'https://housecommunityapp.azurewebsites.net/api/payment/';
 constructor(private http: HttpClient) {}
 
 getPaymentsForUser(id: number) {

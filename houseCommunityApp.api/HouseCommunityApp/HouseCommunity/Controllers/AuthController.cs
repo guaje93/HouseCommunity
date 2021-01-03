@@ -99,7 +99,7 @@ namespace HouseCommunity.Controllers
                 var messageSubject = "Home Community App - Konto zostało stworzone";
                 var messageContent = $"Użytkownik {creator.FirstName} {creator.LastName} stworzył konto powiązane z danym adresem mailowym." +
                                       "Kliknij w poniższy link lub przeklej go do paska adresu Twojej przeglądarki w celu dokonczenia procesu rejestracji:\n\n" +
-                                      "http://localhost:4200/response-reset-password/" + tokenToSend + "\n\n" +
+                                      "https://housecommunityappfront.azurewebsites.net/response-reset-password/" + tokenToSend + "\n\n" +
                                       "Jeżeli nie wysyłałeś prośby o zmianę hasła lub nie chcesz go zmieniać - nie musisz nic robić. Po prostu pozostaw tę wiadomość bez odpowiedzi.\n";
                 _mailService.SendMail(messageSubject, messageContent, "", "Home Community App");
             }
@@ -157,7 +157,7 @@ namespace HouseCommunity.Controllers
             var messageSubject = "Password Reset";
             var messageContent = "Otrzymałeś tą wiądomość w związku z prośbą o ustawienie nowego hasła do Twojego konta.\n\n" +
                               "Kliknij w poniższy link lub przeklej go do paska adresu Twojej przeglądarki w celu dokonczenia procesu zmiany hasła:\n\n" +
-                              "http://localhost:4200/response-reset-password/" + tokenToSend + "\n\n" +
+                              "https://housecommunityappfront.azurewebsites.net" + tokenToSend + "\n\n" +
                               "Jeżeli nie wysyłałeś prośby o zmianę hasła lub nie chcesz go zmieniać - nie musisz nic robić. Po prostu pozostaw tę wiadomość bez odpowiedzi.\n";
 
 
@@ -198,8 +198,8 @@ namespace HouseCommunity.Controllers
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var id = tokenHandler.ReadJwtToken(token.ResetToken).Claims.FirstOrDefault(p => p.Type == "nameid").Value;
-                var user = await _userRepository.GetUserById(Convert.ToInt32(id));
-                var savedUser = await _repo.ResetPassword(user.UserName, token.NewPassword);
+                var user1 = await _userRepository.GetUserById(Convert.ToInt32(id));
+                var savedUser = await _repo.ResetPassword(user1.UserName, token.NewPassword);
                 return Ok(savedUser);
             }
             else

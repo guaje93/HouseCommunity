@@ -10,7 +10,7 @@ import { Role } from '../Model/Role';
   providedIn: 'root'
 })
 export class AuthService {
-  baseUrl = 'http://localhost:5000/api/auth/';
+  baseUrl = 'https://housecommunityapp.azurewebsites.net/api/auth/';
   jwtHelper = new JwtHelperService();
   decodedToken: any;
   user: User;

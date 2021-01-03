@@ -12,7 +12,7 @@ export class ChatService {
   messageReceived = new EventEmitter<Message>();
   connectionEstablished = new EventEmitter<Boolean>();
 
-  baseUrl = 'http://localhost:5000/api/chat/';
+  baseUrl = 'https://housecommunityapp.azurewebsites.net/api/chat/';
   private connectionIsEstablished = false;
   private _hubConnection: signalR.HubConnection;
   public subject = new BehaviorSubject(1);
@@ -27,7 +27,7 @@ export class ChatService {
 
   public createConnection() {
     this._hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl("http://localhost:5000/MessageHub")
+      .withUrl("https://housecommunityapp.azurewebsites.net/MessageHub")
       .build();
   }
 

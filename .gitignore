@@ -396,3 +396,4 @@ testem.log
 .DS_Store
 Thumbs.db
 /houseCommunityApp.api/HouseCommunityApp/HouseCommunity/appsettings.json
+/houseCommunityApp.spa/house-community-app/dist

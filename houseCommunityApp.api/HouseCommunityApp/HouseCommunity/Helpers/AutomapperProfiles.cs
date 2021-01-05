@@ -20,6 +20,13 @@ namespace HouseCommunity.Helpers
 
             CreateMap<User, UserForInfoDTO>();
             CreateMap<User, UserNamesListDTO>();
+            CreateMap<UserFlat, UserNamesListDTO>()
+                                             .ForMember(dest => dest.Id, opt => opt.MapFrom(source => source.User.Id))
+                                             .ForMember(dest => dest.Email, opt => opt.MapFrom(source => source.User.Email))
+                                             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(source => source.User.FirstName))
+                                             .ForMember(dest => dest.LastName, opt => opt.MapFrom(source => source.User.LastName))
+                                             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(source => source.User.PhoneNumber));
+
 
             CreateMap<Flat, FlatsForListDTO>()
                                              .ForMember(dest => dest.Id, opt => opt.MapFrom(source => source.Id))

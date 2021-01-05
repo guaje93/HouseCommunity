@@ -65,7 +65,7 @@ namespace HouseCommunity.Controllers
             };
 
             var receivers = new List<User>();
-            foreach (var id in announcement.ReceiverIds)
+            foreach (var id in announcement.ReceiverIds.Distinct())
             {
                 var user = await _userRepository.GetUserById(id);
                 receivers.Add(user);

@@ -13,7 +13,7 @@ import { PaymentService } from '../../_services/payment.service';
 export class RentComponent implements OnInit {
 
   displayedColumns: string[] = ['Name', 'Value', 'Date', 'Details', 'Payment'];
-  displayedColumnsForHistory: string[] = ['Name', 'Value', 'PaymentDate', 'BookDate', 'Details', 'PaymentStatus', 'BookStatus'];
+  displayedColumnsForHistory: string[] = ['Name', 'Value', 'PaymentDate', 'BookDate', 'Details', 'PaymentStatus'];
   notCompletedPayments: any;
   completedPayments: any;
   paymentsHistory: any;
@@ -35,10 +35,11 @@ export class RentComponent implements OnInit {
     let model: any = {};
     model.id = payment.id;
     model.price = payment.value;
+    console.log(model);
     this.paymentService.createNewOrder(model).subscribe(data => {
       console.log(data);
       let result: any = data;
-      window.open(result.path, "blank");
+      window.open(result.path);
     })
   }
 

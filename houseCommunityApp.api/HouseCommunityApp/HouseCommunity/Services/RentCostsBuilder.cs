@@ -51,7 +51,7 @@ namespace HouseCommunity.Services
             return this;
         }
 
-        public RentCostsBuilder CalculatePaymentRefunds(IEnumerable<Media> mediaUsageInLastPeriod, Flat flat)
+        public RentCostsBuilder CalculatePaymentRefunds(IEnumerable<Media> mediaUsageInLastPeriod, Flat flat, DateTime date)
         {
             var unitCosts = flat.Building.Cost;
             var coldWaterEstimatedUsage = flat.ColdWaterEstimatedUsage;
@@ -67,9 +67,9 @@ namespace HouseCommunity.Services
             var heatingRealUsageInLastPeriod = 0.0;
             var heatingEstimatedUsageInLastPeriodExceptCurrent = 0.0;
 
-            hotWaterRealUsageInLastPeriod = mediaUsageInLastPeriod.Where(p => p.MediaType == MediaEnum.HotWater).Sum(p => p.CurrentValue);
-            coldWaterRealUsageInLastPeriod = mediaUsageInLastPeriod.Where(p => p.MediaType == MediaEnum.ColdWater).Sum(p => p.CurrentValue);
-            heatingRealUsageInLastPeriod = mediaUsageInLastPeriod.Where(p => p.MediaType == MediaEnum.Heat).Sum(p => p.CurrentValue);
+            hotWaterRealUsageInLastPeriod = mediaUsageInLastPeriod.Where(p => p.MediaType == MediaEnum.HotWater ).Sum(p => p.CurrentValue);
+            coldWaterRealUsageInLastPeriod = mediaUsageInLastPeriod.Where(p => p.MediaType == MediaEnum.ColdWater ).Sum(p => p.CurrentValue);
+            heatingRealUsageInLastPeriod = mediaUsageInLastPeriod.Where(p => p.MediaType == MediaEnum.Heat ).Sum(p => p.CurrentValue);
 
             _payment.HeatingRefundValue = Math.Round((heatingRealUsageInLastPeriod - heatingEstimatedUsageInLastPeriodExceptCurrent - heatingEstimatedUsage) * unitCosts.HeatingUnitCost, 2);
             _payment.HeatingRefundDescription = $"(Rzeczywiste zużycie energii: {heatingRealUsageInLastPeriod}GJ (ostatnie pół roku) - Opłacone zużycie energii (ostatnie pół roku): {heatingEstimatedUsageInLastPeriodExceptCurrent + heatingEstimatedUsage}GJ) * koszt jednostkowy: {unitCosts.HeatingUnitCost}zł/GJ";

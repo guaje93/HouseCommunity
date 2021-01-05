@@ -26,7 +26,7 @@ namespace HouseCommunity.Data
 
         public async Task<User> LogIn(string userName, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(p => p.UserName == userName);
+            var user = await _context.Users.FirstOrDefaultAsync(p => p.UserName == userName || p.Email == userName);
             if (user == null)
                 return null;
 

@@ -60,10 +60,7 @@
             <th mat-header-cell *matHeaderCellDef> Status płatności</th>
             <td mat-cell *matCellDef="let element"> {{decodePaymentStatus(element.paymentStatus)}}</td>
         </ng-container>
-        <ng-container matColumnDef="BookStatus">
-            <th mat-header-cell *matHeaderCellDef> Status księgowania</th>
-            <td mat-cell *matCellDef="let element"> {{element.bookStatus}}</td>
-        </ng-container>
+        
         <tr mat-header-row *matHeaderRowDef="displayedColumnsForHistory"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsForHistory;"></tr>
     </table>

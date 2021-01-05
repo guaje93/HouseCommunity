@@ -14,7 +14,9 @@ namespace HouseCommunity.Services
         public void Initialize(Flat flat)
         {
             unitCosts = flat.Building.Cost;
-            hotWaterEstimatedUsage = flat.HotWaterEstimatedUsage;
+            if (flat.HotWaterEstimatedUsage > 0)
+                hotWaterEstimatedUsage = flat.HotWaterEstimatedUsage;
+            hotWaterEstimatedUsage = flat.Building.HotWaterEstimatedUsageForOneHuman;
         }
         public double CalculateCost()
         {
@@ -23,7 +25,7 @@ namespace HouseCommunity.Services
 
         public string GetDescription()
         {
-           return $"Prognozowane zużycie ciepłej wody/msc: {hotWaterEstimatedUsage}m3 * (koszt jednostkowy: {unitCosts.ColdWaterUnitCost}zł/m3 + koszt ogrzania wody: {unitCosts.HotWaterUnitCost}zł/m3)";
+            return $"Prognozowane zużycie ciepłej wody/msc: {hotWaterEstimatedUsage}m3 * (koszt jednostkowy: {unitCosts.ColdWaterUnitCost}zł/m3 + koszt ogrzania wody: {unitCosts.HotWaterUnitCost}zł/m3)";
         }
     }
 
@@ -35,7 +37,9 @@ namespace HouseCommunity.Services
         public void Initialize(Flat flat)
         {
             unitCosts = flat.Building.Cost;
-            coldWaterEstimatedUsage = flat.ColdWaterEstimatedUsage;
+            if (flat.ColdWaterEstimatedUsage > 0)
+                coldWaterEstimatedUsage = flat.ColdWaterEstimatedUsage;
+            coldWaterEstimatedUsage = flat.Building.ColdWaterEstimatedUsageForOneHuman;
         }
         public double CalculateCost()
         {
@@ -100,7 +104,9 @@ namespace HouseCommunity.Services
         {
             unitCosts = flat.Building.Cost;
             flatArea = flat.Area;
-            heatingEstimatedUsage = flat.HeatingEstimatedUsage;
+            if (flat.HeatingEstimatedUsage > 0)
+                heatingEstimatedUsage = flat.HeatingEstimatedUsage;
+            heatingEstimatedUsage = flat.Building.HeatingEstimatedUsageForOneHuman;
         }
         public double CalculateCost()
         {

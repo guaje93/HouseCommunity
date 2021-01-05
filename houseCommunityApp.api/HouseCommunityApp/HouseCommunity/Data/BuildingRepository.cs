@@ -51,7 +51,7 @@ namespace HouseCommunity.Data
                                                    .Include(p => p.Flats)
                                                    .ThenInclude(p => p.Residents)
                                                    .ThenInclude(p => p.User)
-                                                   .FirstOrDefaultAsync(p => p.Id == id);
+                                                   .FirstOrDefaultAsync(p => p.HouseManager.Id == id);
             return building;
         }
 

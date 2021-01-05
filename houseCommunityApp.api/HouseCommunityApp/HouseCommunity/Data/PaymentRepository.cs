@@ -122,7 +122,15 @@ namespace HouseCommunity.Data
         public async Task<ICollection<Media>> GetMediaFromLastPeriod(int flatId, DateTime date)
         {
             var flat = await _context.Flats.Include(p => p.MediaHistory).FirstOrDefaultAsync(p => p.Id == flatId);
-            return flat.MediaHistory.Where(p => p.CreationDate <= date && p.EndPeriodDate >= date).ToList();
+            return flat.MediaHistory.Where(p => FromLastPeriod(date, p)).ToList();
+        }
+
+        private bool FromLastPeriod(DateTime date, Media media)
+        {
+            var monthBottom = date.Month == 7 ? 1 : 7;
+            var monthTop = date.Month == 7 ? 6 : 12;
+            var year = date.Month == 7 ? date.Year : date.Year - 1;
+            return media.StartPeriodDate.Month >= monthBottom && media.EndPeriodDate.Month <= monthTop && media.StartPeriodDate.Year == year;
         }
 
         public async Task<Payment> GetPaymentById(int id)
@@ -131,7 +139,7 @@ namespace HouseCommunity.Data
             return payment;
         }
 
-        public async Task<List<PaymentForPerformDTO>> GetPayments(int id)
+        public async Task<List<PaymentForPerformDTO>> GetPayments(User user)
         {
             var users = await _context.UserFlats.Include(p => p.User)
                                                .Include(p => p.Flat)
@@ -142,7 +150,7 @@ namespace HouseCommunity.Data
                                                .Include(p => p.Flat)
                                                .ThenInclude(p => p.Building)
                                                .ThenInclude(p => p.Address)
-                                               .Where(p => p.User.Id == id).ToListAsync();
+                                               .Where(p => p.User == user).ToListAsync();
             
             
             return users.SelectMany(p => p.Flat.Payments).Select(p => new PaymentForPerformDTO()
@@ -163,7 +171,37 @@ namespace HouseCommunity.Data
             }).ToList();
         }
 
-        
+        public async Task<List<PaymentForPerformDTO>> GetPayments(Flat flat)
+        {
+            var users = await _context.UserFlats.Include(p => p.User)
+                                               .Include(p => p.Flat)
+                                               .ThenInclude(p => p.Residents)
+                                               .Include(p => p.Flat)
+                                               .ThenInclude(p => p.Payments)
+                                               .ThenInclude(p => p.Details)
+                                               .Include(p => p.Flat)
+                                               .ThenInclude(p => p.Building)
+                                               .ThenInclude(p => p.Address)
+                                               .Where(p => p.Flat == flat).ToListAsync();
+
+
+            return users.SelectMany(p => p.Flat.Payments).Select(p => new PaymentForPerformDTO()
+            {
+                Id = p.Id,
+                Name = p.Name,
+                FlatAddress = p.Flat.Building.Address.ToString() + " m." + p.Flat.FlatNumber,
+                Description = p.Description,
+                Details = p.Details,
+                PaymentDeadline = p.PaymentDeadline,
+                PaymentBookDate = p.PaymentBookDate,
+                Value = p.Value,
+                Period = $"M{p.Month}Y{p.Year}",
+                Type = p.PaymentType,
+                PaymentStatus = p.PaymentStatus,
+                Month = p.Month,
+                Year = p.Year
+            }).ToList();
+        }
 
         public async Task RemovePayment(int paymentId)
         {

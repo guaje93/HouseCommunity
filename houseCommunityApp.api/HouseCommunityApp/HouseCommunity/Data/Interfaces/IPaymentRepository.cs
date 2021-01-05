@@ -8,7 +8,8 @@ namespace HouseCommunity.Data
 {
     public interface IPaymentRepository
     {
-        Task<List<PaymentForPerformDTO>> GetPayments(int id);
+        Task<List<PaymentForPerformDTO>> GetPayments(User user);
+        Task<List<PaymentForPerformDTO>> GetPayments(Flat flat);
         Task<Payment> GetPaymentById(int id);
         Task<ICollection<Media>> GetMediaFromLastPeriod(int flatId, DateTime date);
         Task<Payment> CreateNewPayment(PaymentDetailsToCreateEmptyDTO paymentDetailsToCreateEmptyDTO);

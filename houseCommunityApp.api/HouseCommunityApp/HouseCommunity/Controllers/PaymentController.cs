@@ -44,8 +44,8 @@ namespace HouseCommunity.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPaymentsByUserId(int id)
         {
-
-            var payments = await _repo.GetPayments(id);
+            var user = await _userRepository.GetUserById(id);
+            var payments = await _repo.GetPayments(user);
 
             if (payments == null)
                 return NoContent();
@@ -55,6 +55,21 @@ namespace HouseCommunity.Controllers
                );
         }
 
+        [HttpGet("payments-for-flat/{id}")]
+        public async Task<IActionResult> GetPaymentsByFlatId(int id)
+        {
+            var flat = await _buildingRepository.GetFlat(id);
+            var payments = await _repo.GetPayments(flat);
+
+            if (payments == null)
+                return NoContent();
+
+            return Ok(
+               payments
+               );
+        }
+
+        [AllowAnonymous]
         [HttpPost("create-new-order")]
         public async Task<IActionResult> CreateNewOrder(NewOrderRequest request)
         {
@@ -67,7 +82,7 @@ namespace HouseCommunity.Controllers
                 string responseData = "";
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("authorization", $"Bearer {values["access_token"]}");
 
-                using (var content = new StringContent("{  \"notifyUrl\": \"https://2be5a1148f6e.ngrok.io/api/payment/update-order-status\",  \"customerIp\": \"127.0.0.1\",  \"merchantPosId\": \"398178\",  \"description\": \"RTV market\",  \"currencyCode\": \"PLN\",  \"totalAmount\": \"" + request.Price * 100 + "\",  \"products\": [    {      \"name\": \"Wireless mouse\",      \"unitPrice\": \"15000\",      \"quantity\": \"1\"    },    {      \"name\": \"HDMI cable\",      \"unitPrice\": \"6000\",      \"quantity\": \"1\"    }  ]}", System.Text.Encoding.Default, "application/json"))
+                using (var content = new StringContent("{  \"notifyUrl\": \"https://housecommunityapp.azurewebsites.net/api/payment/update-order-status\",  \"customerIp\": \"127.0.0.1\",  \"merchantPosId\": \"398178\",  \"description\": \"RTV market\",  \"currencyCode\": \"PLN\",  \"totalAmount\": \"" + (int)(request.Price * 100) + "\", \"continueUrl\": \"https://housecommunityappfront.azurewebsites.net/rent\", \"products\": [    {      \"name\": \"Wireless mouse\",      \"unitPrice\": \"15000\",      \"quantity\": \"1\"    },    {      \"name\": \"HDMI cable\",      \"unitPrice\": \"6000\",      \"quantity\": \"1\"    }  ]}", System.Text.Encoding.Default, "application/json"))
                 {
                     using (var response = await httpClient.PostAsync("api/v2_1/orders/", content))
                     {
@@ -159,7 +174,7 @@ namespace HouseCommunity.Controllers
             if (date.Month == 1 || date.Month == 7)
             {
                 var mediaUsageInLastPeriod = await _repo.GetMediaFromLastPeriod(flatId, date);
-                builder.CalculatePaymentRefunds(mediaUsageInLastPeriod, flat);
+                builder.CalculatePaymentRefunds(mediaUsageInLastPeriod, flat, date);
             }
 
             return Ok(builder.Build());
@@ -169,12 +184,13 @@ namespace HouseCommunity.Controllers
         public async Task<IActionResult> CreateNewPayment(PaymentDetailsToCreateEmptyDTO paymentDetailsToCreateEmptyDTO)
         {
             var user = await _userRepository.GetUserById(paymentDetailsToCreateEmptyDTO.UserId);
+            var flat = await _buildingRepository.GetFlat(paymentDetailsToCreateEmptyDTO.FlatId);
             var access = await _authRepository.HasAdministrationRights(paymentDetailsToCreateEmptyDTO.UserId);
 
             if (!access)
                 return BadRequest("User has no proper priviliges");
 
-            var payments = await _repo.GetPayments(paymentDetailsToCreateEmptyDTO.FlatId);
+            var payments = await _repo.GetPayments(flat);
             if (payments != null && payments.Where(p => p.Type == PaymentType.RENT).Any(p => p.Month == paymentDetailsToCreateEmptyDTO.Period.Month && p.Year == paymentDetailsToCreateEmptyDTO.Period.Year))
                 return BadRequest("Czynsz za ten miesiąc został już wygenerowany");
 

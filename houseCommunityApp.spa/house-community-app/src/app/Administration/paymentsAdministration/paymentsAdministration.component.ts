@@ -52,7 +52,7 @@ export class PaymentsAdministrationComponent implements OnInit {
       this.users = data as any[];
 
       this.users.forEach(user => {
-        this.paymentService.getPaymentsForUser(user.flatId).subscribe(paymentData => {
+        this.paymentService.getPaymentsForFlat(user.flatId).subscribe(paymentData => {
           user.paymentList = paymentData;
           this.showFlatsList();
         });

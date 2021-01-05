@@ -50,6 +50,7 @@ export class DamageManageComponent implements OnInit {
   openDialog(element: any): void {
     const dialogRef = this.dialog.open(DamageInfoComponent, {
       width: '80%',
+      height: '90%',
       data: element
     });
 

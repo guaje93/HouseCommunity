@@ -13,6 +13,10 @@ getPaymentsForUser(id: number) {
   return this.http.get(this.baseUrl + id);
 }
 
+getPaymentsForFlat(id: number) {
+  return this.http.get(this.baseUrl + 'payments-for-flat/' + id);
+}
+
 createNewOrder(element: any) {
   return this.http.post(this.baseUrl + 'create-new-order',element);
 }
